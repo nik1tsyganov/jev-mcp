@@ -1,0 +1,72 @@
+{
+  "name": "code-review-triage",
+  "purpose": "Decide which review findings are real, how bad they are, and what to do with each one.",
+  "corpus": "One review finding, with the code it points at.",
+  "state_schema": {
+    "finding_title": "the one-line claim the reviewer made",
+    "finding_body": "the reviewer's reasoning",
+    "file": "repo-relative path the finding anchors to",
+    "line": "1-indexed line",
+    "code_excerpt": "the quoted code, with enough surrounding lines to judge it",
+    "callers": "how the symbol is called elsewhere, when the claim depends on a caller"
+  },
+  "questions": {
+    "is_real": {
+      "type": "noul",
+      "instructions": "Does the code in `code_excerpt` actually contain the defect described in `finding_title`?",
+      "criteria": {
+        "true": "the quoted code has the defect as described",
+        "false": "the code is correct, or the finding describes something the excerpt does not show"
+      }
+    },
+    "reachable": {
+      "type": "noul",
+      "instructions": "Can a caller reach this code with inputs that trigger the described failure?",
+      "criteria": {
+        "true": "some caller can trigger it",
+        "false": "no caller passes those inputs, or the path is unreachable"
+      }
+    },
+    "severity": {
+      "type": "score",
+      "instructions": "How bad is the consequence if this defect reaches a user?",
+      "criteria": [
+        "cosmetic",
+        "minor annoyance",
+        "wrong result a user notices",
+        "data loss or a security hole"
+      ]
+    },
+    "actionable_now": {
+      "type": "noul",
+      "instructions": "Can this be fixed inside the same change, without new information from a human?"
+    },
+    "route": {
+      "type": "choice",
+      "instructions": "What should happen to this finding?",
+      "criteria": {
+        "fix_now": "a real, reachable defect small enough to fix in this change",
+        "file_issue": "real but too large or too risky for this change",
+        "drop": "not a defect, unreachable, or pure taste"
+      }
+    }
+  },
+  "thresholds": {
+    "is_real": {
+      "gate": 0.7,
+      "above": "keep the finding",
+      "below": "drop it before a human reads it"
+    },
+    "reachable": {
+      "gate": 0.5,
+      "above": "keep",
+      "below": "downgrade to a note; an unreachable defect is not a bug yet"
+    },
+    "severity": {
+      "gate": 2.0,
+      "above": "surface in the report",
+      "below": "collect into a quality appendix"
+    }
+  },
+  "notes": "One request per finding. `is_real` and `reachable` are separate on purpose: a correct description of code that no caller reaches is not a defect. Do not let this pack approve a merge; it ranks findings, a test gates the merge."
+}

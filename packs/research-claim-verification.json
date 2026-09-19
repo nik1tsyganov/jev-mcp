@@ -1,0 +1,62 @@
+{
+  "name": "research-claim-verification",
+  "purpose": "Check whether a cited source really supports the claim made from it, before the claim is published.",
+  "corpus": "One claim, paired with the excerpt of the source cited for it.",
+  "state_schema": {
+    "claim": "the claim as it would appear in the report",
+    "source_excerpt": "the quoted passage the claim rests on",
+    "source_url": "where the excerpt came from",
+    "source_kind": "who produced it: the vendor being discussed, an independent lab, a news write-up, a forum post"
+  },
+  "questions": {
+    "supported": {
+      "type": "noul",
+      "instructions": "Does `source_excerpt` state, or directly entail, the claim in `claim`?",
+      "criteria": {
+        "true": "the excerpt supports the claim as written",
+        "false": "the excerpt is about something else, weaker, or only loosely related"
+      }
+    },
+    "overstated": {
+      "type": "noul",
+      "instructions": "Does the claim generalise further than the excerpt allows?"
+    },
+    "independence": {
+      "type": "choice",
+      "instructions": "What kind of evidence is this source?",
+      "criteria": {
+        "independent_primary": "measured by someone with no stake in the result",
+        "vendor_self_report": "produced by the party the claim flatters",
+        "secondary": "a write-up of someone else's result",
+        "unclear": "the excerpt does not say who measured what"
+      }
+    },
+    "publishable": {
+      "type": "score",
+      "instructions": "How should this claim be published?",
+      "criteria": [
+        "do not publish",
+        "publish only with the source named and hedged",
+        "publish as written"
+      ]
+    }
+  },
+  "thresholds": {
+    "supported": {
+      "gate": 0.75,
+      "above": "keep the citation",
+      "below": "find another source or cut the claim"
+    },
+    "overstated": {
+      "gate": 0.5,
+      "above": "narrow the wording to what the excerpt shows",
+      "below": "leave as written"
+    },
+    "publishable": {
+      "gate": 1.5,
+      "above": "publish with the hedge the score implies",
+      "below": "cut it"
+    }
+  },
+  "notes": "A vendor's own benchmark is weak evidence for that vendor's claim; `independence` exists so the report can say so rather than quietly averaging it in with a lab result."
+}

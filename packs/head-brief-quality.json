@@ -1,0 +1,71 @@
+{
+  "name": "head-brief-quality",
+  "purpose": "Gate a delegated agent brief before dispatch, so a vague brief is rewritten instead of run.",
+  "corpus": "One brief written for one agent, plus the file list of the sibling briefs in the same batch.",
+  "state_schema": {
+    "brief_text": "the full brief as it would be sent",
+    "task_title": "the short title of the task",
+    "files_named": "the files this brief tells the agent to create or edit",
+    "sibling_files": "files the other briefs in the same batch will touch"
+  },
+  "questions": {
+    "self_contained": {
+      "type": "score",
+      "instructions": "Could a capable engineer who has read nothing else start editing from this brief alone?",
+      "criteria": [
+        "needs a conversation first",
+        "needs to guess one or two things",
+        "needs a few lookups",
+        "can start immediately"
+      ]
+    },
+    "names_exact_files": {
+      "type": "noul",
+      "instructions": "Does the brief name the exact files, symbols or line anchors to change?"
+    },
+    "has_acceptance": {
+      "type": "noul",
+      "instructions": "Does the brief state how the agent will know the work is done and correct?"
+    },
+    "ambiguous": {
+      "type": "noul",
+      "instructions": "Does the brief contain an instruction that two competent engineers would carry out differently?"
+    },
+    "file_overlap": {
+      "type": "noul",
+      "instructions": "Do the files in `files_named` overlap the files in `sibling_files`?",
+      "criteria": {
+        "true": "at least one file appears in both",
+        "false": "the file sets are disjoint"
+      }
+    },
+    "sizing": {
+      "type": "choice",
+      "instructions": "How should this task be dispatched?",
+      "criteria": {
+        "one_agent": "the right size for a single agent",
+        "split": "two or more independent pieces that should be separate agents",
+        "keep_inline": "one obvious change; delegating costs more than doing it"
+      }
+    }
+  },
+  "thresholds": {
+    "self_contained": {
+      "gate": 2.5,
+      "above": "dispatch",
+      "below": "rewrite the brief before dispatching"
+    },
+    "ambiguous": {
+      "gate": 0.5,
+      "above": "rewrite the ambiguous instruction",
+      "below": "dispatch"
+    },
+    "file_overlap": {
+      "gate": 0.4,
+      "above": "reassign files so no two agents share one",
+      "below": "dispatch",
+      "note": "Compute this in code when you have both file lists: it is a set intersection. Measured 2026-09-19 on 11 real briefs, the model answered 0.44-0.97 while the true intersection was empty, because the state carried basenames and SKILL.md in two directories reads as one file. Ask the question only when the file lists cannot be extracted."
+    }
+  },
+  "notes": "Batch all six questions into one request per brief. For a batch of six briefs that is six requests, which is cheap next to six agents doing the wrong work. The `files_named` field must hold the files the brief tells the agent to CREATE or EDIT, not every file it mentions. Counting mentions, and counting files named in prohibitions (\"do not touch package.json\"), put four briefs on a collision they did not have."
+}

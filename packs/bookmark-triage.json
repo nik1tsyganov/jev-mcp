@@ -1,0 +1,63 @@
+{
+  "name": "bookmark-triage",
+  "purpose": "Turn a pile of saved social posts into a short list worth acting on, and drop the rest.",
+  "corpus": "One saved post: author, text, links and date.",
+  "state_schema": {
+    "author": "handle and display name",
+    "text": "the full post text, expanded, not the preview",
+    "links": "the URLs it points at",
+    "posted_at": "ISO timestamp",
+    "engagement": "likes, reposts and views when available"
+  },
+  "questions": {
+    "durable_technique": {
+      "type": "noul",
+      "instructions": "Does this post carry a technique you could still apply in six months, rather than an announcement?",
+      "criteria": {
+        "true": "there is a reusable method, pattern or rule in it",
+        "false": "it is news, a product launch, or a claim with no method"
+      }
+    },
+    "expires": {
+      "type": "noul",
+      "instructions": "Does the value of this post depend on a version, price or lineup that will change?"
+    },
+    "depth": {
+      "type": "score",
+      "instructions": "How much is actually in the post?",
+      "criteria": [
+        "a claim with nothing behind it",
+        "a pointer worth opening",
+        "a summary you could act on",
+        "a complete method with its trade-offs"
+      ]
+    },
+    "verifiable": {
+      "type": "noul",
+      "instructions": "Does it point at something checkable: a repository, a paper, a doc page, or reproducible numbers?"
+    },
+    "route": {
+      "type": "choice",
+      "instructions": "Where should this go?",
+      "criteria": {
+        "skill_intake": "a technique worth folding into the agent skill store",
+        "vault_note": "worth keeping as a note, but not a skill",
+        "read_later": "promising but the post itself is only a pointer",
+        "drop": "nothing durable here"
+      }
+    }
+  },
+  "thresholds": {
+    "durable_technique": {
+      "gate": 0.6,
+      "above": "keep for routing",
+      "below": "drop"
+    },
+    "depth": {
+      "gate": 1.5,
+      "above": "open the links and read",
+      "below": "drop without opening"
+    }
+  },
+  "notes": "Expand the post before you send it: a truncated preview ending in 'Show more' makes every answer a judgment about the preview. One request per post, so state the count before running a year of bookmarks."
+}
