@@ -72,6 +72,10 @@ def check_path_status(ref, line=None):
     """Categorize a path reference: exists, placeholder, truncated, or missing."""
     if any(ch in ref for ch in "<>*{}"):
         return "placeholder"
+    if line:
+        at = line.find(ref)
+        if at >= 0 and line[at + len(ref):at + len(ref) + 1] == "<":
+            return "placeholder"
     # A date or time template in a path is a pattern, not a location.
     if re.search(r"YYYY-MM-DD|yyyy-mm-dd|<date>|\bHH:MM\b", ref):
         return "placeholder"
@@ -81,6 +85,7 @@ def check_path_status(ref, line=None):
         ref = ref.split("#", 1)[0]
         if not ref:
             return "placeholder"
+    ref = ref.rstrip("\\")
     target = os.path.expanduser(ref)
     if os.path.exists(target):
         return "exists"
@@ -97,7 +102,8 @@ def check_path_status(ref, line=None):
             acc = ref
             for token in line[at + len(ref):].split()[:5]:
                 acc = acc + " " + token.rstrip('`",;:)')
-                if os.path.exists(os.path.expanduser(acc)):
+                probe = acc.split("#", 1)[0]
+                if os.path.exists(os.path.expanduser(probe)):
                     return "truncated"
     if base and os.path.isdir(parent):
         try:
@@ -126,7 +132,8 @@ EXCLUDE_PAT = re.compile(r"(\d{4}-\d{2}-\d{2})|/reports/|/battery/|/fixtures|AUD
 # were lines that already say the target is gone.
 DISCLOSES = ("not present", "does not exist", "did not travel", "is absent", "no longer exist",
              "not wired", "not on this mac", "is not a real", "absent on this mac",
-             "never arrived", "no equivalent", "was renamed", "renamed to", "was replaced")
+             "never arrived", "no equivalent", "was renamed", "renamed to", "was replaced",
+             "deleted", "was removed", "we removed", "removed `")
 DISCLOSURE_BEFORE = 6
 DISCLOSURE_AFTER = 3
 
