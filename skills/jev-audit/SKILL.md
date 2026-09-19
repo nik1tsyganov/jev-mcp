@@ -37,7 +37,10 @@ classify, route, extract a field, verify a claim against evidence.
 4. **Write at most six questions.** They all share one request, so the sixth is nearly
    free and the seventh means the item is really two items.
 5. **State the request count before running.** One request per item. Two hundred items
-   is two hundred requests against the owner's balance.
+   is two hundred requests. Cost is NOT the constraint (owner, 2026-09-19): Jev is cheap
+   and no budget limits it. Say the count so nobody discovers a corpus pass afterwards.
+   Every judgment is logged to `~/.claude/docs/telemetry/jev-spend.jsonl`; read it with
+   `~/src/jev-mcp/tools/spend.py`.
 6. **Apply thresholds in code.** Never ask the model what to do with its own number.
 
 ## Calibration
