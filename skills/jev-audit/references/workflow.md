@@ -14,7 +14,7 @@ eleven items, because each one is kept, updated or deleted on its own.
 
     {
       "skill_file": "~/.claude/skills/gemini-bridge/SKILL.md",
-      "reference_text": "Binary ~/.local/bin/agy, `agy --version` = 1.2.4 (checked 2026-09-16).",   // an example of a STALE line; the installed binary was 1.2.7
+      "reference_text": "[a deliberately STALE example] Binary ~/.local/bin/agy, `agy --version` = 1.2.4 (checked 2026-09-16); the installed binary is 1.2.7",
       "reference_kind": "version",
       "target_exists": true,
       "target_excerpt": "1.2.7",
