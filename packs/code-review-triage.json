@@ -53,9 +53,8 @@
   },
   "thresholds": {
     "is_real": {
-      "gate": 0.7,
-      "above": "keep the finding",
-      "below": "drop it before a human reads it"
+      "gate": null,
+      "calibration": "CALIBRATED AND FOUND NON-PREDICTIVE, 2026-09-19. 35 findings from three independent reviewers over this repository, each verified by the lead (executed where possible): 25 real defects, 10 not. is_real averaged 0.79 on the real ones and 0.83 on the false ones - inverted, no separating gate. A second pass adding a `documented_intent` field to the state did not help either: 0.61 against 0.63 on a balanced 10-item subset. WHY: the false findings are accurate DESCRIPTIONS of code that is correct by design - a noul validator that allows one criteria key, a tool schema that marks criteria optional because the handler validates it. The question asks whether the code contains the described behaviour, and it does. Distinguishing 'the code does this' from 'this is wrong' needs the contract the code is judged against, and supplying it as one prose field was not enough. Do not use this question as a filter. The severity and route answers were not calibrated."
     },
     "reachable": {
       "gate": 0.5,
@@ -68,5 +67,5 @@
       "below": "collect into a quality appendix"
     }
   },
-  "notes": "One request per finding. `is_real` and `reachable` are separate on purpose: a correct description of code that no caller reaches is not a defect. Do not let this pack approve a merge; it ranks findings, a test gates the merge."
+  "notes": "One request per finding. `is_real` and `reachable` are separate on purpose: a correct description of code that no caller reaches is not a defect. Do not let this pack approve a merge; it ranks findings, a test gates the merge. MEASURED LIMIT 2026-09-19: is_real does not separate real defects from accurate-but-harmless observations. Two packs in this set now carry that same shape of failure - this one and head-brief-quality - and both fail for the same reason: the question is aimed at an axis the state cannot settle."
 }
