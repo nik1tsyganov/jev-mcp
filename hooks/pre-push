@@ -1,0 +1,41 @@
+#!/bin/bash
+#
+# Advisory merge-risk ranking before a push. Installed by tools/install_hook.sh.
+#
+# It NEVER blocks: every path exits 0, including a timeout, a missing key, a missing
+# tool and a failed call. A judgment ranks what a human should read; the tests gate the
+# push. Set JEV_MERGE_RISK=0 to silence it for one push.
+#
+set -u
+
+[ "${JEV_MERGE_RISK:-1}" = "0" ] && exit 0
+
+TOOL="$HOME/src/jev-mcp/tools/merge_risk.py"
+[ -x "$TOOL" ] || exit 0
+command -v python3 >/dev/null 2>&1 || exit 0
+
+repo="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+
+# git feeds "<local ref> <local sha> <remote ref> <remote sha>" per ref being pushed.
+range=""
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  [ -z "${local_sha:-}" ] && continue
+  case "$local_sha" in *[!0]*) ;; *) continue ;; esac      # branch deletion: nothing to read
+  case "${remote_sha:-}" in
+    ""|*[!0-9a-f]*) range="$local_sha~1..$local_sha" ;;     # unusable remote sha
+    *[!0]*)         range="$remote_sha..$local_sha" ;;      # normal update
+    *)              range="$local_sha~20..$local_sha" ;;    # new branch: cap the window
+  esac
+  break
+done
+
+[ -z "$range" ] && exit 0
+
+# The caller's clock is the outer bound; the tool's own per-call timeout is shorter.
+if command -v perl >/dev/null 2>&1; then
+  perl -e 'alarm 60; exec @ARGV' -- python3 "$TOOL" "$range" --repo "$repo" 2>/dev/null
+else
+  python3 "$TOOL" "$range" --repo "$repo" 2>/dev/null
+fi
+
+exit 0

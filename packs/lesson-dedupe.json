@@ -1,0 +1,52 @@
+{
+  "name": "lesson-dedupe",
+  "purpose": "Keep a lessons file from silting up with restatements of lessons already recorded.",
+  "corpus": "One candidate lesson, paired with the closest existing lesson.",
+  "state_schema": {
+    "candidate": "the lesson about to be written, in full",
+    "closest_existing": "the existing lesson that covers the most similar ground",
+    "existing_name": "the slug of that existing lesson"
+  },
+  "questions": {
+    "relation": {
+      "type": "choice",
+      "instructions": "How does the candidate relate to the existing lesson?",
+      "criteria": {
+        "duplicate": "the same lesson in different words; nothing new",
+        "extends": "the same subject with a new cause, failure mode or procedure",
+        "new": "a different subject"
+      }
+    },
+    "states_procedure": {
+      "type": "noul",
+      "instructions": "Does the candidate say what to DO next time, and not only what happened?"
+    },
+    "durable": {
+      "type": "noul",
+      "instructions": "Will this still be worth following in six months, rather than being tied to one incident?"
+    },
+    "generality": {
+      "type": "score",
+      "instructions": "How widely does the candidate apply?",
+      "criteria": [
+        "one file, once",
+        "one project",
+        "any project of this kind",
+        "any work at all"
+      ]
+    }
+  },
+  "thresholds": {
+    "states_procedure": {
+      "gate": 0.6,
+      "above": "write it",
+      "below": "rewrite with a procedure line before writing"
+    },
+    "durable": {
+      "gate": 0.5,
+      "above": "write it",
+      "below": "leave it in the task record, not the lessons file"
+    }
+  },
+  "notes": "Feed the closest existing lesson in, not the whole file: the judgment is a comparison of two texts, and a whole corpus in one state makes every answer worse."
+}

@@ -1,0 +1,58 @@
+{
+  "name": "merge-risk",
+  "purpose": "Rank the files in a change by how much a human should look at them before it lands.",
+  "corpus": "One changed file, with its diff summary.",
+  "state_schema": {
+    "file_path": "repo-relative path",
+    "diff_summary": "the hunks, or a faithful summary of them",
+    "lines_added": "integer",
+    "lines_removed": "integer",
+    "role": "what this file does in the system, in one sentence"
+  },
+  "questions": {
+    "blast_radius": {
+      "type": "score",
+      "instructions": "How far do the effects of this change reach?",
+      "criteria": [
+        "this file only",
+        "this module",
+        "several modules",
+        "every user of the product"
+      ]
+    },
+    "irreversible_path": {
+      "type": "noul",
+      "instructions": "Does the change touch something a revert alone cannot undo: data deletion, a migration, credentials, billing, or an outbound message?",
+      "criteria": {
+        "true": "it touches at least one of those",
+        "false": "a revert fully undoes it"
+      }
+    },
+    "behaviour_change": {
+      "type": "noul",
+      "instructions": "Does this change what the software does, rather than only how it is written?"
+    },
+    "route": {
+      "type": "choice",
+      "instructions": "How should this file be handled before merge?",
+      "criteria": {
+        "read_required": "a human reads this file before it lands",
+        "skim": "worth a glance",
+        "no_read_needed": "mechanical or test-only"
+      }
+    }
+  },
+  "thresholds": {
+    "blast_radius": {
+      "gate": 2.0,
+      "above": "require a human read",
+      "below": "skim"
+    },
+    "irreversible_path": {
+      "gate": 0.4,
+      "above": "require a human read regardless of size",
+      "below": "use the blast radius"
+    }
+  },
+  "notes": "This pack ranks and flags. It never approves a merge: the tests and the build gate that, and a judgment that says 'looks fine' is not a passing test."
+}

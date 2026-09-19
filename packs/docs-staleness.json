@@ -1,0 +1,52 @@
+{
+  "name": "docs-staleness",
+  "purpose": "Find documentation that no longer describes the code it claims to describe.",
+  "corpus": "One documentation section, paired with the code it describes.",
+  "state_schema": {
+    "doc_path": "path of the document",
+    "doc_section": "the section text, heading included",
+    "code_path": "path of the code the section describes",
+    "code_excerpt": "the current code"
+  },
+  "questions": {
+    "matches_code": {
+      "type": "noul",
+      "instructions": "Does `doc_section` still describe what `code_excerpt` does?",
+      "criteria": {
+        "true": "the description matches the current code",
+        "false": "the code has moved on, or the described thing is gone"
+      }
+    },
+    "misleads": {
+      "type": "noul",
+      "instructions": "Would a reader following this section take a wrong action?"
+    },
+    "still_needed": {
+      "type": "noul",
+      "instructions": "Is this section worth keeping at all, assuming it were corrected?"
+    },
+    "route": {
+      "type": "choice",
+      "instructions": "What should happen to this section?",
+      "criteria": {
+        "leave": "still accurate",
+        "edit": "keep the section, correct the detail",
+        "delete": "the thing it documents is gone",
+        "rewrite": "the subject still exists but the section is wrong throughout"
+      }
+    }
+  },
+  "thresholds": {
+    "matches_code": {
+      "gate": 0.6,
+      "above": "leave it",
+      "below": "queue for edit"
+    },
+    "misleads": {
+      "gate": 0.5,
+      "above": "fix in this pass",
+      "below": "fix when convenient"
+    }
+  },
+  "notes": "Pair each section with the code it names. A doc audit that reads only the docs finds prose problems, not staleness."
+}

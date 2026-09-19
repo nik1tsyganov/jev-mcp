@@ -1,0 +1,65 @@
+{
+  "name": "skill-store-stale-ref",
+  "purpose": "Audit the references inside a skill store: paths, URLs, model names, version claims and dated facts.",
+  "corpus": "One reference found inside one skill file.",
+  "state_schema": {
+    "skill_file": "path of the skill file the reference lives in",
+    "reference_text": "the sentence containing the reference",
+    "reference_kind": "path | url | model_name | version | dated_claim",
+    "target_exists": "true/false/unknown, from opening the target",
+    "target_excerpt": "what the target actually contains, when it exists",
+    "written_on": "the date the claim was written, when the file records one",
+    "file_declares_archived": "true when the file's own header marks it as archived or previous-host text; such a file is EXPECTED to name paths that no longer exist",
+    "surrounding_text_says_absent": "true when the sentence or its section already states the target is missing on this machine",
+    "inside_code_block": "true when the reference sits in a fenced example or command, where a path is often a placeholder",
+    "line_asserts_current_state": "true when this line asserts what is or is not present on THIS machine right now (a path-status table, 'Present:', 'is archived at', 'lives at'); such a claim is judged against the evidence even inside an archived file"
+  },
+  "questions": {
+    "is_stale": {
+      "type": "noul",
+      "instructions": "Does `target_excerpt` contradict what `reference_text` claims? Answer true whenever `line_asserts_current_state` is true and the excerpt contradicts the line, even if the file is archived. Otherwise answer false when `surrounding_text_says_absent` is true, when `file_declares_archived` is true and the claim describes the machine that file documents, or when `inside_code_block` is true and the path is an example rather than a claim about this machine.",
+      "criteria": {
+        "true": "the claim no longer matches reality",
+        "false": "the claim still matches, or the evidence does not show otherwise"
+      }
+    },
+    "load_bearing": {
+      "type": "noul",
+      "instructions": "Would an agent following this skill take a different action if this reference were wrong?"
+    },
+    "risk_if_wrong": {
+      "type": "score",
+      "instructions": "What happens if an agent trusts this reference and it is wrong?",
+      "criteria": [
+        "nothing, it is decoration",
+        "wasted effort",
+        "a wrong answer to the user",
+        "a destructive or irreversible action"
+      ]
+    },
+    "route": {
+      "type": "choice",
+      "instructions": "What should be done with this reference?",
+      "criteria": {
+        "keep": "still correct, leave it",
+        "verify_live": "cannot be judged from the evidence given; open the target and re-run",
+        "update": "correct but out of date; rewrite with the current fact",
+        "delete": "wrong and not worth replacing"
+      }
+    }
+  },
+  "thresholds": {
+    "is_stale": {
+      "gate": 0.5,
+      "above": "queue the reference for update or deletion",
+      "below": "leave it alone",
+      "calibration": "2026-09-19, 20 hand-labelled references (10 true, 10 false): at 0.5, 0 false positives and 3 false negatives, 15 percent disagreement. All three misses were present-tense path-status claims inside archived files, which is why line_asserts_current_state was added; re-calibrate after any further state change."
+    },
+    "load_bearing": {
+      "gate": 0.5,
+      "above": "fix before the next dispatch",
+      "below": "fix at leisure"
+    }
+  },
+  "notes": "Never judge staleness from a regex alone: put what the target actually contains in `target_excerpt`, or set `target_exists` to unknown and let the route come back verify_live. Measured 2026-09-19 on 53 references: without file_declares_archived, surrounding_text_says_absent and inside_code_block in the state, roughly 70 percent of the flagged items were false positives \u2014 archived files that already disclose the absence, and placeholder paths inside examples. Fill those three fields or do not trust the output."
+}
