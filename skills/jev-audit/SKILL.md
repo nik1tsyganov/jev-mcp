@@ -14,6 +14,30 @@ threshold, and the model never gets to decide what happens next.
 Design guidance lives in `typesafe:typesafe-ai`; the credential and the verified API
 contract live in `typesafe-setup`. This skill is only the audit procedure.
 
+## Is this a Jev candidate? Classify it four ways
+
+Not two. A decision belongs to exactly one of these, and naming the wrong one is how a
+working rule gets replaced by a probability:
+
+- **A — deterministic code is better.** Membership, intersection, existence, counts,
+  version comparison, anything with a right answer. Never ask.
+- **B — Jev is a strong fit.** A bounded semantic judgment, described below.
+- **C — a generative model is still required.** Prose, a plan, code, several reasoning
+  steps, tool use.
+- **D — a human must decide.** Anything irreversible, or where being wrong is expensive
+  and nobody would notice.
+
+A strong B candidate has all six:
+
+1. a finite answer space;
+2. a semantic judgment that rules cannot handle reliably;
+3. repeated, or latency-sensitive, execution;
+4. enough context to make ONE bounded decision;
+5. a reversible action, or a clear escalation path;
+6. measurable success criteria.
+
+Miss one and it is probably A, C or D. Missing six is the common case.
+
 ## When this applies
 
 More than a handful of items, one repeated decision: keep or drop, rank, triage,
@@ -23,10 +47,11 @@ classify, route, extract a field, verify a claim against evidence.
 
 - The output has to be prose, a plan, or code. Jev writes nothing.
 - The decision needs tool use, a lookup, or several reasoning steps.
+- Code can compute the answer. That is class A, and it is the most common mistake here.
 - There is one item. One request for one decision is fine, but call it a decision, not
   an audit, and do not build a pack for it.
 
-## The pass
+## The pass## The pass
 
 1. **Define one item.** A finding, a file, a claim, a post. If you cannot say what one
    item is in a sentence, the corpus is not ready.
