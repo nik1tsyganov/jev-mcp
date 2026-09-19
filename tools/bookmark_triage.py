@@ -14,9 +14,12 @@ answer beats its `durable_technique` score on this corpus - route caught 4 of th
 overlapped badly (durable 0.11-0.91 against 0.05-0.31). This tool therefore acts on
 route and prints the score only as context.
 """
-import argparse, json, os, re, sys, time, urllib.request, urllib.error
+import argparse, sys, json, os, re, sys, time, urllib.request, urllib.error
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from spend_log import record as _record_spend
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PACK = json.load(open(os.path.join(HERE, "packs", "bookmark-triage.json")))
@@ -45,7 +48,9 @@ def judge(key, post):
     for attempt in range(3):
         try:
             with urllib.request.urlopen(req, timeout=60) as r:
-                return json.load(r)
+                _payload = json.load(r)
+                _record_spend("bookmark_triage", _payload.get("model"), len(PACK["questions"]), _payload.get("usage"))
+                return _payload
         except urllib.error.HTTPError as e:
             if e.code in (429, 529) and attempt < 2:
                 time.sleep(1.5 * (attempt + 1)); continue

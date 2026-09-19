@@ -4,13 +4,24 @@
 Advisory only. It never blocks anything: a judgment ranks, a test gates. Every failure
 path — no key, no network, a timeout, a bad response — exits 0 and says why.
 """
-import argparse, json, os, re, subprocess, sys, time, urllib.request, urllib.error
+import argparse, sys, json, os, re, subprocess, sys, time, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from spend_log import record as _record_spend
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PACK = json.load(open(os.path.join(HERE, "packs", "merge-risk.json")))
 ENDPOINT = os.environ.get("TYPESAFE_BASE_URL", "https://api.typesafe.ai") + "/v1/systemone"
 DIFF_CHARS = 6000
+
+def _logged(tool, payload):
+    try:
+        _record_spend(tool, payload.get("model"), len(payload.get("answers") or {}), payload.get("usage"))
+    except Exception:
+        pass
+    return payload
+
 
 def api_key():
     k = os.environ.get("TYPESAFE_API_KEY")
@@ -104,7 +115,7 @@ def judge(key, item):
     for attempt in range(2):
         try:
             with urllib.request.urlopen(req, timeout=20) as r:
-                return {**item, "answers": json.load(r)}
+                return {**item, "answers": _logged("merge_risk", json.load(r))}
         except urllib.error.HTTPError as e:
             if e.code in (429, 529) and attempt < 1:
                 time.sleep(1); continue
