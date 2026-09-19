@@ -53,7 +53,8 @@
       "gate": 0.5,
       "above": "queue the reference for update or deletion",
       "below": "leave it alone",
-      "calibration": "2026-09-19, 20 hand-labelled references (10 true, 10 false): at 0.5, 0 false positives and 3 false negatives, 15 percent disagreement. All three misses were present-tense path-status claims inside archived files, which is why line_asserts_current_state was added; re-calibrate after any further state change."
+      "calibration": "2026-09-19, 20 hand-labelled references (10 true, 10 false): at 0.5, 0 false positives and 3 false negatives, 15 percent disagreement. All three misses were present-tense path-status claims inside archived files, which is why line_asserts_current_state was added; re-calibrate after any further state change.",
+      "calibrated_on_model": "jev-1.13.0"
     },
     "load_bearing": {
       "gate": 0.5,

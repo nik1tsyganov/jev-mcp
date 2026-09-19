@@ -43,6 +43,46 @@ classify, route, extract a field, verify a claim against evidence.
    `~/src/jev-mcp/tools/spend.py`.
 6. **Apply thresholds in code.** Never ask the model what to do with its own number.
 
+## Route on confidence, not only on the answer
+
+A `choice` and a `score` return a confidence. Gate on it, because a top option at 0.45
+against a second at 0.37 is a tie wearing a decision's clothes.
+
+| Confidence | Do |
+| --- | --- |
+| above 0.85 | act on the answer |
+| 0.55 to 0.85 | escalate: a second question, more state, or a cheaper check |
+| below 0.55 | a human decides |
+
+Those bands come from published practice, not from this machine. Tune them on your own
+labels before trusting them, the same as any gate here. A `noul` has no confidence
+field; for it the probability IS the answer, so the threshold does that work.
+
+**Every uncertain answer needs a named route.** A low-confidence answer treated as a
+normal one is how a wrong decision ships quietly.
+
+## Where Jev belongs inside a loop, not beside it
+
+Corpus audits are the obvious use. These are the others, and they are dispatch points
+rather than passes:
+
+- route before the call: which model, which tool, which project, which seat;
+- gate the tool: is this call safe to make, per call, before it runs;
+- judge the output: does this result satisfy the goal, is the loop stuck;
+- compact context: keep or drop, decided per item, instead of a lossy summary;
+- select a skill or tool without loading every description into the prompt;
+- rerank retrieved candidates by relevance.
+
+Each is one question against a small state, answered in well under a second. If a step
+in a loop asks an LLM for a yes, a label or a number, it is a candidate.
+
+## Pin the model once the gates are tuned
+
+A measured gate belongs to the model it was measured on. Every calibrated pack here
+records `calibrated_on_model`. Track `jev-latest` while you are exploring; once a
+threshold is tuned, send the pinned version, and re-measure when you move it. A model
+update that silently shifts a distribution turns a measured gate back into a guess.
+
 ## Calibration
 
 A threshold nobody measured is a guess. Hand-label at least 20 items, run the pack over
