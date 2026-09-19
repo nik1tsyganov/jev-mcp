@@ -69,3 +69,19 @@ schema, billing, outbound calls, permissions). Measured 2026-09-19 on a 19-file 
 without those fields every file scored 0.30-0.62 blast radius and the gate never fired;
 with them the spread ran 0.37-1.96 and the two provider files carrying an irreversible
 pattern surfaced at 0.74 and 0.66.
+
+## What the brief gate is measured to do, and not do
+
+Calibrated 2026-09-19 against 15 real briefs labelled by outcome — did the head's work
+need a correction traceable to the brief. It does not predict that: `self_contained`
+averaged 2.49 on the seven failures and 2.53 on the eight successes.
+
+It reliably catches two things, both seen in the same session: a brief that names no
+files and states no acceptance criteria, and work that should have stayed with the lead.
+
+It cannot catch a brief that is confidently wrong (a command that fails on the installed
+runtime, a heuristic that over-fires) or one missing context only the lead holds (a
+rename landing in another file at the same moment). Nothing in the brief text reveals
+those, so no judgment over that text can find them. Before dispatch, the lead checks
+both by hand: run any command the brief prescribes, and write down what has changed
+since the brief was drafted.
