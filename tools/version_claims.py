@@ -36,6 +36,7 @@ SLUG_PAT = re.compile(r"\bgemini-\d+(?:\.\d+)?-(?:flash|pro)(?:-(?:high|medium|l
 # A bare decimal is almost never a version: a routing log full of probabilities
 # (0.48, 0.59) produced 82 of 84 false positives on the first run, 2026-09-19. Require
 # either three parts (1.2.7) or an explicit version marker right before the number.
+# Deliberately omitted: two-part versions following tool names without 'version' or 'v' (e.g. 'agy 1.2') are excluded to prevent bare decimals from matching as false positives.
 VERSION_PAT = re.compile(
     r"(?<![\w-])(?:(?<=[vV])|(?<=version )|(?<=version: )|(?<=CLI )|(?<=cli ))?(\d+(?:\.\d+){2,})\b"
     r"|(?<![\w-])[vV](\d+(?:\.\d+)+)\b"
@@ -282,7 +283,17 @@ def compare(claims, facts):
             installed = facts.get(canonical) if (canonical and canonical in facts) else facts.get(tool)
             claimed = c.get("claim")
 
-            if not _version_agrees(claimed, installed):
+            if installed is None:
+                disagreements.append({
+                    "file": c.get("file"),
+                    "line": c.get("line"),
+                    "kind": "not_installed",
+                    "tool": tool,
+                    "claimed": claimed,
+                    "installed": "not installed",
+                    "text": c.get("text"),
+                })
+            elif not _version_agrees(claimed, installed):
                 disagreements.append({
                     "file": c.get("file"),
                     "line": c.get("line"),
@@ -329,7 +340,10 @@ if __name__ == "__main__":
 
     discrepancies = compare(extracted_claims, facts_data)
     for d in discrepancies:
-        print(f"{d['file']}:{d['line']}  claims {d['claimed']}, installed {d['installed']}")
+        if d.get("kind") == "not_installed":
+            print(f"{d['file']}:{d['line']}  tool '{d['tool']}' not installed (claims {d['claimed']})")
+        else:
+            print(f"{d['file']}:{d['line']}  claims {d['claimed']}, installed {d['installed']}")
 
     print(f"Total: {len(discrepancies)}")
     sys.exit(0)

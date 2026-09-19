@@ -68,7 +68,7 @@ def find_candidates(line):
     return out
 
 
-def check_path_status(ref):
+def check_path_status(ref, line=None):
     """Categorize a path reference: exists, placeholder, truncated, or missing."""
     if any(ch in ref for ch in "<>*{}"):
         return "placeholder"
@@ -78,9 +78,21 @@ def check_path_status(ref):
     # A path stopping at whitespace whose prefix matches a real file is truncated.
     clean_target = target.rstrip("/\\")
     parent, base = os.path.dirname(clean_target), os.path.basename(clean_target)
+    # The extractor cuts a path at the first space, so `~/Library/Application Support/x`
+    # arrives as `~/Library/Application`. Rebuild it from the line and see whether it
+    # RESOLVES: a prefix heuristic guessed, and guessed both ways - it called a real
+    # truncation missing and a genuinely absent path truncated (2026-09-19).
+    if line:
+        at = line.find(ref)
+        if at >= 0:
+            acc = ref
+            for token in line[at + len(ref):].split()[:5]:
+                acc = acc + " " + token.rstrip('`",;:)')
+                if os.path.exists(os.path.expanduser(acc)):
+                    return "truncated"
     if base and os.path.isdir(parent):
         try:
-            if any(n.startswith(base) for n in os.listdir(parent)):
+            if any(n.startswith(base) for n in os.listdir(parent)) and line and re.search(re.escape(ref) + r"\w", line):
                 return "truncated"
         except OSError:
             pass
@@ -103,15 +115,15 @@ EXCLUDE_PAT = re.compile(r"(\d{4}-\d{2}-\d{2})|/reports/|/battery/|/fixtures|AUD
 # A path the document itself calls absent is a correct record, not a defect. The store
 # auditor has had this since the 43-to-7 pass; without it here, 55 of 91 "missing paths"
 # were lines that already say the target is gone.
-DISCLOSES = ("not present", "does not exist", "did not travel", "is absent", "no longer",
+DISCLOSES = ("not present", "does not exist", "did not travel", "is absent", "no longer exist",
              "not wired", "not on this mac", "is not a real", "absent on this mac",
-             "never arrived", "no equivalent", "renamed", "was replaced")
+             "never arrived", "no equivalent", "was renamed", "renamed to", "was replaced")
 DISCLOSURE_BEFORE = 6
 DISCLOSURE_AFTER = 3
 
 def disclosed_near(lines, idx):
     lo = max(0, idx - DISCLOSURE_BEFORE)
-    window = " ".join(lines[lo:idx + DISCLOSURE_AFTER]).lower()
+    window = " ".join(lines[lo:idx + DISCLOSURE_AFTER + 1]).lower()
     return any(k in window for k in DISCLOSES)
 
 # sync-map.json states presence per entry. An entry carrying presentOnThisMac:false has
@@ -213,7 +225,7 @@ def collect(roots=None):
                     continue
 
                 # Class 3: MISSING PATH
-                st = check_path_status(c)
+                st = check_path_status(c, line)
                 if st == "missing":
                     # Only this class is about absence, so only this class is silenced
                     # by a nearby statement that the target is absent.

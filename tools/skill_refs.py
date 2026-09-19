@@ -62,7 +62,7 @@ def _candidates(line):
     out += [m.group(1) for m in BARE.finditer(line)]
     return out
 
-def status(ref):
+def status(ref, line=None):
     # A backslash path is a previous-host leftover: categorically wrong here, no judgment needed.
     if "\\" in ref:
         return "windows-path"
@@ -72,6 +72,16 @@ def status(ref):
     # `{a,b,c}` is a shell brace expansion, not a path.
     if any(ch in ref for ch in "<>*{}"):
         return "placeholder"
+    # The extractor cuts a bare path at the first space. Rebuild it from the line and
+    # see whether it RESOLVES; a prefix guess is wrong in both directions.
+    if line:
+        at = line.find(ref)
+        if at >= 0:
+            acc = ref
+            for token in line[at + len(ref):].split()[:5]:
+                acc = acc + " " + token.rstrip('`",;:)')
+                if os.path.exists(os.path.expanduser(acc)):
+                    return "truncated"
     parent, base = os.path.dirname(target), os.path.basename(target)
     try:
         if base and os.path.isdir(parent) and any(n.startswith(base) for n in os.listdir(parent)):
@@ -106,7 +116,7 @@ def collect(store):
                     continue
                 seen.add(c)
                 refs.append({"file": rel, "line": i, "kind": "path", "ref": c,
-                             "text": line.strip()[:400], "status": status(c),
+                             "text": line.strip()[:400], "status": status(c, line),
                              "file_declares_archived": archived,
                              "surrounding_text_says_absent": discloses,
                              "inside_code_block": i in fenced})
