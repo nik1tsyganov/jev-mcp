@@ -49,14 +49,20 @@
   },
   "thresholds": {
     "durable_technique": {
-      "gate": 0.6,
+      "gate": 0.11,
       "above": "keep for routing",
-      "below": "drop"
+      "below": "drop",
+      "calibration": "CALIBRATED 2026-09-19 on the owner's 22 real saved X posts, labelled by reading: 17 carry a durable technique, 5 do not. WEAK SIGNAL: means separate (0.52 against 0.16) but the ranges overlap badly - durable items run 0.11-0.91 and non-durable 0.05-0.31. The best gate, 0.11, keeps all 17 and lets 2 of the 5 through; any gate high enough to catch those 2 discards genuinely useful posts. Use this question to drop the obvious floor only. LIMIT: 10 of the 22 posts were truncated previews ending in 'Show more', which is exactly the condition this pack's own notes warn about, so the scores are partly judgements about previews."
     },
     "depth": {
       "gate": 1.5,
       "above": "open the links and read",
       "below": "drop without opening"
+    },
+    "route": {
+      "gate": null,
+      "note": "a choice, not a threshold",
+      "calibration": "Same 22 posts, 2026-09-19: `route` outperformed `durable_technique`. It sent 4 of the 5 no-technique posts to drop (a bare 'X beats Y' claim, a pageview milestone, a livestream announcement, a product tagline) and wrongly dropped 1 of the 17 keepers, a 361-page trading-algorithms PDF that is durable but off-domain. It gave skill_intake to the posts that actually carry a method. Prefer the route answer over the durable_technique score for this corpus."
     }
   },
   "notes": "Expand the post before you send it: a truncated preview ending in 'Show more' makes every answer a judgment about the preview. One request per post, so state the count before running a year of bookmarks."
