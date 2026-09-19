@@ -283,6 +283,8 @@ def compare(claims, facts):
             installed = facts.get(canonical) if (canonical and canonical in facts) else facts.get(tool)
             claimed = c.get("claim")
 
+            if RETIRED_NEARBY.search(c.get("text", "")):
+                continue  # the sentence itself says the version is old or illustrative
             if installed is None:
                 disagreements.append({
                     "file": c.get("file"),

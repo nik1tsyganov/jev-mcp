@@ -219,8 +219,10 @@ def collect(roots=None):
                     continue
                 seen_candidates.add(c)
 
-                # Class 2: BACKSLASH PATH
-                if "\\" in c:
+                # Class 2: BACKSLASH PATH. `\"` is JSON string escaping, not a path
+                # separator: three sync-map test commands reported as Windows paths on
+                # 2026-09-19 were correctly-ported POSIX commands inside escaped quotes.
+                if re.search(r"\\\\\w", c):
                     line_has_backslash = True
                     continue
 
