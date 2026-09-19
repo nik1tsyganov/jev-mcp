@@ -133,7 +133,7 @@ EXCLUDE_PAT = re.compile(r"(\d{4}-\d{2}-\d{2})|/reports/|/battery/|/fixtures|AUD
 DISCLOSES = ("not present", "does not exist", "did not travel", "is absent", "no longer exist",
              "not wired", "not on this mac", "is not a real", "absent on this mac",
              "never arrived", "no equivalent", "was renamed", "renamed to", "was replaced",
-             "deleted", "was removed", "we removed", "removed `")
+             "deleted", "was removed", "we removed", "removed `", "are all gone", "is gone", "are gone")
 DISCLOSURE_BEFORE = 6
 DISCLOSURE_AFTER = 3
 
