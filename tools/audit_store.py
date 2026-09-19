@@ -4,9 +4,12 @@
 Deterministic first: census, Windows paths, present-assertions, resolution. Jev only on
 what a script cannot settle, one request per reference, count announced before spending.
 """
-import argparse, json, os, re, sys, time, urllib.request, urllib.error
+import argparse, sys, json, os, re, sys, time, urllib.request, urllib.error
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from spend_log import record as _record_spend
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(HERE, "tools"))
@@ -16,6 +19,14 @@ PACK = json.load(open(os.path.join(HERE, "packs", "skill-store-stale-ref.json"))
 ENDPOINT = os.environ.get("TYPESAFE_BASE_URL", "https://api.typesafe.ai") + "/v1/systemone"
 GATE = PACK["thresholds"]["is_stale"]["gate"]
 ASSERTS_CURRENT = re.compile(r'^\s*>?\s*(?:present|installed|lives at|available)\b', re.I)
+
+def _logged(tool, payload):
+    try:
+        _record_spend(tool, payload.get("model"), len(payload.get("answers") or {}), payload.get("usage"))
+    except Exception:
+        pass
+    return payload
+
 
 def api_key():
     k = os.environ.get("TYPESAFE_API_KEY")
@@ -50,7 +61,7 @@ def judge(key, r):
     for attempt in range(3):
         try:
             with urllib.request.urlopen(req, timeout=60) as resp:
-                return {**r, "answers": json.load(resp)}
+                return {**r, "answers": _logged("audit_store", json.load(resp))}
         except urllib.error.HTTPError as e:
             if e.code in (429, 529) and attempt < 2:
                 time.sleep(1.5 * (attempt + 1)); continue

@@ -106,8 +106,18 @@ the preview rather than the post.
 
 ## Spending
 
-`src/client.js` counts judgment requests for the life of the process and refuses past
-200. Raise it deliberately with `TYPESAFE_MAX_REQUESTS`. `jev_models` is not counted.
-The cap covers everything that goes through the MCP server. The Python tools in this
-directory call the API directly and are NOT covered; each states its request count
-before spending and requires `--run`.
+Jev is cheap, so nothing here is a budget. The rule this serves is different: never loop
+a corpus silently, and be able to say afterwards what a pass cost.
+
+Every judgment request writes one line to `~/.claude/docs/telemetry/jev-spend.jsonl` —
+from `src/client.js` for anything through the MCP server, and from `tools/spend_log.py`
+for the tools that post directly. Override the path with `TYPESAFE_SPEND_LOG`.
+
+    python3 tools/spend.py        # requests, questions and tokens per day
+
+`src/client.js` also counts per process, prints a running total to stderr every 50
+requests, and refuses at 5000. That number is a runaway guard, not a budget: no honest
+pass reaches it, and a loop that does is one nobody is reading. Raise it with
+`TYPESAFE_MAX_REQUESTS`. `jev_models` is not counted; it spends no judgment tokens.
+
+Each Python tool still states its request count before spending and needs `--run`.

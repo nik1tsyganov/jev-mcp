@@ -1,6 +1,6 @@
-import { readFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 
 export const DEFAULT_MODEL = process.env.TYPESAFE_DEFAULT_MODEL || "jev-latest";
 export const KEY_FILE = join(homedir(), ".config", "typesafe", "env.sh");
@@ -41,28 +41,56 @@ function redact(text) {
   return out.replace(/Bearer\s+\S+/g, "Bearer [redacted]");
 }
 
-/* Spend cap. The five tools sit in every session on four CLIs, and nothing on the agent
-   side limits how many times an agent calls them: one call is capped at 32 questions,
-   but a loop over a corpus is unbounded. This counts judgment requests for the life of
-   the process and refuses past the cap with an instruction, not a silent stop.
-   Raise it deliberately with TYPESAFE_MAX_REQUESTS. `listModels` is not counted: it
-   spends no judgment tokens. */
-const MAX_REQUESTS = Number(process.env.TYPESAFE_MAX_REQUESTS || 200);
+/* Spend visibility, not a budget. Jev is cheap and the owner has said cost is not the
+   constraint; the standing rule is different - never loop a corpus silently, and state
+   the request count. So this counts, logs and warns, and only refuses at a number no
+   honest pass reaches. Raise or disable with TYPESAFE_MAX_REQUESTS.
+   `listModels` is not counted: it spends no judgment tokens. */
+const MAX_REQUESTS = Number(process.env.TYPESAFE_MAX_REQUESTS || 5000);
+const WARN_EVERY = Number(process.env.TYPESAFE_WARN_EVERY || 50);
+const SPEND_LOG = process.env.TYPESAFE_SPEND_LOG
+  || join(homedir(), ".claude", "docs", "telemetry", "jev-spend.jsonl");
 let spent = 0;
+let inputTokens = 0;
+let outputTokens = 0;
 
 export function spendSoFar() {
-  return { requests: spent, cap: MAX_REQUESTS };
+  return { requests: spent, inputTokens, outputTokens, cap: MAX_REQUESTS };
 }
 
 function chargeOne() {
   if (spent >= MAX_REQUESTS) {
     throw new Error(
-      `Spend cap reached: ${spent} judgment requests in this process, cap ${MAX_REQUESTS}. ` +
-      `Stop and report the count, or raise TYPESAFE_MAX_REQUESTS deliberately. ` +
-      `A corpus pass should state its request count before it starts.`
+      `Runaway guard: ${spent} judgment requests in one process, limit ${MAX_REQUESTS}. ` +
+      `This is not a budget - it is a loop that nobody is reading. Stop and report the ` +
+      `count, or raise TYPESAFE_MAX_REQUESTS deliberately.`
     );
   }
   spent += 1;
+  if (WARN_EVERY > 0 && spent % WARN_EVERY === 0) {
+    process.stderr.write(`jev: ${spent} requests so far this process, ${inputTokens} input tokens.\n`);
+  }
+}
+
+/** One line per judgment, so a session can answer "what did that cost?" afterwards.
+    Never throws: telemetry must not be able to fail a call. */
+function recordSpend(model, questionCount, usage) {
+  const used = usage || {};
+  inputTokens += used.input_tokens || 0;
+  outputTokens += used.output_tokens || 0;
+  try {
+    mkdirSync(dirname(SPEND_LOG), { recursive: true });
+    appendFileSync(SPEND_LOG, JSON.stringify({
+      ts: new Date().toISOString(),
+      model,
+      questions: questionCount,
+      input_tokens: used.input_tokens ?? null,
+      output_tokens: used.output_tokens ?? null,
+      request_in_process: spent,
+    }) + "\n");
+  } catch {
+    /* a read-only or missing telemetry dir must not break a judgment */
+  }
 }
 
 const RETRYABLE = new Set([429, 529]);
@@ -106,10 +134,12 @@ async function request(path, { method = "GET", body } = {}) {
 
 export async function systemOne({ state, questions, model }) {
   chargeOne();
-  return request("/v1/systemone", {
+  const result = await request("/v1/systemone", {
     method: "POST",
     body: { state, model: model || DEFAULT_MODEL, questions },
   });
+  recordSpend(result?.model ?? (model || DEFAULT_MODEL), Object.keys(questions || {}).length, result?.usage);
+  return result;
 }
 
 export async function listModels() {
