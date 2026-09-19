@@ -61,8 +61,12 @@ Every `gate` in these files is a guess until it is measured. Before trusting one
 ## Cost
 
 One request per item, whatever the number of questions in the pack — that is why each
-pack stops at six. Before running a corpus, say how many requests it will take. Two
-hundred bookmarks is two hundred requests, and nobody should discover that afterwards.
+pack stops at six.
+
+Cost is not the constraint (owner, 2026-09-19): Jev is cheap and no budget limits it.
+State the request count anyway, before running a corpus. Two hundred bookmarks is two
+hundred requests, and nobody should discover that afterwards. Every judgment is logged
+to `~/.claude/docs/telemetry/jev-spend.jsonl`; `tools/spend.py` reports it per day.
 
 ## What a pack must never do
 
