@@ -53,11 +53,14 @@ export function validateQuestions(questions) {
   }
   const out = {};
   for (const [id, q] of Object.entries(questions)) {
+    if (id === "__proto__" || id === "constructor" || id === "prototype") {
+      throw new Error(`Question id \`${id}\` is reserved and cannot be used.`);
+    }
     if (!isPlainObject(q)) throw new Error(`Question \`${id}\` must be an object.`);
-    const build = BUILDERS[q.type];
-    if (!build) {
+    if (!Object.prototype.hasOwnProperty.call(BUILDERS, q.type)) {
       throw new Error(`Question \`${id}\` has type \`${q.type}\`; expected noul, choice or score.`);
     }
+    const build = BUILDERS[q.type];
     try {
       out[id] = build(q.instructions, q.criteria);
     } catch (err) {
