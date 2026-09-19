@@ -24,7 +24,10 @@ def api_key():
     return m.group(1) if m else None
 
 def git(repo, *args):
-    return subprocess.run(["git", "-C", repo, *args], capture_output=True, text=True).stdout
+    try:
+        return subprocess.run(["git", "-C", repo, *args], capture_output=True, text=True, timeout=15).stdout
+    except subprocess.TimeoutExpired:
+        return ""
 
 # Risk lives in how a file is USED, and none of that is visible in its own diff. Measured
 # 2026-09-19: without these fields every file in a 19-file change scored 0.30-0.62 blast
@@ -63,8 +66,13 @@ def referenced_by(repo, name):
                          capture_output=True, text=True, timeout=20).stdout
     return max(0, len([l for l in out.splitlines() if l.strip() and l.strip() != name]))
 
-def changed_files(repo, rng):
+def changed_files(repo, rng, max_files=None):
+    if git(repo, "rev-parse", "--is-inside-work-tree").strip() != "true":
+        print(f"merge-risk: could not read a repository at {repo}")
+        return None
     names = [l for l in git(repo, "diff", "--name-only", rng).splitlines() if l.strip()]
+    if max_files is not None and len(names) > max_files:
+        return [{"file": name} for name in names]
     out = []
     for name in names:
         stat = git(repo, "diff", "--numstat", rng, "--", name).split()
@@ -113,7 +121,9 @@ def main():
     ap.add_argument("--json")
     args = ap.parse_args()
 
-    files = changed_files(args.repo, args.range)
+    files = changed_files(args.repo, args.range, max_files=args.max_files)
+    if files is None:
+        return 0
     if not files:
         print("merge-risk: nothing changed in", args.range)
         return 0
@@ -136,13 +146,22 @@ def main():
     for o in out:
         if "error" in o:
             errors += 1; continue
-        a = o["answers"]["answers"]
-        tin += o["answers"]["usage"]["input_tokens"]; tout += o["answers"]["usage"]["output_tokens"]
-        rows.append({"file": o["file"], "added": o["added"], "removed": o["removed"],
-                     "blast": a["blast_radius"]["score"],
-                     "irreversible": a["irreversible_path"]["noul"],
-                     "behaviour": a["behaviour_change"]["noul"],
-                     "route": a["route"]["choice"]})
+        answers_obj = o.get("answers")
+        if not isinstance(answers_obj, dict) or "answers" not in answers_obj or "usage" not in answers_obj:
+            errors += 1; continue
+        a = answers_obj["answers"]
+        usage = answers_obj["usage"]
+        if not isinstance(a, dict) or not isinstance(usage, dict):
+            errors += 1; continue
+        try:
+            tin += usage["input_tokens"]; tout += usage["output_tokens"]
+            rows.append({"file": o["file"], "added": o["added"], "removed": o["removed"],
+                         "blast": a["blast_radius"]["score"],
+                         "irreversible": a["irreversible_path"]["noul"],
+                         "behaviour": a["behaviour_change"]["noul"],
+                         "route": a["route"]["choice"]})
+        except (KeyError, TypeError):
+            errors += 1; continue
     gates = PACK["thresholds"]
     rows.sort(key=lambda r: (-r["irreversible"], -r["blast"]))
     print()

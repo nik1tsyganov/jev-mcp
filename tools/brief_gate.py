@@ -113,7 +113,9 @@ def main():
     rows, failed, tokens = [], 0, [0, 0]
     for brief, ans, files in zip(briefs, answers, per_brief_files):
         if "error" in ans:
-            rows.append((brief, None, ["call failed: " + ans["error"]], files)); continue
+            failed += 1
+            rows.append((brief, None, ["call failed: " + ans["error"]], files))
+            continue
         a = ans["answers"]
         tokens[0] += ans["usage"]["input_tokens"]; tokens[1] += ans["usage"]["output_tokens"]
         notes = []

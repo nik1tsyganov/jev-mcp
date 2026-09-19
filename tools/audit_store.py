@@ -4,7 +4,7 @@
 Deterministic first: census, Windows paths, present-assertions, resolution. Jev only on
 what a script cannot settle, one request per reference, count announced before spending.
 """
-import argparse, json, os, sys, time, urllib.request, urllib.error
+import argparse, json, os, re, sys, time, urllib.request, urllib.error
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 
@@ -15,14 +15,20 @@ from skill_refs import collect, deterministic_findings  # noqa: E402
 PACK = json.load(open(os.path.join(HERE, "packs", "skill-store-stale-ref.json")))
 ENDPOINT = os.environ.get("TYPESAFE_BASE_URL", "https://api.typesafe.ai") + "/v1/systemone"
 GATE = PACK["thresholds"]["is_stale"]["gate"]
+ASSERTS_CURRENT = re.compile(r'^\s*>?\s*(?:present|installed|lives at|available)\b', re.I)
 
 def api_key():
-    import re
     k = os.environ.get("TYPESAFE_API_KEY")
     if k:
         return k
     path = os.path.expanduser("~/.config/typesafe/env.sh")
-    m = re.search(r'^\s*export\s+TYPESAFE_API_KEY=["\']?([^"\'\s]+)', open(path).read(), re.M)
+    if not os.path.isfile(path):
+        sys.exit(f"TYPESAFE_API_KEY unset and no export line in {path}")
+    try:
+        content = open(path).read()
+    except OSError:
+        sys.exit(f"TYPESAFE_API_KEY unset and no export line in {path}")
+    m = re.search(r'^\s*export\s+TYPESAFE_API_KEY=["\']?([^"\'\s]+)', content, re.M)
     if not m:
         sys.exit(f"TYPESAFE_API_KEY unset and no export line in {path}")
     return m.group(1)
@@ -37,8 +43,7 @@ def judge(key, r):
              "file_declares_archived": r["file_declares_archived"],
              "surrounding_text_says_absent": r["surrounding_text_says_absent"],
              "inside_code_block": r["inside_code_block"],
-             "line_asserts_current_state": r["text"].lstrip("> ").lower().startswith(
-                 ("present", "installed", "lives at", "available")) or " is archived at " in r["text"]}
+             "line_asserts_current_state": bool(ASSERTS_CURRENT.match(r["text"])) or " is archived at " in r["text"]}
     body = json.dumps({"state": state, "model": "jev-latest", "questions": PACK["questions"]}).encode()
     req = urllib.request.Request(ENDPOINT, data=body,
         headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
@@ -65,9 +70,12 @@ def main():
     refs = collect(args.store)
     paths = [r for r in refs if r["kind"] == "path"]
     counts = Counter(r["status"] for r in paths)
+    relatives = [r for r in refs if r["kind"] == "relative"]
+    rel_counts = Counter(r["status"] for r in relatives)
     print(f"store            : {args.store}")
     print(f"files with refs  : {len({r['file'] for r in refs})}")
     print(f"path references  : {len(paths)}  {dict(counts)}")
+    print(f"relative refs    : {len(relatives)}  {dict(rel_counts)}")
     print(f"url references   : {len({r['ref'] for r in refs if r['kind'] == 'url'})} unique (not judged here)")
 
     wrong_present = deterministic_findings(refs, args.store)
@@ -79,7 +87,8 @@ def main():
     print(f"  windows paths (previous host): {len(windows)} in {len({r['file'] for r in windows})} files")
 
     missing = [r for r in paths if r["status"] == "missing"]
-    seen, todo = set(), []
+    det_keys = {(r["file"], r["ref"]) for r in wrong_present}
+    seen, todo = set(det_keys), []
     for r in missing:
         k = (r["file"], r["ref"])
         if k not in seen:
