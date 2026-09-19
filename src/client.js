@@ -74,7 +74,21 @@ function chargeOne() {
 
 /** One line per judgment, so a session can answer "what did that cost?" afterwards.
     Never throws: telemetry must not be able to fail a call. */
-function recordSpend(model, questionCount, usage) {
+function summarise(answers) {
+  /* The gate has to be retunable later, so record what came back, not only the bill:
+     probabilities and confidence are what a false positive is reviewed against. */
+  const out = {};
+  for (const [id, a] of Object.entries(answers || {})) {
+    if (!a || typeof a !== "object") continue;
+    out[id] = a.type === "noul" ? { noul: a.noul }
+      : a.type === "choice" ? { choice: a.choice, confidence: a.confidence }
+      : a.type === "score" ? { score: a.score, confidence: a.confidence }
+      : { type: a.type };
+  }
+  return out;
+}
+
+function recordSpend(model, questionCount, usage, answers) {
   const used = usage || {};
   inputTokens += used.input_tokens || 0;
   outputTokens += used.output_tokens || 0;
@@ -87,6 +101,7 @@ function recordSpend(model, questionCount, usage) {
       input_tokens: used.input_tokens ?? null,
       output_tokens: used.output_tokens ?? null,
       request_in_process: spent,
+      answers: summarise(answers),
     }) + "\n");
   } catch {
     /* a read-only or missing telemetry dir must not break a judgment */
@@ -138,7 +153,7 @@ export async function systemOne({ state, questions, model }) {
     method: "POST",
     body: { state, model: model || DEFAULT_MODEL, questions },
   });
-  recordSpend(result?.model ?? (model || DEFAULT_MODEL), Object.keys(questions || {}).length, result?.usage);
+  recordSpend(result?.model ?? (model || DEFAULT_MODEL), Object.keys(questions || {}).length, result?.usage, result?.answers);
   return result;
 }
 

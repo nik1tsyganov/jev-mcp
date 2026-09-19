@@ -47,19 +47,22 @@
       "gate": 0.86,
       "above": "a human reads this file before it lands",
       "below": "skim",
-      "calibration": "CALIBRATED 2026-09-19 on 20 real file-diffs from ~/src/conclave, each READ and labelled by hand: 11 need a human read (production logic in gates, evidence and launch paths), 9 do not (tests, new test files, comment-only diffs). Perfect separation: read-required scored 0.92-2.25, the rest 0.02-0.80. A gate of 0.86 sits in the empty band and gives 0 errors out of 20. The previous gate of 2.0 was a guess and would have missed 9 of the 11. behaviour_change separates on the same set (mean 0.88 against 0.12) and is a usable second signal; the pack's own `route` answer caught 10 of 11 with no false alarms."
+      "calibration": "CALIBRATED 2026-09-19 on 20 real file-diffs from ~/src/conclave, each READ and labelled by hand: 11 need a human read (production logic in gates, evidence and launch paths), 9 do not (tests, new test files, comment-only diffs). Perfect separation: read-required scored 0.92-2.25, the rest 0.02-0.80. A gate of 0.86 sits in the empty band and gives 0 errors out of 20. The previous gate of 2.0 was a guess and would have missed 9 of the 11. behaviour_change separates on the same set (mean 0.88 against 0.12) and is a usable second signal; the pack's own `route` answer caught 10 of 11 with no false alarms.",
+      "calibrated_on_model": "jev-1.13.0"
     },
     "irreversible_path": {
       "gate": 0.4,
       "above": "a human reads this file before it lands, whatever its blast radius",
       "below": "use the blast radius",
-      "calibration": "CALIBRATED 2026-09-19 on 22 real file-diffs read and labelled by hand, drawn from droppy-code, conclave, yessirterm and this repo: 8 touching credentials or deletion, 14 not. Gate 0.40 gives 2 errors, both MISSES, no false alarms. The deterministic keyword flag that is fed into the state as `diff_touches` would be wrong on 7 of 22 by itself, including a test whose fixture contains `rm -rf /` to prove the addon system rejects it - the judgment scored that 0.17 and was right. The 2 misses are label drift on my side, not model error: I labelled 'touches credentials' as irreversible while the question asks whether a revert alone cannot undo it, and a keychain READ (0.13) and a trap deleting the script's own temp dir (0.05) are both reversible. The gate was not moved to absorb them."
+      "calibration": "CALIBRATED 2026-09-19 on 22 real file-diffs read and labelled by hand, drawn from droppy-code, conclave, yessirterm and this repo: 8 touching credentials or deletion, 14 not. Gate 0.40 gives 2 errors, both MISSES, no false alarms. The deterministic keyword flag that is fed into the state as `diff_touches` would be wrong on 7 of 22 by itself, including a test whose fixture contains `rm -rf /` to prove the addon system rejects it - the judgment scored that 0.17 and was right. The 2 misses are label drift on my side, not model error: I labelled 'touches credentials' as irreversible while the question asks whether a revert alone cannot undo it, and a keychain READ (0.13) and a trap deleting the script's own temp dir (0.05) are both reversible. The gate was not moved to absorb them.",
+      "calibrated_on_model": "jev-1.13.0"
     },
     "behaviour_change": {
       "gate": 0.5,
       "above": "treat as a functional change",
       "below": "treat as cosmetic",
-      "calibration": "Same 20-diff set, 2026-09-19: mean 0.88 on read-required against 0.12 on the rest; clean separation, no overlap."
+      "calibration": "Same 20-diff set, 2026-09-19: mean 0.88 on read-required against 0.12 on the rest; clean separation, no overlap.",
+      "calibrated_on_model": "jev-1.13.0"
     }
   },
   "notes": "This pack ranks and flags. It never approves a merge: the tests and the build gate that, and a judgment that says 'looks fine' is not a passing test. The blast_radius gate is the workhorse and is measured; irreversible_path was NOT the discriminator on that sample because none of the 20 diffs touched a destructive path, so its gate remains a guess. All three of this pack's gates are now measured: blast_radius 0.86 (0 errors on 20), behaviour_change 0.5 (clean separation on the same 20), irreversible_path 0.40 (2 errors on 22)."
