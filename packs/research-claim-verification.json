@@ -3,7 +3,7 @@
   "purpose": "Check whether a cited source really supports the claim made from it, before the claim is published.",
   "corpus": "One claim, paired with the excerpt of the source cited for it.",
   "state_schema": {
-    "claim": "the claim as it would appear in the report",
+    "claim": "ONE checkable assertion, not a sentence of prose. MEASURED 2026-09-19: 22 multi-clause sentences paired with real filesystem evidence scored 0.02-0.72 supported with no separation between true and false, because a one-line excerpt cannot entail a compound sentence. The same evidence with the atomic fact extracted scored 0.64-0.98 for true and 0.01-0.06 for false. Split a compound claim into its parts and ask once per part.",
     "source_excerpt": "the quoted passage the claim rests on",
     "source_url": "where the excerpt came from",
     "source_kind": "who produced it: the vendor being discussed, an independent lab, a news write-up, a forum post"
@@ -43,9 +43,10 @@
   },
   "thresholds": {
     "supported": {
-      "gate": 0.75,
+      "gate": 0.35,
       "above": "keep the citation",
-      "below": "find another source or cut the claim"
+      "below": "find another source or cut the claim",
+      "calibration": "CALIBRATED 2026-09-19 on 8 atomic claims checked against direct filesystem evidence, 5 true and 3 false: true scored 0.64-0.98, false 0.01-0.06, empty band 0.06-0.64, gate 0.35 gives 0 errors. The same 8 inside their original prose sentences gave no separation at all - see state_schema.claim. Small n; re-measure on a larger set before leaning on the exact number."
     },
     "overstated": {
       "gate": 0.5,
