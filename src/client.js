@@ -30,6 +30,17 @@ export function resolveApiKey() {
   return cachedKey;
 }
 
+/** Strips the key from any text before it can reach a log, a tool result or a user.
+ *  Measured 2026-09-19: an invalid header value made undici echo the whole
+ *  `Bearer <key>` back in err.message, and that message was interpolated into the
+ *  thrown Error. A credential must never be able to ride out on an error path. */
+function redact(text) {
+  const key = cachedKey || process.env.TYPESAFE_API_KEY;
+  let out = String(text);
+  if (key && key.length > 4) out = out.split(key).join("[redacted]");
+  return out.replace(/Bearer\s+\S+/g, "Bearer [redacted]");
+}
+
 const RETRYABLE = new Set([429, 529]);
 const MAX_ATTEMPTS = 3;
 const BACKOFF_BASE_MS = 500;
@@ -55,14 +66,14 @@ async function request(path, { method = "GET", body } = {}) {
       });
     } catch (err) {
       // Network fault or the 30s abort: worth one more attempt.
-      lastError = new Error(`Request to ${path} failed: ${err.message}`);
+      lastError = new Error(redact(`Request to ${path} failed: ${err.message}`));
       continue;
     } finally {
       clearTimeout(timer);
     }
     if (res.ok) return await res.json();
     const text = (await res.text()).slice(0, 500);
-    const httpError = new Error(`HTTP ${res.status}: ${text}`);
+    const httpError = new Error(redact(`HTTP ${res.status}: ${text}`));
     if (!RETRYABLE.has(res.status)) throw httpError;
     lastError = httpError;
   }
