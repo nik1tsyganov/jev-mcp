@@ -53,7 +53,8 @@
     "self_contained": {
       "gate": 2.5,
       "above": "dispatch",
-      "below": "rewrite the brief before dispatching"
+      "below": "rewrite the brief before dispatching",
+      "calibration": "CALIBRATED AND FOUND NON-PREDICTIVE, 2026-09-19. 15 real briefs from one session, labelled by OUTCOME (did the head's output need a correction traceable to the brief): 7 yes, 8 no. self_contained mean 2.49 for the failures and 2.53 for the successes; no gate separates them, and the highest `ambiguous` score belonged to a brief that was fine. The reason is structural: none of the 7 failures was vagueness. Two briefs contained a factually WRONG instruction (a command that fails on the installed Node, a heuristic that produced 84 false positives), one omitted a requirement, three omitted context the lead had and did not share (renames landing in other files at the same time), and one scoped a fix to a sentence when the defect spanned the line. A judgment over the brief text cannot see any of those, because the information needed to detect them is not in the brief."
     },
     "ambiguous": {
       "gate": 0.5,
@@ -67,5 +68,5 @@
       "note": "Compute this in code when you have both file lists: it is a set intersection. Measured 2026-09-19 on 11 real briefs, the model answered 0.44-0.97 while the true intersection was empty, because the state carried basenames and SKILL.md in two directories reads as one file. Ask the question only when the file lists cannot be extracted."
     }
   },
-  "notes": "Batch all six questions into one request per brief. For a batch of six briefs that is six requests, which is cheap next to six agents doing the wrong work. The `files_named` field must hold the files the brief tells the agent to CREATE or EDIT, not every file it mentions. Counting mentions, and counting files named in prohibitions (\"do not touch package.json\"), put four briefs on a collision they did not have."
+  "notes": "Batch all six questions into one request per brief. For a batch of six briefs that is six requests, which is cheap next to six agents doing the wrong work. The `files_named` field must hold the files the brief tells the agent to CREATE or EDIT, not every file it mentions. Counting mentions, and counting files named in prohibitions (\"do not touch package.json\"), put four briefs on a collision they did not have. What this pack CAN catch, measured on the same session: a brief that names no files and states no acceptance criteria, and a task that should not have been delegated at all \u2014 both probe briefs were correctly held. What it CANNOT catch is a confidently wrong brief or one missing context only the lead has. For those the mitigation is deterministic and belongs to the lead: before dispatch, list what changed since the brief was drafted, and verify any command the brief tells an agent to run."
 }

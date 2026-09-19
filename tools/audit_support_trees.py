@@ -100,6 +100,28 @@ def has_home_expansion(content):
 EXCLUDE_NAMES = ("lesson-index.json",)
 EXCLUDE_PAT = re.compile(r"(\d{4}-\d{2}-\d{2})|/reports/|/battery/|/fixtures|AUDIT|GAP-LIST|GAP-FIX")
 
+# A path the document itself calls absent is a correct record, not a defect. The store
+# auditor has had this since the 43-to-7 pass; without it here, 55 of 91 "missing paths"
+# were lines that already say the target is gone.
+DISCLOSES = ("not present", "does not exist", "did not travel", "is absent", "no longer",
+             "not wired", "not on this mac", "is not a real", "absent on this mac",
+             "never arrived", "no equivalent", "renamed", "was replaced")
+DISCLOSURE_BEFORE = 6
+DISCLOSURE_AFTER = 3
+
+def disclosed_near(lines, idx):
+    lo = max(0, idx - DISCLOSURE_BEFORE)
+    window = " ".join(lines[lo:idx + DISCLOSURE_AFTER]).lower()
+    return any(k in window for k in DISCLOSES)
+
+# sync-map.json states presence per entry. An entry carrying presentOnThisMac:false has
+# already been judged; re-reporting it is noise.
+def declared_absent(lines, idx):
+    lo = max(0, idx - 3)
+    window = " ".join(lines[lo:idx + 6]).lower().replace(" ", "").replace("\n", "")
+    return '"presentonthismac":false' in window
+
+
 def is_excluded(path):
     return os.path.basename(path) in EXCLUDE_NAMES or bool(EXCLUDE_PAT.search(path))
 
@@ -151,6 +173,7 @@ def collect(roots=None):
     missing_path = []
     unexpanded_tilde = []
     truncated_path = []
+    suppressed = 0
 
     for file_path in find_files(roots):
         disp_file = normalize_display_path(file_path)
@@ -166,6 +189,7 @@ def collect(roots=None):
 
         for line_num, line in enumerate(lines, 1):
             redacted = redact_line(line)
+            idx = line_num - 1
 
             # Class 1: WINDOWS HOME
             if WINDOWS_HOME_RE.search(line):
@@ -191,6 +215,11 @@ def collect(roots=None):
                 # Class 3: MISSING PATH
                 st = check_path_status(c)
                 if st == "missing":
+                    # Only this class is about absence, so only this class is silenced
+                    # by a nearby statement that the target is absent.
+                    if disclosed_near(lines, idx) or declared_absent(lines, idx):
+                        suppressed += 1
+                        continue
                     line_has_missing = True
                 elif st == "truncated":
                     line_has_truncated = True
@@ -213,6 +242,7 @@ def collect(roots=None):
         "missing_path": missing_path,
         "unexpanded_tilde": unexpanded_tilde,
         "truncated_path": truncated_path,
+        "suppressed_disclosed": suppressed,
     }
 
 
