@@ -44,16 +44,23 @@
   },
   "thresholds": {
     "blast_radius": {
-      "gate": 2.0,
-      "above": "require a human read",
-      "below": "skim"
+      "gate": 0.86,
+      "above": "a human reads this file before it lands",
+      "below": "skim",
+      "calibration": "CALIBRATED 2026-09-19 on 20 real file-diffs from ~/src/conclave, each READ and labelled by hand: 11 need a human read (production logic in gates, evidence and launch paths), 9 do not (tests, new test files, comment-only diffs). Perfect separation: read-required scored 0.92-2.25, the rest 0.02-0.80. A gate of 0.86 sits in the empty band and gives 0 errors out of 20. The previous gate of 2.0 was a guess and would have missed 9 of the 11. behaviour_change separates on the same set (mean 0.88 against 0.12) and is a usable second signal; the pack's own `route` answer caught 10 of 11 with no false alarms."
     },
     "irreversible_path": {
       "gate": 0.4,
       "above": "require a human read regardless of size",
       "below": "use the blast radius",
       "calibration": "ATTEMPTED AND REJECTED 2026-09-19. 24 real diffs were labelled by a regex proxy (does the diff text contain removeItem, rm -rf, keychain, token, migrat, fetch(...), push --force). No gate separated the classes: label-1 items scored 0.03-0.36 and label-0 items 0.02-0.43. Inspection showed the LABEL was wrong, not the judgment - a README that mentions the word token is not an irreversible change, and the model scoring it 0.05 was right. A proxy label cannot calibrate a judgment: the keyword match is already computed deterministically and fed in as `diff_touches`, so asking the model to reproduce it measures nothing. A real calibration needs 20 diffs read and labelled by hand. Until then this gate is a guess."
+    },
+    "behaviour_change": {
+      "gate": 0.5,
+      "above": "treat as a functional change",
+      "below": "treat as cosmetic",
+      "calibration": "Same 20-diff set, 2026-09-19: mean 0.88 on read-required against 0.12 on the rest; clean separation, no overlap."
     }
   },
-  "notes": "This pack ranks and flags. It never approves a merge: the tests and the build gate that, and a judgment that says 'looks fine' is not a passing test."
+  "notes": "This pack ranks and flags. It never approves a merge: the tests and the build gate that, and a judgment that says 'looks fine' is not a passing test. The blast_radius gate is the workhorse and is measured; irreversible_path was NOT the discriminator on that sample because none of the 20 diffs touched a destructive path, so its gate remains a guess."
 }
