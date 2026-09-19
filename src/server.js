@@ -122,6 +122,9 @@ const TOOLS = [
 ];
 
 function guard(state, questions) {
+  if (state === undefined || state === null || (typeof state !== "string" && typeof state !== "object")) {
+    throw new Error("The state is required and must be a string, object or array.");
+  }
   const count = Object.keys(questions).length;
   if (count > MAX_QUESTIONS_PER_CALL) {
     throw new Error(

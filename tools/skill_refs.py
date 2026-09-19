@@ -29,13 +29,35 @@ def _fenced_lines(lines):
             marks.add(i)
     return marks
 
+def _looks_like_path(span, first):
+    clean = span.rstrip('.,;:)')
+    if os.path.exists(os.path.expanduser(clean)):
+        return True
+    parts = span.split()
+    if len(parts) <= 1:
+        return True
+    if any(p.startswith('-') for p in parts[1:]):
+        return False
+    first_clean = first.rstrip('.,;:)')
+    if os.path.isfile(os.path.expanduser(first_clean)):
+        return False
+    if any('/' in p for p in parts[1:]):
+        return True
+    if re.search(r'\.[a-zA-Z0-9_-]+$', parts[-1]) or any(ch in span for ch in '<>*{}/'):
+        return True
+    return False
+
 def _candidates(line):
     out = []
     for c in TICK.findall(line):
         c = c.strip()
-        # A backticked span can be `<path> <subcommand>`; only the first token is a path.
         first = c.split()[0] if c.split() else ""
-        if PATHISH.match(first):
+        if PATHISH.match(c):
+            if _looks_like_path(c, first):
+                out.append(c)
+            elif PATHISH.match(first):
+                out.append(first)
+        elif PATHISH.match(first):
             out.append(first)
     out += [m.group(1) for m in BARE.finditer(line)]
     return out
@@ -48,14 +70,18 @@ def status(ref):
     if os.path.exists(target):
         return "exists"
     # `{a,b,c}` is a shell brace expansion, not a path.
-    if any(ch in ref for ch in "<>*{}") or ref.endswith("/"):
+    if any(ch in ref for ch in "<>*{}"):
         return "placeholder"
     parent, base = os.path.dirname(target), os.path.basename(target)
-    if base and os.path.isdir(parent) and any(n.startswith(base) for n in os.listdir(parent)):
-        return "truncated"
+    try:
+        if base and os.path.isdir(parent) and any(n.startswith(base) for n in os.listdir(parent)):
+            return "truncated"
+    except OSError:
+        pass
     return "missing"
 
 def collect(store):
+    store = os.path.expanduser(store)
     files = sorted(glob.glob(os.path.join(store, "*/SKILL.md"))) + \
             sorted(glob.glob(os.path.join(store, "*/references/*")))
     refs = []
@@ -85,15 +111,15 @@ def collect(store):
                              "surrounding_text_says_absent": discloses,
                              "inside_code_block": i in fenced})
             for m in REL.finditer(line):
-                rel = m.group(1)
+                rel_ref = m.group(1)
                 # `references/x.md` is written from the SKILL ROOT even when the citing
                 # file itself lives under references/. `./x` and `../x` are relative to
                 # the citing file.
-                skill_root = os.path.join(store, os.path.relpath(path, store).split(os.sep)[0])
-                anchor = os.path.dirname(path) if rel.startswith(".") else skill_root
-                target = os.path.normpath(os.path.join(anchor, rel))
-                refs.append({"file": os.path.relpath(path, store), "line": i, "kind": "relative",
-                             "ref": rel, "text": line.strip()[:400],
+                skill_root = os.path.join(store, rel.split(os.sep)[0])
+                anchor = os.path.dirname(path) if rel_ref.startswith(".") else skill_root
+                target = os.path.normpath(os.path.join(anchor, rel_ref))
+                refs.append({"file": rel, "line": i, "kind": "relative",
+                             "ref": rel_ref, "text": line.strip()[:400],
                              "status": "exists" if os.path.exists(target) else "missing",
                              "resolved": target,
                              "file_declares_archived": archived,
@@ -135,7 +161,7 @@ def deterministic_findings(refs, store):
     """Every reference on a present-asserting line whose target does not exist."""
     out = []
     for r in refs:
-        if r["kind"] != "path" or r["status"] in ("exists", "placeholder"):
+        if r["kind"] not in ("path", "relative") or r["status"] in ("exists", "placeholder"):
             continue
         if ASSERTS_PRESENT.match(r["text"]) or " is archived at " in r["text"]:
             out.append(r)
