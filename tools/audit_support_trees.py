@@ -72,6 +72,15 @@ def check_path_status(ref, line=None):
     """Categorize a path reference: exists, placeholder, truncated, or missing."""
     if any(ch in ref for ch in "<>*{}"):
         return "placeholder"
+    # A date or time template in a path is a pattern, not a location.
+    if re.search(r"YYYY-MM-DD|yyyy-mm-dd|<date>|\bHH:MM\b", ref):
+        return "placeholder"
+    # `file.md#anchor` points INTO a file. The anchor is not part of the path, and
+    # keeping it made 13 sync-map entries read as missing files that all exist.
+    if "#" in ref:
+        ref = ref.split("#", 1)[0]
+        if not ref:
+            return "placeholder"
     target = os.path.expanduser(ref)
     if os.path.exists(target):
         return "exists"
