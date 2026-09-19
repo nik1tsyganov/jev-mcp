@@ -51,7 +51,8 @@
     "irreversible_path": {
       "gate": 0.4,
       "above": "require a human read regardless of size",
-      "below": "use the blast radius"
+      "below": "use the blast radius",
+      "calibration": "ATTEMPTED AND REJECTED 2026-09-19. 24 real diffs were labelled by a regex proxy (does the diff text contain removeItem, rm -rf, keychain, token, migrat, fetch(...), push --force). No gate separated the classes: label-1 items scored 0.03-0.36 and label-0 items 0.02-0.43. Inspection showed the LABEL was wrong, not the judgment - a README that mentions the word token is not an irreversible change, and the model scoring it 0.05 was right. A proxy label cannot calibrate a judgment: the keyword match is already computed deterministically and fed in as `diff_touches`, so asking the model to reproduce it measures nothing. A real calibration needs 20 diffs read and labelled by hand. Until then this gate is a guess."
     }
   },
   "notes": "This pack ranks and flags. It never approves a merge: the tests and the build gate that, and a judgment that says 'looks fine' is not a passing test."
