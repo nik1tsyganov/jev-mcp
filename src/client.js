@@ -41,6 +41,30 @@ function redact(text) {
   return out.replace(/Bearer\s+\S+/g, "Bearer [redacted]");
 }
 
+/* Spend cap. The five tools sit in every session on four CLIs, and nothing on the agent
+   side limits how many times an agent calls them: one call is capped at 32 questions,
+   but a loop over a corpus is unbounded. This counts judgment requests for the life of
+   the process and refuses past the cap with an instruction, not a silent stop.
+   Raise it deliberately with TYPESAFE_MAX_REQUESTS. `listModels` is not counted: it
+   spends no judgment tokens. */
+const MAX_REQUESTS = Number(process.env.TYPESAFE_MAX_REQUESTS || 200);
+let spent = 0;
+
+export function spendSoFar() {
+  return { requests: spent, cap: MAX_REQUESTS };
+}
+
+function chargeOne() {
+  if (spent >= MAX_REQUESTS) {
+    throw new Error(
+      `Spend cap reached: ${spent} judgment requests in this process, cap ${MAX_REQUESTS}. ` +
+      `Stop and report the count, or raise TYPESAFE_MAX_REQUESTS deliberately. ` +
+      `A corpus pass should state its request count before it starts.`
+    );
+  }
+  spent += 1;
+}
+
 const RETRYABLE = new Set([429, 529]);
 const MAX_ATTEMPTS = 3;
 const BACKOFF_BASE_MS = 500;
@@ -81,6 +105,7 @@ async function request(path, { method = "GET", body } = {}) {
 }
 
 export async function systemOne({ state, questions, model }) {
+  chargeOne();
   return request("/v1/systemone", {
     method: "POST",
     body: { state, model: model || DEFAULT_MODEL, questions },

@@ -85,3 +85,29 @@ rename landing in another file at the same moment). Nothing in the brief text re
 those, so no judgment over that text can find them. Before dispatch, the lead checks
 both by hand: run any command the brief prescribes, and write down what has changed
 since the brief was drafted.
+
+## `bookmark_triage.py` — route a week of saved posts
+
+    python3 tools/bookmark_triage.py posts.json          # prints the request count, spends nothing
+    python3 tools/bookmark_triage.py posts.json --run
+
+Input is a JSON array of `{author, text, posted_at, links, engagement}`. The browser
+step is deliberately manual: the signed-in session lives in a real Chrome profile, and
+an unattended scrape of a logged-in account is not something a tool should start by
+itself.
+
+It acts on the pack's `route` answer and prints `durable_technique` only as context,
+because route measured better on this corpus. It flags a tie — top option under 0.5, or
+under 0.10 clear of the second — and sends those to you. On the owner's 22 real posts:
+8 skill-intake, 4 vault-note, 6 read-later, 4 drop, 10 ties.
+
+It warns when a post still contains "Show more", because the judgement is then about
+the preview rather than the post.
+
+## Spending
+
+`src/client.js` counts judgment requests for the life of the process and refuses past
+200. Raise it deliberately with `TYPESAFE_MAX_REQUESTS`. `jev_models` is not counted.
+The cap covers everything that goes through the MCP server. The Python tools in this
+directory call the API directly and are NOT covered; each states its request count
+before spending and requires `--run`.
