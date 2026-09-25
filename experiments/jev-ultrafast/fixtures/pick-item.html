@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Supply depot</title>
+<style>
+  body { font-family: sans-serif; margin: 24px; }
+  .item { display: block; margin: 4px 0; padding: 6px 10px; }
+  #cover-wrap { position: relative; display: inline-block; margin-top: 12px; }
+  #cover { position: absolute; inset: 0; background: rgba(255,255,255,0.01); }
+  #status { margin-top: 16px; font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>Supply depot</h1>
+<p>Select the requested item. Only one selection is accepted.</p>
+<div id="items">
+  <button class="item" data-item="kestrel">Kestrel — fast courier drone</button>
+  <button class="item" data-item="merlin">Merlin — trainer glider</button>
+  <button class="item" data-item="osprey">Osprey — heavy lifter</button>
+  <button class="item" data-item="harrier">Harrier — survey plane</button>
+  <button class="item" data-item="kite">Kite — weather probe</button>
+</div>
+<button id="retired" disabled>Condor — retired</button>
+<button id="limited" aria-disabled="true">Falcon — restricted</button>
+<div id="cover-wrap">
+  <button id="covered">Sparrow — showroom only</button>
+  <div id="cover" title="display cover"></div>
+</div>
+<p id="status" role="status"></p>
+<script>
+window.__trial = { expected: "kestrel", selected: null, complete: false, errors: [], log: [] };
+const t = window.__trial;
+const status = document.getElementById("status");
+// Delegated: a clone-replaced node (stale-node probe) still records correctly.
+document.getElementById("items").addEventListener("click", e => {
+  const b = e.target.closest(".item");
+  if (!b) return;
+  t.log.push({ type: "click", item: b.dataset.item });
+  if (b.dataset.item === t.expected) {
+    t.selected = b.dataset.item;
+    t.complete = true;
+    b.setAttribute("aria-pressed", "true");
+    status.textContent = "Selected: " + b.textContent;
+  } else {
+    t.errors.push({ type: "wrong_item", item: b.dataset.item });
+    status.textContent = "Not requested: " + b.textContent;
+  }
+});
+document.getElementById("limited").addEventListener("click", () =>
+  t.errors.push({ type: "aria_disabled_clicked" }));
+document.getElementById("cover").addEventListener("click", () =>
+  t.errors.push({ type: "cover_clicked" }));
+document.getElementById("covered").addEventListener("click", () =>
+  t.errors.push({ type: "covered_clicked" }));
+</script>
+</body>
+</html>

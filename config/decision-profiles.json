@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "defaultProfile": "technical-bookmark-topic-v2",
+  "profiles": {
+    "technical-bookmark-topic-v1": {
+      "purpose": "low_risk_classification",
+      "checkpoint": "aac6fef/laya-mlx",
+      "revision": "047678560251f28113ee8f5df4be82102c7bf336",
+      "maxQuestions": 1,
+      "maxOptions": 4,
+      "maxStateChars": 2000,
+      "enabled": true,
+      "adoptionMode": "owner_override",
+      "minSelectedProbability": 0.5,
+      "qualificationStatus": "FAILED",
+      "ownerOverride": {
+        "requestedAt": "2026-09-21",
+        "instruction": "Lets use combination; configure all profiles",
+        "reason": "Owner selected combination after reviewing failed qualification results"
+      },
+      "runtime": {
+        "python": "~/.local/scratch/laya-evaluation/venv/bin/python",
+        "modelPath": "~/.local/scratch/laya-evaluation/hf/hub/models--aac6fef--laya-mlx/snapshots/047678560251f28113ee8f5df4be82102c7bf336",
+        "timeoutMs": 30000,
+        "maxQueue": 8
+      },
+      "evidence": {
+        "path": "docs/evidence/technical-bookmark-topic-v1.json",
+        "sha256": "7137a1880f441659ebccecea3f6fad99a13971309448001f4e8db85d72821c97"
+      },
+      "questionsHash": "ae65041f21091d170bf959062e096e47171aa02ce1ee0b61afb54e4cfb222b84"
+    },
+    "technical-bookmark-topic-v2": {
+      "purpose": "low_risk_classification",
+      "checkpoint": "aac6fef/laya-typed-decisions-mlx",
+      "revision": "28416e78cb26a239a4eabaa2e084904ec5e6cacb",
+      "maxQuestions": 1,
+      "maxOptions": 4,
+      "maxStateChars": 2000,
+      "enabled": true,
+      "adoptionMode": "owner_override",
+      "minSelectedProbability": 0.4,
+      "qualificationStatus": "FAILED",
+      "ownerOverride": {
+        "requestedAt": "2026-09-21",
+        "instruction": "Lets use combination; configure all profiles",
+        "reason": "Owner selected combination after reviewing failed qualification results"
+      },
+      "runtime": {
+        "python": "~/.local/scratch/laya-evaluation/venv/bin/python",
+        "modelPath": "~/.local/scratch/laya-evaluation/hf/hub/models--aac6fef--laya-typed-decisions-mlx/snapshots/28416e78cb26a239a4eabaa2e084904ec5e6cacb",
+        "timeoutMs": 30000,
+        "maxQueue": 8
+      },
+      "questionsHash": "ae65041f21091d170bf959062e096e47171aa02ce1ee0b61afb54e4cfb222b84",
+      "evidence": {
+        "path": "docs/evidence/technical-bookmark-topic-v2.json",
+        "sha256": "953a7a71ea77d90c909f87a2a249f08e7a1bccf49b9a5fe7bc068e7bc072438a"
+      }
+    }
+  }
+}

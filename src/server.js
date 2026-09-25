@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -8,6 +8,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 
 import { DEFAULT_MODEL, listModels, systemOne } from "./client.js";
+import { browserActionTool, createBrowserDecision } from "./browser-decision.js";
 import { choice, noul, score, validateQuestions } from "./questions.js";
 
 // Every call spends a real balance, so a runaway agent is capped here rather than at the API.
@@ -23,33 +24,40 @@ const STATE_SCHEMA = {
   type: ["string", "object", "array"],
 };
 
-const TOOLS = [
+const QUESTIONS_SCHEMA = {
+  type: "object",
+  description:
+    "Map of your own ids to question objects. Each has type (noul|choice|score), instructions, and criteria as required by the type. Ids are for your code and are not sent to the model.",
+  additionalProperties: {
+    type: "object",
+    properties: {
+      type: { type: "string", enum: ["noul", "choice", "score"] },
+      instructions: { type: "string" },
+      criteria: {
+        description:
+          "noul: optional object with keys true/false. choice: required object of option name to description. score: required array of at least two ordered level labels.",
+      },
+    },
+    required: ["type", "instructions"],
+  },
+};
+
+const MODEL_SCHEMA = {
+  type: "string",
+  description: `Jev model id. Defaults to ${DEFAULT_MODEL}.`,
+};
+
+export const TOOLS = [
   {
     name: "jev_ask",
     description:
-      "Ask Jev several typed questions about one state in a single request. Prefer this tool: one request answers many questions, and batching is what keeps a decision pass cheap. Returns the answers, the resolved model and the token usage.",
+      "Ask several typed questions in one TypeSafe Jev request. Batch questions that read the same state. Returns answers, the resolved model and token usage.",
     inputSchema: {
       type: "object",
       properties: {
         state: STATE_SCHEMA,
-        questions: {
-          type: "object",
-          description:
-            "Map of your own ids to question objects. Each has type (noul|choice|score), instructions, and criteria as required by the type. Ids are for your code and are not sent to the model.",
-          additionalProperties: {
-            type: "object",
-            properties: {
-              type: { type: "string", enum: ["noul", "choice", "score"] },
-              instructions: { type: "string" },
-              criteria: {
-                description:
-                  "noul: optional object with keys true/false. choice: required object of option name to description. score: required array of at least two ordered level labels.",
-              },
-            },
-            required: ["type", "instructions"],
-          },
-        },
-        model: { type: "string", description: `Model id. Defaults to ${DEFAULT_MODEL}.` },
+        questions: QUESTIONS_SCHEMA,
+        model: MODEL_SCHEMA,
       },
       required: ["state", "questions"],
     },
@@ -57,7 +65,7 @@ const TOOLS = [
   {
     name: "jev_noul",
     description:
-      "One yes/no judgment about a state, returned as a probability between 0 and 1. Use when code will threshold the number. There is no confidence field on a noul answer: the probability is the answer.",
+      "Ask TypeSafe Jev for one yes/no judgment, returned as a probability between 0 and 1. Use when code will threshold the number. There is no confidence field on a noul answer: the probability is the answer. Use jev_ask to batch several questions.",
     inputSchema: {
       type: "object",
       properties: {
@@ -69,7 +77,7 @@ const TOOLS = [
           properties: { true: { type: "string" }, false: { type: "string" } },
           additionalProperties: false,
         },
-        model: { type: "string" },
+        model: MODEL_SCHEMA,
       },
       required: ["state", "instructions"],
     },
@@ -77,7 +85,7 @@ const TOOLS = [
   {
     name: "jev_choice",
     description:
-      "Route a state to one of several named options. Returns the chosen option, a probability per option and a confidence. Use for routing, classification and triage.",
+      "Ask TypeSafe Jev to choose one of several named options. Returns the chosen option, a probability per option and a confidence. Use jev_ask to batch several questions.",
     inputSchema: {
       type: "object",
       properties: {
@@ -89,7 +97,7 @@ const TOOLS = [
           minProperties: 1,
           additionalProperties: { type: ["string", "null"] },
         },
-        model: { type: "string" },
+        model: MODEL_SCHEMA,
       },
       required: ["state", "instructions", "criteria"],
     },
@@ -97,7 +105,7 @@ const TOOLS = [
   {
     name: "jev_score",
     description:
-      "Grade a state on an ordered scale. Returns a probability-weighted score that may land between levels, the legend, a probability per level and a confidence. Use for quality, severity and risk grading.",
+      "Ask TypeSafe Jev to grade a state on an ordered scale. Returns a probability-weighted score that may land between levels, the legend, a probability per level and a confidence. Use jev_ask to batch several questions.",
     inputSchema: {
       type: "object",
       properties: {
@@ -109,16 +117,17 @@ const TOOLS = [
           items: { type: "string" },
           minItems: 2,
         },
-        model: { type: "string" },
+        model: MODEL_SCHEMA,
       },
       required: ["state", "instructions", "criteria"],
     },
   },
   {
     name: "jev_models",
-    description: "List the models the TypeSafe account can use. Costs no judgment tokens.",
+    description: "List the TypeSafe Jev models the account can use. Costs no judgment tokens.",
     inputSchema: { type: "object", properties: {} },
   },
+  browserActionTool,
 ];
 
 function guard(state, questions) {
@@ -137,29 +146,39 @@ function guard(state, questions) {
   }
 }
 
-async function ask({ state, questions, model }) {
-  const validated = validateQuestions(questions);
-  guard(state, validated);
-  const result = await systemOne({ state, questions: validated, model });
-  return { model: result.model, answers: result.answers, usage: result.usage };
+export function createToolRunner({ client = { systemOne, listModels } } = {}) {
+
+  async function ask({ state, questions, model }) {
+    const validated = validateQuestions(questions);
+    guard(state, validated);
+    return client.systemOne({ state, questions: validated, model });
+  }
+
+  const browserDecision = createBrowserDecision({ ask });
+
+  async function runTool(name, args = {}) {
+    switch (name) {
+      case "jev_ask":
+        return ask(args);
+      case "jev_noul":
+        return ask({ ...args, questions: { answer: noul(args.instructions, args.criteria) } });
+      case "jev_choice":
+        return ask({ ...args, questions: { answer: choice(args.instructions, args.criteria) } });
+      case "jev_score":
+        return ask({ ...args, questions: { answer: score(args.instructions, args.criteria) } });
+      case "jev_models":
+        return client.listModels();
+      case "decision_browser_action":
+        return browserDecision(args);
+      default:
+        throw new Error(`Unknown tool \`${name}\`.`);
+    }
+  }
+
+  return { runTool };
 }
 
-async function runTool(name, args = {}) {
-  switch (name) {
-    case "jev_ask":
-      return ask(args);
-    case "jev_noul":
-      return ask({ ...args, questions: { answer: noul(args.instructions, args.criteria) } });
-    case "jev_choice":
-      return ask({ ...args, questions: { answer: choice(args.instructions, args.criteria) } });
-    case "jev_score":
-      return ask({ ...args, questions: { answer: score(args.instructions, args.criteria) } });
-    case "jev_models":
-      return listModels();
-    default:
-      throw new Error(`Unknown tool \`${name}\`.`);
-  }
-}
+const runner = createToolRunner();
 
 const server = new Server({ name: "jev", version }, { capabilities: { tools: {} } });
 
@@ -167,11 +186,24 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }))
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
-    const result = await runTool(request.params.name, request.params.arguments ?? {});
+    const result = await runner.runTool(request.params.name, request.params.arguments ?? {});
     return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     return { content: [{ type: "text", text: err.message }], isError: true };
   }
 });
 
-await server.connect(new StdioServerTransport());
+// Only a direct `node src/server.js` run opens the stdio transport; importing
+// this module (tests) must not take over stdin.
+function isMainModule() {
+  if (!process.argv[1]) return false;
+  try {
+    return realpathSync(process.argv[1]) === fileURLToPath(import.meta.url);
+  } catch {
+    return false;
+  }
+}
+
+if (isMainModule()) {
+  await server.connect(new StdioServerTransport());
+}

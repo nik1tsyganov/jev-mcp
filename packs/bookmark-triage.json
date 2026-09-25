@@ -53,7 +53,9 @@
       "above": "keep for routing",
       "below": "drop",
       "calibration": "CALIBRATED 2026-09-19 on the owner's 22 real saved X posts, labelled by reading: 17 carry a durable technique, 5 do not. WEAK SIGNAL: means separate (0.52 against 0.16) but the ranges overlap badly - durable items run 0.11-0.91 and non-durable 0.05-0.31. The best gate, 0.11, keeps all 17 and lets 2 of the 5 through; any gate high enough to catch those 2 discards genuinely useful posts. Use this question to drop the obvious floor only. LIMIT: 10 of the 22 posts were truncated previews ending in 'Show more', which is exactly the condition this pack's own notes warn about, so the scores are partly judgements about previews.",
-      "calibrated_on_model": "jev-1.13.0"
+      "calibrated_on_model": "jev-1.13.0",
+      "validation": "in-sample only; fit and evaluated on the same hand-read set, no held-out split",
+      "interval": "point estimate; no confidence bound computed"
     },
     "depth": {
       "gate": 1.5,

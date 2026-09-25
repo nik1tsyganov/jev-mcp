@@ -1,0 +1,173 @@
+{
+  "status": "FAILED",
+  "profileId": "technical-bookmark-topic-v1",
+  "selectedThreshold": 0.5,
+  "totalHoldoutCount": 240,
+  "metrics": {
+    "sampleCount": 131,
+    "acceptedAccuracy": 0.9694656488549618,
+    "coverage": 0.5458333333333333,
+    "accuracyDeltaCI": {
+      "n": 131,
+      "meanDiff": -0.007633587786259542,
+      "ci95": [
+        -0.04580152671755725,
+        0.030534351145038167
+      ]
+    },
+    "groupAccuracyDeltaCI": {
+      "software_development": {
+        "n": 52,
+        "meanDiff": 0,
+        "ci95": [
+          0,
+          0
+        ]
+      },
+      "machine_learning": {
+        "n": 19,
+        "meanDiff": -0.10526315789473684,
+        "ci95": [
+          -0.2631578947368421,
+          0
+        ]
+      },
+      "computer_hardware": {
+        "n": 25,
+        "meanDiff": 0.08,
+        "ci95": [
+          -0.08,
+          0.24
+        ]
+      },
+      "other": {
+        "n": 35,
+        "meanDiff": -0.02857142857142857,
+        "ci95": [
+          -0.08571428571428572,
+          0
+        ]
+      }
+    },
+    "groupSampleCounts": {
+      "software_development": 52,
+      "machine_learning": 19,
+      "computer_hardware": 25,
+      "other": 35
+    },
+    "groupAcceptedAccuracy": {
+      "software_development": 1,
+      "machine_learning": 0.8947368421052632,
+      "computer_hardware": 0.96,
+      "other": 0.9714285714285714
+    },
+    "localFullAccuracy": 0.8416666666666667,
+    "jevFullAccuracy": 0.9666666666666667,
+    "cascadeAccuracy": 0.9625,
+    "latencyRatio": 0.029401437261314233,
+    "errorCount": 0,
+    "schemaErrorCount": 0,
+    "localCheckpoint": "aac6fef/laya-mlx",
+    "localRevision": "047678560251f28113ee8f5df4be82102c7bf336",
+    "localResolvedModel": "~/.local/scratch/laya-evaluation/hf/hub/models--aac6fef--laya-mlx/snapshots/047678560251f28113ee8f5df4be82102c7bf336",
+    "resolvedJevModel": "jev-1.13.0"
+  },
+  "gates": [
+    {
+      "name": "errors",
+      "pass": true,
+      "severity": "fail",
+      "detail": "0 error record(s)"
+    },
+    {
+      "name": "schema-errors",
+      "pass": true,
+      "severity": "fail",
+      "detail": "0 schema-error record(s)"
+    },
+    {
+      "name": "coverage",
+      "pass": true,
+      "severity": "inconclusive",
+      "detail": "54.6% coverage < 25%"
+    },
+    {
+      "name": "accepted-accuracy",
+      "pass": true,
+      "severity": "fail",
+      "detail": "observed accepted accuracy 0.9695 < 0.95"
+    },
+    {
+      "name": "overall-ci-lower",
+      "pass": false,
+      "severity": "fail",
+      "detail": "overall CI lower -0.0458 < -0.02"
+    },
+    {
+      "name": "latency-ratio",
+      "pass": true,
+      "severity": "fail",
+      "detail": "latency ratio 0.0294 is not strictly between 0 and 1"
+    },
+    {
+      "name": "group-count:software_development",
+      "pass": true,
+      "severity": "inconclusive",
+      "detail": "52 accepted < 30"
+    },
+    {
+      "name": "group-ci-lower:software_development",
+      "pass": true,
+      "severity": "fail",
+      "detail": "software_development CI lower 0.0000 < -0.05"
+    },
+    {
+      "name": "group-count:machine_learning",
+      "pass": false,
+      "severity": "inconclusive",
+      "detail": "19 accepted < 30"
+    },
+    {
+      "name": "group-ci-lower:machine_learning",
+      "pass": false,
+      "severity": "fail",
+      "detail": "machine_learning CI lower -0.2632 < -0.05"
+    },
+    {
+      "name": "group-count:computer_hardware",
+      "pass": false,
+      "severity": "inconclusive",
+      "detail": "25 accepted < 30"
+    },
+    {
+      "name": "group-ci-lower:computer_hardware",
+      "pass": false,
+      "severity": "fail",
+      "detail": "computer_hardware CI lower -0.0800 < -0.05"
+    },
+    {
+      "name": "group-count:other",
+      "pass": true,
+      "severity": "inconclusive",
+      "detail": "35 accepted < 30"
+    },
+    {
+      "name": "group-ci-lower:other",
+      "pass": false,
+      "severity": "fail",
+      "detail": "other CI lower -0.0857 < -0.05"
+    }
+  ],
+  "note": "diagnostic only; no approval evidence was emitted",
+  "qualificationScope": {
+    "synthetic": true,
+    "labelSource": "agent-authored",
+    "approval": false
+  },
+  "runAccounting": {
+    "successfulJevResponses": 240,
+    "failedConnectionAttempts": 1,
+    "explicitRetries": 1,
+    "successfulResponsesRepeated": 0
+  }
+}

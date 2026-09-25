@@ -6,7 +6,8 @@
   "type": "module",
   "description": "MCP stdio server exposing the TypeSafe Jev System One decision engine as typed-judgment tools.",
   "bin": {
-    "jev-mcp": "./src/server.js"
+    "jev-mcp": "./src/server.js",
+    "laya-mcp": "./src/laya-server.js"
   },
   "scripts": {
     "test": "node --test tests/*.test.js"
@@ -15,6 +16,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0"
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@typesafe-ai/sdk": "0.6.0"
   }
 }

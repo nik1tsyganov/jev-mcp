@@ -1,64 +1,55 @@
 # jev-mcp
 
-An MCP stdio server that exposes [TypeSafe](https://docs.typesafe.ai)'s System One
-decision model (Jev) as tools. Jev does not write text: it takes a *state* and a map
-of *questions* and returns typed judgments — a probability, a labelled choice with
-per-option probabilities, or a score on an ordered scale. Code can threshold those
-numbers, which a prose answer never allows.
+This repository provides two MCP stdio servers. `jev` exposes TypeSafe Jev System One. `laya` runs Laya-MLX locally and offline. TypeSafe publishes no official MCP server as of 2026-09-25, so this repository remains the Jev MCP server.
+
+Jev takes a *state* and a map of *questions*. It returns typed judgments: probabilities, labelled choices, or scores. Batch questions about the same state in one request.
 
 ## Tools
 
-| Tool | Returns | Use it for |
+| Server | Tool | Use |
 | --- | --- | --- |
-| `jev_ask` | every answer, plus `usage` | the batched primitive: many questions about one state in one request |
-| `jev_noul` | a probability 0..1 | one yes/no judgment a threshold will act on |
-| `jev_choice` | chosen option, per-option probabilities, confidence | routing, classification, triage |
-| `jev_score` | probability-weighted score, legend, per-level probabilities, confidence | quality, severity, risk grading |
-| `jev_models` | the account's model list | checking what is available; costs no judgment tokens |
+| `jev` | `jev_ask` | Ask one or more typed questions through TypeSafe Jev. |
+| `jev` | `jev_noul` | Ask one yes/no question. |
+| `jev` | `jev_choice` | Choose among named options. |
+| `jev` | `jev_score` | Score on an ordered scale. |
+| `jev` | `jev_models` | List available Jev models without a judgment request. |
+| `jev` | `decision_browser_action` | Get advisory browser action advice from Jev; the caller executes and verifies the action. |
+| `laya` | `laya_ask` | Ask local questions with `state`, `questions`, and optional `profile`. |
+| `laya` | `laya_bookmark_topic` | Tag a bookmark from `state` and optional `profile`; omitted profile uses v2. |
+| `laya` | `laya_status` | Read local runtime and profile status. |
 
-Prefer `jev_ask`. One request answering six questions costs roughly one request; six
-single-question calls cost six.
+`decision_browser_action` remains Jev-only. It neither launches a browser nor executes an action. See [browser action decisions](docs/browser-decisions.md).
 
-Every successful result carries the resolved `model`, the `answers` and the `usage`
-token counts, so a caller can report spend instead of guessing it.
+## Provider choice
 
-## Register it
+The caller chooses `jev` or `laya` for each request. The servers never call each other. There is no automatic routing, fallback, or shadow run. A Laya result below its profile threshold returns `accepted: false` and `reason: "below_threshold"`. The caller can then choose to ask Jev in a separate request.
 
-`scripts/install-typesafe-jev.sh` does all four vendors at once. By hand:
+Both registered bookmark profiles are enabled by explicit owner override after qualification **FAILED**. The override does not change their failed evidence or thresholds:
 
-    claude mcp add-json jev '{"command":"node","args":["~/src/jev-mcp/src/server.js"],"env":{"TYPESAFE_API_KEY":"'"$TYPESAFE_API_KEY"'"}}'
+- `technical-bookmark-topic-v1`: threshold `0.5`; select it explicitly.
+- `technical-bookmark-topic-v2`: threshold `0.4`; default for `laya_bookmark_topic`.
 
-Codex: `codex mcp add jev -- node ~/src/jev-mcp/src/server.js`
+The frozen 400-case synthetic v2 confirmation measured Jev at 94.5%, Laya at 74.75%, and the former combination at 92.0%. Accepted local answers scored 88.53% against a 95% target. These are historical measurements, not a current quality claim. See the [confirmation record](docs/technical-bookmark-topic-v2-confirmation.md).
 
-Antigravity: `agy mcp add jev node ~/src/jev-mcp/src/server.js`
+| Old tool | New call |
+| --- | --- |
+| `decision_ask` | `jev.jev_ask` or `laya.laya_ask`; the caller selects the provider. |
+| `decision_bookmark_topic` | `laya.laya_bookmark_topic`. |
+| `decision_status` | `laya.laya_status`. |
+| `decision_browser_action` | Unchanged on `jev`. |
 
-Cursor: add a `jev` entry under `mcpServers` in `~/.cursor/mcp.json`, then
-`cursor-agent mcp list-tools jev` to confirm.
+For bookmark tagging, call `laya_bookmark_topic` with `{ "state": { "title": "…", "description": "…" } }`. The tool supplies the frozen question. To select v1, add `"profile": "technical-bookmark-topic-v1"`.
 
-Or in an `.mcp.json`:
+## Environment and telemetry
 
-    {
-      "mcpServers": {
-        "jev": {
-          "command": "node",
-          "args": ["~/src/jev-mcp/src/server.js"]
-        }
-      }
-    }
+Jev needs a TypeSafe key. It reads `TYPESAFE_API_KEY` from its environment or the single export line in `~/.config/typesafe/env.sh`. The key is never printed by the server. Laya uses `LAYA_PYTHON`, `LAYA_MODEL_DIR`, `LAYA_CHECKPOINT`, `LAYA_MODEL_REVISION`, `LAYA_TIMEOUT_MS`, and `LAYA_MAX_QUEUE`. Its worker uses cached model files and stays offline. The trusted profile registry also holds pinned worker settings and evidence.
 
-With no `env` block the server reads `TYPESAFE_API_KEY` from the environment it
-inherits, and falls back to parsing the single export line in
-`~/.config/typesafe/env.sh`. The key value is never printed, logged, or included in an
-error message.
+Jev spend goes to `~/.claude/docs/telemetry/jev-spend.jsonl` (`TYPESAFE_SPEND_LOG` overrides the path). Laya decisions go to `~/.claude/docs/telemetry/laya-decisions.jsonl` (`LAYA_DECISION_LOG` overrides the path). A Laya request does not create Jev spend.
 
-## Guards
+## Install and register
 
-`MAX_QUESTIONS_PER_CALL` (32) and `MAX_STATE_CHARS` (200000) in `src/server.js` reject
-oversized calls locally, before the request is made. Question shapes are checked
-locally too (`src/questions.js`): a `choice` needs an object of options, a `score` needs
-at least two ordered levels, and a `noul` answer has no confidence field. A wrong shape
-is a 422 from the API, so catching it here costs nothing.
+Node >= 20 is required. Run `npm install` once; there is no build step. `scripts/install-typesafe-jev.sh` registers both servers for Claude, Codex, Cursor, and Antigravity. It removes old combined routing environment keys from `jev` on repeat runs. Jev starts from `src/server.js`; Laya starts from `src/laya-server.js`.
 
-## Requirements
+For a portable Droppy Code runtime, run `python3 scripts/install-decision-runtime.py --download-laya`. It packages both servers. Use `node launch.mjs jev` or `node launch.mjs laya` in that runtime; omitting the argument selects Jev. A Laya launch requires the installed `runtime.json` Laya settings. A fresh install has an empty profile registry and does not inherit this machine's owner overrides. The earlier combined managed-entry design is retained as a [historical record](docs/droppy-local-fallback.md).
 
-Node >= 20, a TypeSafe API key. `npm install` once; there is no build step.
+`MAX_QUESTIONS_PER_CALL` (32) and `MAX_STATE_CHARS` (200000) bound Jev calls. The shared question validator checks choice options, ordered score levels, and noul shape before inference.

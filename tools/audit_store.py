@@ -14,6 +14,7 @@ from spend_log import record as _record_spend
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(HERE, "tools"))
 from skill_refs import collect, deterministic_findings  # noqa: E402
+from absence_check import check_absences, check_presence_claims  # noqa: E402
 
 PACK = json.load(open(os.path.join(HERE, "packs", "skill-store-stale-ref.json")))
 ENDPOINT = os.environ.get("TYPESAFE_BASE_URL", "https://api.typesafe.ai") + "/v1/systemone"
@@ -75,6 +76,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("store", nargs="?", default=os.path.expanduser("~/.claude/skills"))
     ap.add_argument("--run", action="store_true", help="spend requests; without it, only the plan is printed")
+    ap.add_argument("--force-chance-pack", action="store_true",
+                    help="spend on the stale-ref judgment anyway; it measured at chance")
     ap.add_argument("--json", help="write the scored results here")
     args = ap.parse_args()
 
@@ -91,11 +94,28 @@ def main():
 
     wrong_present = deterministic_findings(refs, args.store)
     windows = [r for r in paths if r["status"] == "windows-path"]
+    false_absences, allowlisted_absences = check_absences(args.store)
+    # Only the EMPTY verdict is reported here: 'present but missing' is already
+    # covered by deterministic_findings above, and two checks reporting one fact
+    # under two labels is two numbers that can disagree.
+    _pres, _pres_allow = check_presence_claims(args.store)
+    false_presences = [r for r in _pres if 'EMPTY' in r['verdict']]
     print(f"\ndeterministic findings, no spend:")
     print(f"  asserted present but absent : {len(wrong_present)}")
     for r in wrong_present:
         print(f"      {r['file']}:{r['line']}  {r['ref']}")
     print(f"  windows paths (previous host): {len(windows)} in {len({r['file'] for r in windows})} files")
+    print(f"  asserted absent but exists  : {len(false_absences)}")
+    print(f"  claimed usable but 0 bytes  : {len(false_presences)}")
+    for r in false_presences:
+        print(f"    {r['file']}:{r['line']}  {r['path']}  {r['verdict']}")
+    for r in false_absences:
+        print(f"      {r['file']}:{r['line']}  {r['path']}")
+    if allowlisted_absences:
+        print(f"  allowlisted absence claims  : {len(allowlisted_absences)}")
+        for r in allowlisted_absences:
+            reason_str = f"  ({r['reason']})" if r.get("reason") else ""
+            print(f"      {r['file']}:{r['line']}  {r['path']}{reason_str}")
 
     missing = [r for r in paths if r["status"] == "missing"]
     det_keys = {(r["file"], r["ref"]) for r in wrong_present}
@@ -104,10 +124,20 @@ def main():
         k = (r["file"], r["ref"])
         if k not in seen:
             seen.add(k); todo.append(r)
-    print(f"\nneeds judgment   : {len(todo)} references = {len(todo)} requests"
-          f"  (gate {GATE}, calibrated 2026-09-19, 15 percent disagreement)")
+    # The skill-store-stale-ref pack was fitted and held out on 36 hand-labelled
+    # references on 2026-09-19 and measured AT CHANCE: is_stale holdout 61.1% (Wilson
+    # lower 0.386), load_bearing 44.4%, risk_if_wrong 50.0%, tie width 0.00. Every
+    # disagreement was the model re-deriving whether a path resolves, which the
+    # deterministic checks above already answer exactly and for free. The pass stays
+    # reachable behind an explicit flag so the measurement can be repeated, but it is
+    # no longer offered as work worth doing.
+    print(f"\njudgment pass    : DISABLED - pack measured at chance on a held-out split"
+          f" (see packs/skill-store-stale-ref.json). {len(todo)} reference(s) would have"
+          f" been sent. The deterministic checks above cover this question.")
     if not args.run:
-        print("\nre-run with --run to spend those requests.")
+        return
+    if not args.force_chance_pack:
+        print("refusing to spend on a chance-level gate; pass --force-chance-pack to override.")
         return
 
     key = api_key()

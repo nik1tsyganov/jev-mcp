@@ -1,6 +1,8 @@
 import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
+import { TypeSafeClient } from "@typesafe-ai/sdk";
+import { validateQuestions } from "./questions.js";
 
 export const DEFAULT_MODEL = process.env.TYPESAFE_DEFAULT_MODEL || "jev-latest";
 export const KEY_FILE = join(homedir(), ".config", "typesafe", "env.sh");
@@ -10,34 +12,65 @@ export function baseUrl() {
 }
 
 let cachedKey = null;
+let cachedIdentity = null;
 
-/** Resolves the API key. Never returns it in an error message or log line. */
+/** "app" trusts the Droppy-provided key only; anything else keeps the legacy
+ *  resolution. Unrecognized values fall back to "default" rather than widening scope. */
+export function credentialScope() {
+  return process.env.DROPPY_CREDENTIAL_SCOPE === "app" ? "app" : "default";
+}
+
+/** Resolves the API key. Never returns it in an error message or log line.
+ *  Scope "app" reads DROPPY_JEV_API_KEY alone: never TYPESAFE_API_KEY, never a
+ *  previously cached legacy credential, never ~/.config/typesafe/env.sh. The
+ *  cache key records the scope and the env value it came from, so a scope or
+ *  key change cannot inherit a stale credential. */
 export function resolveApiKey() {
-  if (cachedKey) return cachedKey;
-  if (process.env.TYPESAFE_API_KEY) {
-    cachedKey = process.env.TYPESAFE_API_KEY;
-    return cachedKey;
+  const scope = credentialScope();
+  const envValue = scope === "app" ? process.env.DROPPY_JEV_API_KEY : process.env.TYPESAFE_API_KEY;
+  const identity = `${scope}${envValue ?? ""}`;
+  if (cachedKey && cachedIdentity === identity) return cachedKey;
+  const trimmed = typeof envValue === "string" ? envValue.trim() : "";
+  if (!trimmed) {
+    if (scope === "app") {
+      throw new Error("DROPPY_JEV_API_KEY is not set; credential scope 'app' uses no other credential source.");
+    }
+    let contents;
+    try {
+      contents = readFileSync(KEY_FILE, "utf8");
+    } catch {
+      throw new Error(`TYPESAFE_API_KEY is not set and ${KEY_FILE} could not be read.`);
+    }
+    const match = contents.match(/^\s*export\s+TYPESAFE_API_KEY=["']?([^"'\s]+)["']?\s*$/m);
+    if (!match || !match[1].trim()) throw new Error(`No TYPESAFE_API_KEY export line found in ${KEY_FILE}.`);
+    cachedKey = match[1].trim();
+  } else {
+    cachedKey = trimmed;
   }
-  let contents;
-  try {
-    contents = readFileSync(KEY_FILE, "utf8");
-  } catch {
-    throw new Error(`TYPESAFE_API_KEY is not set and ${KEY_FILE} could not be read.`);
-  }
-  const match = contents.match(/^\s*export\s+TYPESAFE_API_KEY=["']?([^"'\s]+)["']?\s*$/m);
-  if (!match) throw new Error(`No TYPESAFE_API_KEY export line found in ${KEY_FILE}.`);
-  cachedKey = match[1];
+  cachedIdentity = identity;
   return cachedKey;
+}
+
+/** Whether a usable key resolves in the current scope. Boolean only; the key
+ *  itself is never returned or logged. */
+export function credentialAvailable() {
+  try {
+    return Boolean(resolveApiKey());
+  } catch {
+    return false;
+  }
 }
 
 /** Strips the key from any text before it can reach a log, a tool result or a user.
  *  Measured 2026-09-19: an invalid header value made undici echo the whole
  *  `Bearer <key>` back in err.message, and that message was interpolated into the
  *  thrown Error. A credential must never be able to ride out on an error path. */
-function redact(text) {
-  const key = cachedKey || process.env.TYPESAFE_API_KEY;
+export function redact(text) {
   let out = String(text);
-  if (key && key.length > 4) out = out.split(key).join("[redacted]");
+  for (const key of [cachedKey, process.env.DROPPY_JEV_API_KEY, process.env.TYPESAFE_API_KEY]) {
+    const trimmed = typeof key === "string" ? key.trim() : "";
+    if (trimmed && trimmed.length > 4) out = out.split(trimmed).join("[redacted]");
+  }
   return out.replace(/Bearer\s+\S+/g, "Bearer [redacted]");
 }
 
@@ -108,55 +141,90 @@ function recordSpend(model, questionCount, usage, answers) {
   }
 }
 
-const RETRYABLE = new Set([429, 529]);
-const MAX_ATTEMPTS = 3;
-const BACKOFF_BASE_MS = 500;
-const TIMEOUT_MS = 30_000;
+// The SDK handles fetch, timeouts, and retries natively.
+// As defined in @typesafe-ai/sdk (src/retry.ts), the SDK retries HTTP status codes:
+// 408 (Request Timeout), 429 (Too Many Requests), and 500-599 (all 5xx server errors).
+// It also retries connection errors (APIConnectionError) and request timeouts (APITimeoutError).
 
-async function request(path, { method = "GET", body } = {}) {
-  const key = resolveApiKey();
-  let lastError;
-  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-    if (attempt > 0) {
-      const wait = BACKOFF_BASE_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 250);
-      await new Promise((r) => setTimeout(r, wait));
-    }
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-    let res;
-    try {
-      res = await fetch(`${baseUrl()}${path}`, {
-        method,
-        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-        body: body === undefined ? undefined : JSON.stringify(body),
-        signal: controller.signal,
-      });
-    } catch (err) {
-      // Network fault or the 30s abort: worth one more attempt.
-      lastError = new Error(redact(`Request to ${path} failed: ${err.message}`));
-      continue;
-    } finally {
-      clearTimeout(timer);
-    }
-    if (res.ok) return await res.json();
-    const text = (await res.text()).slice(0, 500);
-    const httpError = new Error(redact(`HTTP ${res.status}: ${text}`));
-    if (!RETRYABLE.has(res.status)) throw httpError;
-    lastError = httpError;
+let clientInstance = null;
+let clientIdentity = null;
+
+function getClient() {
+  if (process.env.DROPPY_DECISION_MODE === "local") {
+    throw new Error("DROPPY_DECISION_MODE=local prohibits Jev calls.");
   }
-  throw lastError ?? new Error(`Request to ${path} failed with no error recorded.`);
+  const apiKey = resolveApiKey();
+  const identity = JSON.stringify([credentialScope(), apiKey, baseUrl()]);
+  if (!clientInstance || clientIdentity !== identity) {
+    clientInstance = new TypeSafeClient({
+      apiKey,
+      baseURL: baseUrl(),
+      timeout: 30000,
+    });
+    clientIdentity = identity;
+  }
+  return clientInstance;
+}
+
+export function _resetClient() {
+  clientInstance = null;
+  clientIdentity = null;
+  cachedKey = null;
+  cachedIdentity = null;
+}
+
+function redactError(err) {
+  const redacted = redact(err?.message ?? String(err));
+  if (err && typeof err === "object") {
+    try {
+      err.message = redacted;
+      if (typeof err.stack === "string") {
+        err.stack = redact(err.stack);
+      }
+      return err;
+    } catch {
+      // In case err.message is read-only
+    }
+    const custom = new Error(redacted);
+    custom.name = err.name || err.constructor?.name || "Error";
+    if (err.status !== undefined) custom.status = err.status;
+    if (err.stack) custom.stack = redact(err.stack);
+    Object.setPrototypeOf(custom, Object.getPrototypeOf(err));
+    return custom;
+  }
+  return new Error(redacted);
 }
 
 export async function systemOne({ state, questions, model }) {
+  const validated = validateQuestions(questions);
   chargeOne();
-  const result = await request("/v1/systemone", {
-    method: "POST",
-    body: { state, model: model || DEFAULT_MODEL, questions },
-  });
-  recordSpend(result?.model ?? (model || DEFAULT_MODEL), Object.keys(questions || {}).length, result?.usage, result?.answers);
+  const client = getClient();
+  let result;
+  try {
+    result = await client.systemOne({
+      state,
+      questions: validated,
+      model: model || DEFAULT_MODEL,
+    });
+  } catch (err) {
+    throw redactError(err);
+  }
+  recordSpend(
+    result?.model ?? (model || DEFAULT_MODEL),
+    Object.keys(validated || {}).length,
+    result?.usage,
+    result?.answers
+  );
   return result;
 }
 
 export async function listModels() {
-  return request("/v1/models");
+  const client = getClient();
+  let models;
+  try {
+    models = await client.models.list();
+  } catch (err) {
+    throw redactError(err);
+  }
+  return { models };
 }

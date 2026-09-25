@@ -1,0 +1,1626 @@
+{
+ "fingerprint": "4e93d6bc2393ba9b",
+ "model": "jev-latest",
+ "items": {
+  "conclave-mode/SKILL.md:38": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.19
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.71
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.5,
+     "confidence": 0.46,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.49,
+      "2": 0.47,
+      "3": 0.02
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.55,
+     "probabilities": {
+      "update": 0.66,
+      "delete": 0.08,
+      "keep": 0.07,
+      "verify_live": 0.19
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 787,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/references/deliberation-protocol.md:12": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.2
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.59
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.15,
+     "confidence": 0.55,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.15,
+      "1": 0.55,
+      "2": 0.29,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.61,
+     "probabilities": {
+      "verify_live": 0.17,
+      "keep": 0.04,
+      "update": 0.7,
+      "delete": 0.09
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 740,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/references/deliberation-protocol.md:13": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.19
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.64
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.32,
+     "confidence": 0.59,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.59,
+      "2": 0.35,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.39,
+     "probabilities": {
+      "keep": 0.22,
+      "update": 0.54,
+      "delete": 0.07,
+      "verify_live": 0.17
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 767,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/references/deliberation-protocol.md:16": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.19
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.66
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.47,
+     "confidence": 0.45,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.55,
+      "2": 0.31,
+      "3": 0.1
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.14,
+     "probabilities": {
+      "update": 0.32,
+      "verify_live": 0.36,
+      "keep": 0.04,
+      "delete": 0.28
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 736,
+    "output_tokens": 99
+   }
+  },
+  "conclave-mode/references/host-modes-and-gates.md:12": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.29
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.67
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.35,
+     "confidence": 0.43,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.11,
+      "1": 0.44,
+      "2": 0.43,
+      "3": 0.02
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.76,
+     "probabilities": {
+      "delete": 0.06,
+      "update": 0.82,
+      "verify_live": 0.1,
+      "keep": 0.02
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 740,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/references/host-modes-and-gates.md:13": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.18
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.62
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.41,
+     "confidence": 0.5,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.51,
+      "2": 0.43,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.51,
+     "probabilities": {
+      "verify_live": 0.13,
+      "delete": 0.06,
+      "update": 0.63,
+      "keep": 0.18
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 767,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/references/host-modes-and-gates.md:16": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.19
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.67
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.41,
+     "confidence": 0.5,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.57,
+      "2": 0.33,
+      "3": 0.06
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "delete",
+     "confidence": 0.21,
+     "probabilities": {
+      "update": 0.28,
+      "keep": 0.03,
+      "delete": 0.41,
+      "verify_live": 0.28
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 736,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/references/host-modes-and-gates.md:43": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.23
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.69
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.48,
+     "confidence": 0.49,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.5,
+      "2": 0.49,
+      "3": 0.0
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.24,
+     "probabilities": {
+      "update": 0.43,
+      "delete": 0.19,
+      "keep": 0.08,
+      "verify_live": 0.3
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 725,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/references/seats-and-evidence.md:13": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.18
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.64
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.33,
+     "confidence": 0.57,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.58,
+      "2": 0.36,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.55,
+     "probabilities": {
+      "keep": 0.13,
+      "verify_live": 0.13,
+      "delete": 0.08,
+      "update": 0.66
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 766,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/references/seats-and-evidence.md:16": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.18
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.67
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.43,
+     "confidence": 0.51,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.5599999999999999,
+      "2": 0.35,
+      "3": 0.06
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "delete",
+     "confidence": 0.17,
+     "probabilities": {
+      "delete": 0.38,
+      "verify_live": 0.32,
+      "keep": 0.03,
+      "update": 0.27
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 735,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/references/archived-SKILL-2026-09-16.md:12": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.13
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.66
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.41,
+     "confidence": 0.54,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.56,
+      "2": 0.41,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.68,
+     "probabilities": {
+      "verify_live": 0.76,
+      "keep": 0.02,
+      "delete": 0.18,
+      "update": 0.04
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 838,
+    "output_tokens": 99
+   }
+  },
+  "mix-mode/references/mix-run-dispatcher.md:1": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.16
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.68
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.22,
+     "confidence": 0.58,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.1,
+      "1": 0.59,
+      "2": 0.29,
+      "3": 0.02
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "keep",
+     "confidence": 0.18,
+     "probabilities": {
+      "update": 0.29,
+      "verify_live": 0.19,
+      "keep": 0.38,
+      "delete": 0.14
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 789,
+    "output_tokens": 98
+   }
+  },
+  "mix-mode/references/model-evidence-2026-08-14-gemini.md:48": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.13
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.62
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.4,
+     "confidence": 0.52,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.52,
+      "2": 0.43,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.57,
+     "probabilities": {
+      "update": 0.68,
+      "keep": 0.05,
+      "delete": 0.22,
+      "verify_live": 0.05
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 771,
+    "output_tokens": 98
+   }
+  },
+  "gemini-bridge/SKILL.md:21": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.3
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.68
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.47,
+     "confidence": 0.45,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.48,
+      "2": 0.45,
+      "3": 0.03
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.61,
+     "probabilities": {
+      "keep": 0.04,
+      "update": 0.72,
+      "verify_live": 0.18,
+      "delete": 0.06
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 817,
+    "output_tokens": 98
+   }
+  },
+  "gemini-bridge/references/historical.md:9": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.22
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.71
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.83,
+     "confidence": 0.59,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.23,
+      "2": 0.62,
+      "3": 0.12
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "delete",
+     "confidence": 0.26,
+     "probabilities": {
+      "verify_live": 0.2,
+      "delete": 0.44,
+      "keep": 0.12,
+      "update": 0.24
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 820,
+    "output_tokens": 98
+   }
+  },
+  "evaluation-engineering/references/dispatch-efficiency.md:22": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.23
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.67
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.52,
+     "confidence": 0.45,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.44,
+      "2": 0.48,
+      "3": 0.04
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.39,
+     "probabilities": {
+      "update": 0.53,
+      "verify_live": 0.19,
+      "delete": 0.24,
+      "keep": 0.04
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 775,
+    "output_tokens": 98
+   }
+  },
+  "evaluation-engineering/references/dispatch-efficiency.md:23": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.29
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.7
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.37,
+     "confidence": 0.59,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.6,
+      "2": 0.36,
+      "3": 0.02
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.37,
+     "probabilities": {
+      "update": 0.53,
+      "keep": 0.02,
+      "verify_live": 0.31,
+      "delete": 0.14
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 776,
+    "output_tokens": 98
+   }
+  },
+  "graph-engineering/references/graph-of-loops.md:32": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.16
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.69
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.61,
+     "confidence": 0.6,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.3,
+      "2": 0.65,
+      "3": 0.0
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.57,
+     "probabilities": {
+      "delete": 0.1,
+      "keep": 0.14,
+      "verify_live": 0.68,
+      "update": 0.08
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 812,
+    "output_tokens": 99
+   }
+  },
+  "loop-engineering/references/build-and-gates.md:40": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.23
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.59
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.57,
+     "confidence": 0.47,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.07,
+      "1": 0.34,
+      "2": 0.54,
+      "3": 0.05
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.45,
+     "probabilities": {
+      "verify_live": 0.59,
+      "delete": 0.09,
+      "update": 0.22,
+      "keep": 0.1
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 768,
+    "output_tokens": 99
+   }
+  },
+  "design/SKILL.md:222": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.38
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.7
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.33,
+     "confidence": 0.63,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.64,
+      "2": 0.33,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.47,
+     "probabilities": {
+      "delete": 0.12,
+      "keep": 0.04,
+      "verify_live": 0.61,
+      "update": 0.23
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 728,
+    "output_tokens": 99
+   }
+  },
+  "vault-ingest/SKILL.md:26": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.12
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.63
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.32,
+     "confidence": 0.61,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.61,
+      "2": 0.34,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.26,
+     "probabilities": {
+      "delete": 0.38,
+      "keep": 0.01,
+      "verify_live": 0.17,
+      "update": 0.44
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 719,
+    "output_tokens": 98
+   }
+  },
+  "skill-store-maintenance/SKILL.md:47": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.12
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.59
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.61,
+     "confidence": 0.6,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.1,
+      "1": 0.2,
+      "2": 0.69,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "delete",
+     "confidence": 0.28,
+     "probabilities": {
+      "keep": 0.43,
+      "verify_live": 0.08,
+      "update": 0.03,
+      "delete": 0.46
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 784,
+    "output_tokens": 98
+   }
+  },
+  "code-minimalism/references/default-on-check.js:78": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.11
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.55
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.19,
+     "confidence": 0.58,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.12,
+      "1": 0.58,
+      "2": 0.29,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "delete",
+     "confidence": 0.13,
+     "probabilities": {
+      "keep": 0.21,
+      "verify_live": 0.17,
+      "update": 0.27,
+      "delete": 0.35
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 730,
+    "output_tokens": 98
+   }
+  },
+  "mcp-layer/references/mcp-registry.json:212": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.12
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.78
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.92,
+     "confidence": 0.33,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.09,
+      "1": 0.2,
+      "2": 0.42,
+      "3": 0.29
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "keep",
+     "confidence": 0.36,
+     "probabilities": {
+      "keep": 0.52,
+      "update": 0.07,
+      "delete": 0.16,
+      "verify_live": 0.25
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 793,
+    "output_tokens": 98
+   }
+  },
+  "codex-bridge/references/recipes.md:40": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.12
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.57
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.63,
+     "confidence": 0.6,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.29,
+      "2": 0.64,
+      "3": 0.02
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "delete",
+     "confidence": 0.1,
+     "probabilities": {
+      "delete": 0.32,
+      "update": 0.22,
+      "keep": 0.13,
+      "verify_live": 0.33
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 847,
+    "output_tokens": 98
+   }
+  },
+  "codex-bridge/references/recipes.md:65": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.16
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.68
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.57,
+     "confidence": 0.38,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.5,
+      "2": 0.38,
+      "3": 0.1
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.54,
+     "probabilities": {
+      "verify_live": 0.66,
+      "delete": 0.15,
+      "keep": 0.06,
+      "update": 0.13
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 732,
+    "output_tokens": 99
+   }
+  },
+  "claude-bridge/SKILL.md:20": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.19
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.67
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.55,
+     "confidence": 0.42,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.41,
+      "2": 0.47,
+      "3": 0.07
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.48,
+     "probabilities": {
+      "verify_live": 0.6,
+      "keep": 0.04,
+      "update": 0.23,
+      "delete": 0.13
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 722,
+    "output_tokens": 99
+   }
+  },
+  "claude-bridge/SKILL.md:21": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.18
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.8
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.48,
+     "confidence": 0.48,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.5,
+      "2": 0.45,
+      "3": 0.03
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "keep",
+     "confidence": 0.85,
+     "probabilities": {
+      "verify_live": 0.11,
+      "delete": 0.0,
+      "keep": 0.89,
+      "update": 0.0
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 712,
+    "output_tokens": 98
+   }
+  },
+  "conclave-mode/SKILL.md:20": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.16
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.79
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.32,
+     "confidence": 0.65,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.67,
+      "2": 0.3,
+      "3": 0.02
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.33,
+     "probabilities": {
+      "update": 0.22,
+      "verify_live": 0.5,
+      "delete": 0.11,
+      "keep": 0.17
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 804,
+    "output_tokens": 99
+   }
+  },
+  "conclave-mode/SKILL.md:27": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.2
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.75
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.39,
+     "confidence": 0.58,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.59,
+      "2": 0.38,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "keep",
+     "confidence": 0.17,
+     "probabilities": {
+      "verify_live": 0.29,
+      "update": 0.31,
+      "delete": 0.02,
+      "keep": 0.38
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 772,
+    "output_tokens": 98
+   }
+  },
+  "calibrated-pushback/SKILL.md:76": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.16
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.69
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.41,
+     "confidence": 0.47,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.06,
+      "1": 0.49,
+      "2": 0.44,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "keep",
+     "confidence": 0.46,
+     "probabilities": {
+      "keep": 0.59,
+      "verify_live": 0.39,
+      "delete": 0.01,
+      "update": 0.01
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 749,
+    "output_tokens": 98
+   }
+  },
+  "evaluation-engineering/references/dispatch-efficiency.md:21": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.11
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.62
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.24,
+     "confidence": 0.67,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.67,
+      "2": 0.27,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "keep",
+     "confidence": 0.15,
+     "probabilities": {
+      "keep": 0.37,
+      "verify_live": 0.19,
+      "delete": 0.12,
+      "update": 0.32
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 781,
+    "output_tokens": 98
+   }
+  },
+  "evaluation-engineering/references/dispatch-efficiency.md:30": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.19
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.69
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.64,
+     "confidence": 0.63,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.27,
+      "2": 0.67,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "update",
+     "confidence": 0.51,
+     "probabilities": {
+      "verify_live": 0.19,
+      "update": 0.62,
+      "keep": 0.07,
+      "delete": 0.12
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 727,
+    "output_tokens": 98
+   }
+  },
+  "asd-ste100/SKILL.md:4": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.18
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.59
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 0.94,
+     "confidence": 0.54,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.26,
+      "1": 0.56,
+      "2": 0.17,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "keep",
+     "confidence": 0.39,
+     "probabilities": {
+      "update": 0.34,
+      "verify_live": 0.09,
+      "delete": 0.03,
+      "keep": 0.54
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 774,
+    "output_tokens": 98
+   }
+  },
+  "graph-engineering/references/tactics.md:19": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.22
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.71
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.65,
+     "confidence": 0.63,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.28,
+      "2": 0.67,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.17,
+     "probabilities": {
+      "update": 0.24,
+      "delete": 0.04,
+      "keep": 0.35,
+      "verify_live": 0.37
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 808,
+    "output_tokens": 99
+   }
+  },
+  "codex-bridge/SKILL.md:21": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "is_stale": {
+     "type": "noul",
+     "noul": 0.18
+    },
+    "load_bearing": {
+     "type": "noul",
+     "noul": 0.74
+    },
+    "risk_if_wrong": {
+     "type": "score",
+     "score": 1.54,
+     "confidence": 0.52,
+     "legend": {
+      "0": "nothing, it is decoration",
+      "1": "wasted effort",
+      "2": "a wrong answer to the user",
+      "3": "a destructive or irreversible action"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.41,
+      "2": 0.55,
+      "3": 0.01
+     }
+    },
+    "route": {
+     "type": "choice",
+     "choice": "verify_live",
+     "confidence": 0.25,
+     "probabilities": {
+      "keep": 0.21,
+      "verify_live": 0.43,
+      "update": 0.29,
+      "delete": 0.07
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 750,
+    "output_tokens": 99
+   }
+  }
+ }
+}

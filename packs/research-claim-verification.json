@@ -47,7 +47,9 @@
       "above": "keep the citation",
       "below": "find another source or cut the claim",
       "calibration": "CALIBRATED 2026-09-19 on 8 atomic claims checked against direct filesystem evidence, 5 true and 3 false: true scored 0.64-0.98, false 0.01-0.06, empty band 0.06-0.64, gate 0.35 gives 0 errors. The same 8 inside their original prose sentences gave no separation at all - see state_schema.claim. Small n; re-measure on a larger set before leaning on the exact number.",
-      "calibrated_on_model": "jev-1.13.0"
+      "calibrated_on_model": "jev-1.13.0",
+      "validation": "in-sample only; fit and evaluated on the same hand-read set, no held-out split",
+      "interval": "point estimate; no confidence bound computed"
     },
     "overstated": {
       "gate": 0.5,

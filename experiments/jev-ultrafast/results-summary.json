@@ -1,0 +1,121 @@
+{
+  "date": "2026-09-21T20:10:38.723717+00:00",
+  "source_pin": "1231850a0bf1a0c0341fe408ef1668dbbfdfac46",
+  "browser": {
+    "cdp_url": "http://127.0.0.1:64320",
+    "product": "Chrome/153.0.8010.50",
+    "page_targets_at_connect": [
+      "about:blank"
+    ],
+    "fixture_origin": "http://127.0.0.1:64418"
+  },
+  "fixture_runs": 9,
+  "fixture_passes": 9,
+  "fixture_median_ms": 497,
+  "selected_baseline": {
+    "pairs": 24,
+    "callsAttempted": 63,
+    "callsFailed": 0,
+    "failures": [],
+    "pairedLatencyDeltaMs": [
+      -74.1,
+      -28,
+      -24.2,
+      -24.1,
+      -14.6,
+      -13.3,
+      2,
+      3.2,
+      8.6,
+      32.4,
+      85.1,
+      118,
+      125,
+      135.4,
+      145.9,
+      153.1,
+      155.4,
+      155.6,
+      166.7,
+      169.4,
+      174.2,
+      192.4,
+      234.8,
+      235.7
+    ],
+    "medianDeltaMs": 121.5,
+    "minDeltaMs": -74.1,
+    "maxDeltaMs": 235.7,
+    "operationAgreementRate": 1,
+    "selectedTargetAgreementRate": 1,
+    "selectedTargetPairs": 15
+  },
+  "median_batch_ms": 146.35000000000002,
+  "median_selected_sequential_ms": 278.85,
+  "laya": {
+    "attempted": 8,
+    "succeeded": 0,
+    "firstCallMs": 295.1,
+    "warmMs": [],
+    "medianWarmMs": null,
+    "truncationRejections": 8,
+    "checkpointMismatches": 0,
+    "schemaIncompatible": 0,
+    "upstreamInvalidHeads": []
+  },
+  "laya_positive_control": true,
+  "jev_requests": 189,
+  "input_tokens": 267129,
+  "output_tokens": 14910,
+  "raw_evidence": {
+    "browser/results.json": {
+      "path": "~/.local/scratch/jev-ultrafast-evaluation/browser/results.json",
+      "sha256": "a5afbbc7d176c4c9c633c8b4cf149c9b751473d0f5c9f66b57c3129cfb1522dd"
+    },
+    "browser/decisions.jsonl": {
+      "path": "~/.local/scratch/jev-ultrafast-evaluation/browser/decisions.jsonl",
+      "sha256": "78a06cb93cae618105497eff6ca99f8297e07f0e818e319c1a8d5d27440fcf12"
+    },
+    "jev-replay.json": {
+      "path": "~/.local/scratch/jev-ultrafast-evaluation/jev-replay.json",
+      "sha256": "cf8ca766244ccb20b18ada746a3537649ceb32ef2299165e21f15e6bd9d062df"
+    },
+    "jev-selected-replay.json": {
+      "path": "~/.local/scratch/jev-ultrafast-evaluation/jev-selected-replay.json",
+      "sha256": "dbb1e6c1ada6e9f2c985503133568634c060cb5c7e29fc2d4c2671baeb3021dd"
+    },
+    "laya-replay.json": {
+      "path": "~/.local/scratch/jev-ultrafast-evaluation/laya-replay.json",
+      "sha256": "93ef8c2ffe539f58cfc98a5bbe6027f5e2c225077f86e0bc3b257af88ffe6251"
+    },
+    "laya-control.json": {
+      "path": "~/.local/scratch/jev-ultrafast-evaluation/laya-control.json",
+      "sha256": "472357f43b4f693d433545410a63b55b360c19dbd0ab8192b0f8cd09b0168c48"
+    },
+    "laya-token-budgets.json": {
+      "path": "~/.local/scratch/jev-ultrafast-evaluation/laya-token-budgets.json",
+      "sha256": "738a49d1e860d37bea93cb5fe868ed615ce8abb0ecfc1998a275f1889dd775a7"
+    },
+    "executor-probes.json": {
+      "path": "~/.local/scratch/jev-ultrafast-evaluation/executor-probes.json",
+      "sha256": "e57bd7d9859f06685ddaffd4c5115c343e55d32561abe66316182cb88e4b4092"
+    },
+    "chrome-process.json": {
+      "path": "~/.local/scratch/jev-ultrafast-evaluation/chrome-process.json",
+      "sha256": "01017000158dca9f2f594c0d0ee289f5b405ecf3fb9a720e6a6d8888278b8c69"
+    }
+  },
+  "experiment_sources": {
+    "logged-client.mjs": "90d670e16a8fc37dd2d9e03d2617782938871c392e8d9addd3f3e94cca3f7abf",
+    "executor_probes.py": "7a7745ede4d65c455ea21b56dff4450beb9dc70c60d7440c5d6a74dbb70436d8",
+    "jev_bridge.py": "cd9277efca8018a6ca4a5f4480d6d82a35eda14e26107b51ea8e606a6cf6a9e6",
+    "browser_trial.py": "ce0c5e28edce5b1869fcac2178cc4147b6be9aaf3da560070bec04edb226e4d4",
+    "logged-client.test.mjs": "224b9208ec1e5b91a60e8a5e825287b50b04687997489b704afcf3f19607a6e4",
+    "replay.mjs": "3e85560e58872c67bd8eb0ef1fc07c0813cc9a6edda5bec3519698ed25623612",
+    "replay.test.mjs": "1a52acfe7aa9e0fcbd6d92c295cc3e99bf64380d09766fe2e5ea01a9f0b62f78",
+    "browser_trial_test.py": "fb9d30df0c69f19c04bc2dd69b3e03cd3ea26bd99fc1fde7f531039a61f53979",
+    "fixtures/pick-item.html": "843991f83d77adff194de54ec92c76e4d6792029eb530e51651a441e18e783ab",
+    "fixtures/fill-text.html": "fc067d52c86b763a344fb47fa0ab602ce488cab835ae4b4e53d826ba870fa282",
+    "fixtures/select-submit.html": "33644e77595208e76a569867787938a25e9449551446111cfdfde591be239fe1"
+  }
+}
