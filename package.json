@@ -10,7 +10,7 @@
     "laya-mcp": "./src/laya-server.js"
   },
   "scripts": {
-    "test": "node --test tests/*.test.js"
+    "test": "TYPESAFE_SPEND_LOG=${TMPDIR:-/tmp}/jev-mcp-test-spend.jsonl LAYA_DECISION_LOG=${TMPDIR:-/tmp}/jev-mcp-test-laya.jsonl node --test tests/*.test.js"
   },
   "engines": {
     "node": ">=20"

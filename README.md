@@ -46,6 +46,8 @@ Jev needs a TypeSafe key. It reads `TYPESAFE_API_KEY` from its environment or th
 
 Jev spend goes to `~/.claude/docs/telemetry/jev-spend.jsonl` (`TYPESAFE_SPEND_LOG` overrides the path). Laya decisions go to `~/.claude/docs/telemetry/laya-decisions.jsonl` (`LAYA_DECISION_LOG` overrides the path). A Laya request does not create Jev spend.
 
+`tools/usage_report.py` reports usage from both logs by tool, client, project and session; the one-week evaluation plan is `docs/usage-evaluation.md`.
+
 ## Install and register
 
 Node >= 20 is required. Run `npm install` once; there is no build step. `scripts/install-typesafe-jev.sh` registers both servers for Claude, Codex, Cursor, and Antigravity. It removes old combined routing environment keys from `jev` on repeat runs. Jev starts from `src/server.js`; Laya starts from `src/laya-server.js`.

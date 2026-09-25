@@ -121,7 +121,10 @@ function summarise(answers) {
   return out;
 }
 
-function recordSpend(model, questionCount, usage, answers) {
+/* Schema 2 (2026-09-25) adds who called and how long it took, so a week of normal
+   use can be scored per call site: source, tool, client, cwd, pid, latency_ms, ok.
+   A failed call is logged too (ok:false, no tokens) so error rates are visible. */
+function recordSpend(model, questionCount, usage, answers, { caller = {}, latencyMs = null, error = null } = {}) {
   const used = usage || {};
   inputTokens += used.input_tokens || 0;
   outputTokens += used.output_tokens || 0;
@@ -129,6 +132,15 @@ function recordSpend(model, questionCount, usage, answers) {
     mkdirSync(dirname(SPEND_LOG), { recursive: true });
     appendFileSync(SPEND_LOG, JSON.stringify({
       ts: new Date().toISOString(),
+      schema: 2,
+      source: "mcp",
+      tool: caller.tool ?? null,
+      client: caller.client ?? null,
+      cwd: process.cwd(),
+      pid: process.pid,
+      ok: error === null,
+      error,
+      latency_ms: latencyMs,
       model,
       questions: questionCount,
       input_tokens: used.input_tokens ?? null,
@@ -195,10 +207,12 @@ function redactError(err) {
   return new Error(redacted);
 }
 
-export async function systemOne({ state, questions, model }) {
+export async function systemOne({ state, questions, model, caller }) {
   const validated = validateQuestions(questions);
   chargeOne();
   const client = getClient();
+  const count = Object.keys(validated || {}).length;
+  const started = performance.now();
   let result;
   try {
     result = await client.systemOne({
@@ -207,13 +221,18 @@ export async function systemOne({ state, questions, model }) {
       model: model || DEFAULT_MODEL,
     });
   } catch (err) {
+    // Only the error class is logged: a message can carry request text or a credential.
+    recordSpend(model || DEFAULT_MODEL, count, null, null, {
+      caller, latencyMs: Math.round(performance.now() - started), error: err?.constructor?.name || "Error",
+    });
     throw redactError(err);
   }
   recordSpend(
     result?.model ?? (model || DEFAULT_MODEL),
-    Object.keys(validated || {}).length,
+    count,
     result?.usage,
-    result?.answers
+    result?.answers,
+    { caller, latencyMs: Math.round(performance.now() - started) }
   );
   return result;
 }

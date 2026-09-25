@@ -9,13 +9,20 @@ import json, os, time
 LOG = os.environ.get("TYPESAFE_SPEND_LOG",
                      os.path.expanduser("~/.claude/docs/telemetry/jev-spend.jsonl"))
 
-def record(tool, model, questions, usage):
+def record(tool, model, questions, usage, latency_ms=None):
     try:
         os.makedirs(os.path.dirname(LOG), exist_ok=True)
         with open(LOG, "a") as fh:
             fh.write(json.dumps({
                 "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "schema": 2,
+                "source": "python",
                 "tool": tool,
+                "client": None,
+                "cwd": os.getcwd(),
+                "pid": os.getpid(),
+                "ok": usage is not None,
+                "latency_ms": latency_ms,
                 "model": model,
                 "questions": questions,
                 "input_tokens": (usage or {}).get("input_tokens"),
