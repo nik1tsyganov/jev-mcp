@@ -146,17 +146,21 @@ function guard(state, questions) {
   }
 }
 
-export function createToolRunner({ client = { systemOne, listModels } } = {}) {
+/** `clientLabel` names the MCP client for the spend log, e.g. `claude-code@2.1.0`. */
+export function createToolRunner({ client = { systemOne, listModels }, clientLabel = () => null } = {}) {
 
-  async function ask({ state, questions, model }) {
-    const validated = validateQuestions(questions);
-    guard(state, validated);
-    return client.systemOne({ state, questions: validated, model });
+  function askAs(tool) {
+    return async function ask({ state, questions, model }) {
+      const validated = validateQuestions(questions);
+      guard(state, validated);
+      return client.systemOne({ state, questions: validated, model, caller: { tool, client: clientLabel() } });
+    };
   }
 
-  const browserDecision = createBrowserDecision({ ask });
+  const browserDecision = createBrowserDecision({ ask: askAs("decision_browser_action") });
 
   async function runTool(name, args = {}) {
+    const ask = askAs(name);
     switch (name) {
       case "jev_ask":
         return ask(args);
@@ -178,9 +182,14 @@ export function createToolRunner({ client = { systemOne, listModels } } = {}) {
   return { runTool };
 }
 
-const runner = createToolRunner();
-
 const server = new Server({ name: "jev", version }, { capabilities: { tools: {} } });
+
+const runner = createToolRunner({
+  clientLabel() {
+    const info = server.getClientVersion();
+    return info ? `${info.name}@${info.version}` : null;
+  },
+});
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }));
 

@@ -14,6 +14,8 @@ for line in open(LOG):
         r = json.loads(line)
     except ValueError:
         continue          # a torn line from a crashed write is skipped, not fatal
+    if r.get("ok") is False:
+        continue          # schema 2 logs failed calls too; they spent nothing
     d = days[r.get("ts", "")[:10]]
     d["requests"] += 1
     d["questions"] += r.get("questions") or 0

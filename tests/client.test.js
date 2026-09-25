@@ -191,3 +191,47 @@ test("SDK requests refresh credentials and cannot reuse a removed app key", asyn
     _resetClient();
   }
 });
+
+test("schema 2 spend rows record the caller, latency and failures", { skip: !process.env.TYPESAFE_SPEND_LOG && "run through npm test so the spend log is a temp file" }, async () => {
+  const { readFileSync, rmSync } = await import("node:fs");
+  const log = process.env.TYPESAFE_SPEND_LOG;
+  const originalFetch = globalThis.fetch;
+  const originalKey = process.env.TYPESAFE_API_KEY;
+  const originalScope = process.env.DROPPY_CREDENTIAL_SCOPE;
+  delete process.env.DROPPY_CREDENTIAL_SCOPE;
+  process.env.TYPESAFE_API_KEY = FAKE_KEY;
+  _resetClient();
+  rmSync(log, { force: true });
+  const questions = { q1: { type: "noul", instructions: "Is this valid?" } };
+  const caller = { tool: "jev_noul", client: "test-client@1" };
+  try {
+    globalThis.fetch = async () => new Response(JSON.stringify({
+      model: "jev-test", answers: { q1: { type: "noul", noul: 0.9 } }, usage: { input_tokens: 5, output_tokens: 2 },
+    }), { status: 200, headers: { "Content-Type": "application/json" } });
+    await systemOne({ state: "s", questions, caller });
+    globalThis.fetch = async () => new Response(JSON.stringify({ error: "bad request" }), {
+      status: 400, headers: { "Content-Type": "application/json" },
+    });
+    await assert.rejects(systemOne({ state: "s", questions, caller }));
+    const rows = readFileSync(log, "utf8").trim().split("\n").map((line) => JSON.parse(line));
+    assert.equal(rows.length, 2);
+    for (const row of rows) {
+      assert.equal(row.schema, 2);
+      assert.equal(row.source, "mcp");
+      assert.equal(row.tool, "jev_noul");
+      assert.equal(row.client, "test-client@1");
+      assert.equal(row.cwd, process.cwd());
+      assert.equal(typeof row.latency_ms, "number");
+    }
+    assert.equal(rows[0].ok, true);
+    assert.equal(rows[0].input_tokens, 5);
+    assert.equal(rows[1].ok, false);
+    assert.equal(rows[1].input_tokens, null);
+    assert.equal(JSON.stringify(rows[1]).includes(FAKE_KEY), false);
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalKey === undefined) delete process.env.TYPESAFE_API_KEY; else process.env.TYPESAFE_API_KEY = originalKey;
+    if (originalScope === undefined) delete process.env.DROPPY_CREDENTIAL_SCOPE; else process.env.DROPPY_CREDENTIAL_SCOPE = originalScope;
+    _resetClient();
+  }
+});

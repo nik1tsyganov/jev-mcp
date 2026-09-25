@@ -69,3 +69,10 @@ test("the per-call question cap stops a runaway batch before any spend", async (
   await assert.rejects(runTool("jev_ask", { state: "x", questions }), /exceeds the 32 cap/);
   assert.equal(client.calls.length, 0);
 });
+
+test("each Jev call carries its tool name and the MCP client label", async () => {
+  const client = fakeClient();
+  const { runTool } = createToolRunner({ client, clientLabel: () => "claude-code@9.9" });
+  await runTool("jev_score", { state: "x", instructions: "How good?", criteria: ["low", "high"] });
+  assert.deepEqual(client.calls[0].caller, { tool: "jev_score", client: "claude-code@9.9" });
+});
