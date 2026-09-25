@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Advisory merge-risk ranking before a push. Installed by tools/install_hook.sh.
+# Advisory calibration-drift and merge-risk checks before a push. Installed by tools/install_hook.sh.
 #
 # It NEVER blocks: every path exits 0, including a timeout, a missing key, a missing
 # tool and a failed call. A judgment ranks what a human should read; the tests gate the
@@ -10,9 +10,19 @@ set -u
 
 [ "${JEV_MERGE_RISK:-1}" = "0" ] && exit 0
 
+command -v python3 >/dev/null 2>&1 || exit 0
+
+# Drift first, and outside merge-risk's preconditions: a gate measured against one model
+# version is not evidence about another, and that is worth saying even on a push where
+# merge-risk cannot run.
+LOCK="$HOME/src/jev-mcp/tools/calibration_lock.py"
+[ -f "$LOCK" ] && { python3 "$LOCK" || true; }
+
+CONTRACT="$HOME/src/jev-mcp/tools/jev_contract_check.py"
+[ -f "$CONTRACT" ] && { python3 "$CONTRACT" || true; }
+
 TOOL="$HOME/src/jev-mcp/tools/merge_risk.py"
 [ -x "$TOOL" ] || exit 0
-command -v python3 >/dev/null 2>&1 || exit 0
 
 repo="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
 

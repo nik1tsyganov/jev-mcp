@@ -1,0 +1,185 @@
+{
+  "status": "FAILED",
+  "profileId": "technical-bookmark-topic-v2",
+  "selectedThreshold": 0.4,
+  "totalHoldoutCount": 400,
+  "metrics": {
+    "sampleCount": 218,
+    "acceptedAccuracy": 0.8853211009174312,
+    "coverage": 0.545,
+    "accuracyDeltaCI": {
+      "n": 218,
+      "meanDiff": -0.045871559633027525,
+      "ci95": [
+        -0.10091743119266056,
+        0.0045871559633027525
+      ]
+    },
+    "groupAccuracyDeltaCI": {
+      "software_development": {
+        "n": 71,
+        "meanDiff": -0.04225352112676056,
+        "ci95": [
+          -0.09859154929577464,
+          0
+        ]
+      },
+      "machine_learning": {
+        "n": 36,
+        "meanDiff": -0.3333333333333333,
+        "ci95": [
+          -0.5,
+          -0.19444444444444445
+        ]
+      },
+      "computer_hardware": {
+        "n": 50,
+        "meanDiff": 0.18,
+        "ci95": [
+          0.04,
+          0.32
+        ]
+      },
+      "other": {
+        "n": 61,
+        "meanDiff": -0.06557377049180328,
+        "ci95": [
+          -0.13114754098360656,
+          -0.01639344262295082
+        ]
+      }
+    },
+    "groupSampleCounts": {
+      "software_development": 71,
+      "machine_learning": 36,
+      "computer_hardware": 50,
+      "other": 61
+    },
+    "groupAcceptedAccuracy": {
+      "software_development": 0.9577464788732394,
+      "machine_learning": 0.6111111111111112,
+      "computer_hardware": 0.92,
+      "other": 0.9344262295081968
+    },
+    "localFullAccuracy": 0.7475,
+    "jevFullAccuracy": 0.945,
+    "cascadeAccuracy": 0.92,
+    "latencyRatio": 0.024874025398216617,
+    "errorCount": 0,
+    "schemaErrorCount": 0,
+    "localCheckpoint": "aac6fef/laya-typed-decisions-mlx",
+    "localRevision": "28416e78cb26a239a4eabaa2e084904ec5e6cacb",
+    "localResolvedModel": "~/.local/scratch/laya-evaluation/hf/hub/models--aac6fef--laya-typed-decisions-mlx/snapshots/28416e78cb26a239a4eabaa2e084904ec5e6cacb",
+    "resolvedJevModel": "jev-1.13.0"
+  },
+  "gates": [
+    {
+      "name": "errors",
+      "pass": true,
+      "severity": "fail",
+      "detail": "requirement satisfied"
+    },
+    {
+      "name": "schema-errors",
+      "pass": true,
+      "severity": "fail",
+      "detail": "requirement satisfied"
+    },
+    {
+      "name": "coverage",
+      "pass": true,
+      "severity": "inconclusive",
+      "detail": "requirement satisfied"
+    },
+    {
+      "name": "accepted-accuracy",
+      "pass": false,
+      "severity": "fail",
+      "detail": "observed accepted accuracy 0.8853 < 0.95"
+    },
+    {
+      "name": "overall-ci-lower",
+      "pass": false,
+      "severity": "fail",
+      "detail": "overall CI lower -0.1009 < -0.02"
+    },
+    {
+      "name": "latency-ratio",
+      "pass": true,
+      "severity": "fail",
+      "detail": "requirement satisfied"
+    },
+    {
+      "name": "group-count:software_development",
+      "pass": true,
+      "severity": "inconclusive",
+      "detail": "requirement satisfied"
+    },
+    {
+      "name": "group-ci-lower:software_development",
+      "pass": false,
+      "severity": "fail",
+      "detail": "software_development CI lower -0.0986 < -0.05"
+    },
+    {
+      "name": "group-count:machine_learning",
+      "pass": true,
+      "severity": "inconclusive",
+      "detail": "requirement satisfied"
+    },
+    {
+      "name": "group-ci-lower:machine_learning",
+      "pass": false,
+      "severity": "fail",
+      "detail": "machine_learning CI lower -0.5000 < -0.05"
+    },
+    {
+      "name": "group-count:computer_hardware",
+      "pass": true,
+      "severity": "inconclusive",
+      "detail": "requirement satisfied"
+    },
+    {
+      "name": "group-ci-lower:computer_hardware",
+      "pass": true,
+      "severity": "fail",
+      "detail": "requirement satisfied"
+    },
+    {
+      "name": "group-count:other",
+      "pass": true,
+      "severity": "inconclusive",
+      "detail": "requirement satisfied"
+    },
+    {
+      "name": "group-ci-lower:other",
+      "pass": false,
+      "severity": "fail",
+      "detail": "other CI lower -0.1311 < -0.05"
+    }
+  ],
+  "note": "diagnostic only; no approval evidence was emitted",
+  "recordedAt": "2026-09-21T15:53:16.439063+00:00",
+  "qualificationScope": {
+    "synthetic": true,
+    "labelSource": "agent-authored; not human-labeled",
+    "statement": "Separate authored confirmation corpus with no exact repeated inputs; related topics and label cues remain. This is not representative production traffic."
+  },
+  "provenance": {
+    "frozenInputs": {
+      "~/src/jev-mcp/config/technical-bookmark-topic-v2.json": "5719986f13d86b1940a19cd9913b33d7f03eb82a784c9b5da4f4eafbea90ab0b",
+      "~/.local/scratch/laya-activation/calibration-v2.json": "ca6016b05b9097e8baa8c05c98c3ad219afd93217447bf3cf616284000178080",
+      "~/src/jev-mcp/data/technical-bookmark-topic-dev.jsonl": "6ee42cffbae096c1c69d1d5ff3346fedf33a5b9ab147fa4520105201201c90ba",
+      "~/src/jev-mcp/data/technical-bookmark-topic-v2-confirmation.jsonl": "69548a966749d71c1b5a20f6208b2c3d647328ceaca47c164fe0dc7167fd7526"
+    },
+    "predictionFiles": {
+      "~/.local/scratch/laya-activation/v2-confirmation-local/run.json": "9a497012d7fcb2e23b881ba46808034a807a5703444e78d6a29c6215dab0b9f5",
+      "~/.local/scratch/laya-activation/v2-confirmation-jev/run.json": "79f2e080649c2d3831d71020275de3498391e9e7b35d7e3d90f1d8bbf870992c"
+    },
+    "bootstrapSeed": 0,
+    "bootstrapReps": 2000,
+    "jevRequests": 400,
+    "jevRetries": 0,
+    "localPredictions": 400
+  }
+}

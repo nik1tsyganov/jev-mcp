@@ -1,0 +1,1766 @@
+{
+ "fingerprint": "1378a820474e6e5d",
+ "model": "jev-latest",
+ "items": {
+  "60b13fa:tools/jev-client.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.74,
+     "confidence": 0.54,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.06,
+      "1": 0.24,
+      "2": 0.6,
+      "3": 0.1
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.54
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.93
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.98,
+     "probabilities": {
+      "skim": 0.01,
+      "no_read_needed": 0.0,
+      "read_required": 0.99
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1112,
+    "output_tokens": 94
+   }
+  },
+  "05ed29b:tools/run-drive.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.82,
+     "confidence": 0.18,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.52,
+      "1": 0.21,
+      "2": 0.18,
+      "3": 0.09
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.04
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.91
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.5,
+     "probabilities": {
+      "read_required": 0.67,
+      "no_read_needed": 0.03,
+      "skim": 0.3
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1103,
+    "output_tokens": 94
+   }
+  },
+  "6c17b61:tools/panel-routing.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.83,
+     "confidence": 0.62,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.23,
+      "2": 0.64,
+      "3": 0.11
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.78
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.89,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "skim": 0.07,
+      "read_required": 0.93
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1830,
+    "output_tokens": 94
+   }
+  },
+  "6c17b61:tools/panel-routing.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.77,
+     "confidence": 0.23,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.52,
+      "1": 0.23,
+      "2": 0.22,
+      "3": 0.03
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.28
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.16,
+     "probabilities": {
+      "skim": 0.28,
+      "read_required": 0.28,
+      "no_read_needed": 0.44
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1637,
+    "output_tokens": 95
+   }
+  },
+  "6c17b61:tools/activation-check.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.31,
+     "confidence": 0.69,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.76,
+      "1": 0.19,
+      "2": 0.04,
+      "3": 0.01
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.14
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.15,
+     "probabilities": {
+      "read_required": 0.23,
+      "skim": 0.33,
+      "no_read_needed": 0.44
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1440,
+    "output_tokens": 95
+   }
+  },
+  "669c1d3:tools/evidence-read-access.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.47,
+     "confidence": 0.26,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.15,
+      "1": 0.34,
+      "2": 0.41,
+      "3": 0.1
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.95
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.95,
+     "probabilities": {
+      "no_read_needed": 0.01,
+      "read_required": 0.96,
+      "skim": 0.03
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1027,
+    "output_tokens": 94
+   }
+  },
+  "669c1d3:tools/cli-adapters.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.93,
+     "confidence": 0.55,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.2,
+      "2": 0.58,
+      "3": 0.19
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.06
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.95
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.99,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "skim": 0.01,
+      "read_required": 0.99
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1606,
+    "output_tokens": 94
+   }
+  },
+  "669c1d3:tools/evidence-read-access.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.12,
+     "confidence": 0.88,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.92,
+      "1": 0.04,
+      "2": 0.02,
+      "3": 0.02
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.34
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.44,
+     "probabilities": {
+      "no_read_needed": 0.62,
+      "read_required": 0.15,
+      "skim": 0.23
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1648,
+    "output_tokens": 95
+   }
+  },
+  "9fe3461:tools/panel-rules.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 2.06,
+     "confidence": 0.65,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.11,
+      "2": 0.67,
+      "3": 0.2
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.96
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.94,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "skim": 0.04,
+      "read_required": 0.96
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 848,
+    "output_tokens": 94
+   }
+  },
+  "9fe3461:tools/run-finalize.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.35,
+     "confidence": 0.11,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.24,
+      "1": 0.29,
+      "2": 0.35,
+      "3": 0.12
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.07
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.91
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.48,
+     "probabilities": {
+      "no_read_needed": 0.03,
+      "read_required": 0.66,
+      "skim": 0.31
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 851,
+    "output_tokens": 94
+   }
+  },
+  "9fe3461:standing-rules/BRIEF-RULES-BLOCK.md": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 2.19,
+     "confidence": 0.38,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.06,
+      "1": 0.09,
+      "2": 0.44,
+      "3": 0.41
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.23
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.9,
+     "probabilities": {
+      "skim": 0.06,
+      "read_required": 0.9400000000000001,
+      "no_read_needed": 0.0
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 879,
+    "output_tokens": 94
+   }
+  },
+  "4fc9f76:tools/evidence-read-access.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.64,
+     "confidence": 0.61,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.06,
+      "1": 0.26,
+      "2": 0.66,
+      "3": 0.02
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.83
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.73,
+     "probabilities": {
+      "skim": 0.17,
+      "read_required": 0.82,
+      "no_read_needed": 0.01
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1136,
+    "output_tokens": 94
+   }
+  },
+  "4fc9f76:tools/run-finalize.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.64,
+     "confidence": 0.18,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.17,
+      "1": 0.26,
+      "2": 0.34,
+      "3": 0.23
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.07
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.85
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.58,
+     "probabilities": {
+      "read_required": 0.72,
+      "no_read_needed": 0.02,
+      "skim": 0.26
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1368,
+    "output_tokens": 94
+   }
+  },
+  "4fc9f76:tools/evidence-read-access.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.1,
+     "confidence": 0.9,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.91,
+      "1": 0.08,
+      "2": 0.01,
+      "3": 0.0
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.14
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.75,
+     "probabilities": {
+      "no_read_needed": 0.84,
+      "read_required": 0.04,
+      "skim": 0.12
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1600,
+    "output_tokens": 95
+   }
+  },
+  "963b83b:tools/jev-arbiter.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.95,
+     "confidence": 0.63,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.11,
+      "2": 0.68,
+      "3": 0.16
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.04
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.96
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.93,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "skim": 0.04,
+      "read_required": 0.96
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1168,
+    "output_tokens": 94
+   }
+  },
+  "963b83b:tools/jev-arbiter.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.02,
+     "confidence": 0.98,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.99,
+      "1": 0.01,
+      "2": 0.0,
+      "3": 0.0
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.6,
+     "probabilities": {
+      "read_required": 0.06,
+      "skim": 0.2,
+      "no_read_needed": 0.74
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1677,
+    "output_tokens": 95
+   }
+  },
+  "b511442:tools/dispatch-evidence.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 2.04,
+     "confidence": 0.65,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.12,
+      "2": 0.67,
+      "3": 0.19
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.04
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.89
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.85,
+     "probabilities": {
+      "read_required": 0.9,
+      "skim": 0.09,
+      "no_read_needed": 0.01
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1453,
+    "output_tokens": 94
+   }
+  },
+  "b511442:tools/run-drive.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.36,
+     "confidence": 0.31,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.17,
+      "1": 0.39999999999999997,
+      "2": 0.32,
+      "3": 0.11
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.04
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.92
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.66,
+     "probabilities": {
+      "read_required": 0.77,
+      "skim": 0.22,
+      "no_read_needed": 0.01
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1112,
+    "output_tokens": 94
+   }
+  },
+  "b511442:tools/host-helper-evidence.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.09,
+     "confidence": 0.91,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.93,
+      "1": 0.05,
+      "2": 0.02,
+      "3": 0.0
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.62,
+     "probabilities": {
+      "no_read_needed": 0.74,
+      "read_required": 0.07,
+      "skim": 0.19
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1313,
+    "output_tokens": 95
+   }
+  },
+  "6154326:tools/release-check.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.89,
+     "confidence": 0.41,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.35,
+      "1": 0.47,
+      "2": 0.12,
+      "3": 0.06
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.8
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.43,
+     "probabilities": {
+      "no_read_needed": 0.1,
+      "skim": 0.28,
+      "read_required": 0.62
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1191,
+    "output_tokens": 94
+   }
+  },
+  "6154326:tools/site-plate-drift.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.73,
+     "confidence": 0.27,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.55,
+      "1": 0.21,
+      "2": 0.19,
+      "3": 0.05
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.23
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.16
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.2,
+     "probabilities": {
+      "skim": 0.12,
+      "read_required": 0.47,
+      "no_read_needed": 0.41
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1458,
+    "output_tokens": 94
+   }
+  },
+  "6154326:site/index.html": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.76,
+     "confidence": 0.24,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.67,
+      "1": 0.07,
+      "2": 0.1,
+      "3": 0.16
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.07
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.25,
+     "probabilities": {
+      "no_read_needed": 0.49,
+      "skim": 0.43,
+      "read_required": 0.08
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 790,
+    "output_tokens": 95
+   }
+  },
+  "26819aa:tools/plan-seal.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 2.27,
+     "confidence": 0.27,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.07,
+      "1": 0.17,
+      "2": 0.18,
+      "3": 0.58
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.96
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.99,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "skim": 0.01,
+      "read_required": 0.99
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 2249,
+    "output_tokens": 94
+   }
+  },
+  "26819aa:tools/run-drive.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 2.0,
+     "confidence": 0.5,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.17,
+      "2": 0.54,
+      "3": 0.25
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.04
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.96
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.98,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "read_required": 0.99,
+      "skim": 0.01
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1714,
+    "output_tokens": 94
+   }
+  },
+  "26819aa:tools/unit-dependency.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.09,
+     "confidence": 0.91,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.93,
+      "1": 0.05,
+      "2": 0.02,
+      "3": 0.0
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.09
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.52,
+     "probabilities": {
+      "no_read_needed": 0.68,
+      "read_required": 0.19,
+      "skim": 0.13
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 2468,
+    "output_tokens": 95
+   }
+  },
+  "5ad93a0:tools/cli-adapters.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 2.09,
+     "confidence": 0.09,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.06,
+      "1": 0.21,
+      "2": 0.32,
+      "3": 0.41
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.05
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.95
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 1.0,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "read_required": 1.0,
+      "skim": 0.0
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1888,
+    "output_tokens": 94
+   }
+  },
+  "5ad93a0:tools/cli-adapters-hardening.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.06,
+     "confidence": 0.94,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.96,
+      "1": 0.03,
+      "2": 0.01,
+      "3": 0.0
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.17
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.52,
+     "probabilities": {
+      "skim": 0.18,
+      "read_required": 0.14,
+      "no_read_needed": 0.68
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 2412,
+    "output_tokens": 95
+   }
+  },
+  "2b63bc8:tools/lane-pick.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.61,
+     "confidence": 0.51,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.09,
+      "1": 0.25,
+      "2": 0.61,
+      "3": 0.05
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.88
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.59,
+     "probabilities": {
+      "read_required": 0.73,
+      "no_read_needed": 0.01,
+      "skim": 0.26
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 981,
+    "output_tokens": 94
+   }
+  },
+  "e301018:tools/lane-pick.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.41,
+     "confidence": 0.37,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.1,
+      "1": 0.42,
+      "2": 0.46,
+      "3": 0.02
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.81
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.98,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "read_required": 0.99,
+      "skim": 0.01
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1408,
+    "output_tokens": 94
+   }
+  },
+  "e301018:tools/lane-pick.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.05,
+     "confidence": 0.95,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.96,
+      "1": 0.04,
+      "2": 0.0,
+      "3": 0.0
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.09
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.45,
+     "probabilities": {
+      "skim": 0.22,
+      "read_required": 0.14,
+      "no_read_needed": 0.64
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1271,
+    "output_tokens": 95
+   }
+  },
+  "404f7c6:tools/dispatch-matrix.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 2.04,
+     "confidence": 0.04,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.1,
+      "1": 0.18,
+      "2": 0.31,
+      "3": 0.41
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.05
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.95
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.96,
+     "probabilities": {
+      "read_required": 0.97,
+      "skim": 0.03,
+      "no_read_needed": 0.0
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1093,
+    "output_tokens": 94
+   }
+  },
+  "404f7c6:tools/panel-rules.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 2.17,
+     "confidence": 0.57,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.11,
+      "2": 0.58,
+      "3": 0.3
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.96
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.99,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "skim": 0.0,
+      "read_required": 1.0
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1930,
+    "output_tokens": 94
+   }
+  },
+  "404f7c6:tools/panel-rules.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.38,
+     "confidence": 0.62,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.73,
+      "1": 0.2,
+      "2": 0.03,
+      "3": 0.04
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.09
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.18,
+     "probabilities": {
+      "no_read_needed": 0.45,
+      "read_required": 0.25,
+      "skim": 0.3
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1212,
+    "output_tokens": 95
+   }
+  },
+  "d1d45d4:tools/lane-pick.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.08,
+     "confidence": 0.92,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.93,
+      "1": 0.06,
+      "2": 0.01,
+      "3": 0.0
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.07
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.38,
+     "probabilities": {
+      "read_required": 0.19,
+      "skim": 0.22,
+      "no_read_needed": 0.59
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1458,
+    "output_tokens": 95
+   }
+  },
+  "fab506a:tools/dispatch-matrix.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.53,
+     "confidence": 0.47,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.67,
+      "1": 0.18,
+      "2": 0.11,
+      "3": 0.04
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.22,
+     "probabilities": {
+      "no_read_needed": 0.27,
+      "read_required": 0.48,
+      "skim": 0.25
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1390,
+    "output_tokens": 94
+   }
+  },
+  "f0be11f:README.md": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.12,
+     "confidence": 0.0,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.58,
+      "1": 0.04,
+      "2": 0.05,
+      "3": 0.33
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.25
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.05
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.77,
+     "probabilities": {
+      "no_read_needed": 0.0,
+      "read_required": 0.85,
+      "skim": 0.15
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 2373,
+    "output_tokens": 94
+   }
+  },
+  "f0be11f:site/styles.css": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 2.75,
+     "confidence": 0.75,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.03,
+      "1": 0.02,
+      "2": 0.11,
+      "3": 0.84
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.04
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.66
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.64,
+     "probabilities": {
+      "skim": 0.16,
+      "read_required": 0.76,
+      "no_read_needed": 0.08
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 3030,
+    "output_tokens": 94
+   }
+  },
+  "86f4f11:tools/panel-routing.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.63,
+     "confidence": 0.37,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.59,
+      "1": 0.21,
+      "2": 0.16,
+      "3": 0.04
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.03
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.29
+    },
+    "route": {
+     "type": "choice",
+     "choice": "read_required",
+     "confidence": 0.15,
+     "probabilities": {
+      "no_read_needed": 0.38,
+      "skim": 0.19,
+      "read_required": 0.43
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 2006,
+    "output_tokens": 94
+   }
+  },
+  "f8c0e9e:tools/arbiter-policy.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 0.11,
+     "confidence": 0.89,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.9,
+      "1": 0.1,
+      "2": 0.0,
+      "3": 0.0
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.08
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.48,
+     "probabilities": {
+      "no_read_needed": 0.65,
+      "skim": 0.22,
+      "read_required": 0.13
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1710,
+    "output_tokens": 95
+   }
+  },
+  "237c077:tools/cli-brief-rules-check.test.js": {
+   "model": "jev-1.13.0",
+   "answers": {
+    "blast_radius": {
+     "type": "score",
+     "score": 1.13,
+     "confidence": 0.0,
+     "legend": {
+      "0": "this file only",
+      "1": "this module",
+      "2": "several modules",
+      "3": "every user of the product"
+     },
+     "probabilities": {
+      "0": 0.37,
+      "1": 0.22,
+      "2": 0.34,
+      "3": 0.07
+     }
+    },
+    "irreversible_path": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "behaviour_change": {
+     "type": "noul",
+     "noul": 0.13
+    },
+    "route": {
+     "type": "choice",
+     "choice": "no_read_needed",
+     "confidence": 0.1,
+     "probabilities": {
+      "read_required": 0.34,
+      "skim": 0.26,
+      "no_read_needed": 0.4
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 1662,
+    "output_tokens": 95
+   }
+  }
+ }
+}

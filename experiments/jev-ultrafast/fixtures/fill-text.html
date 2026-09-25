@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Access terminal</title>
+<style>
+  body { font-family: sans-serif; margin: 24px; }
+  label { display: block; margin: 8px 0; }
+  #cover-wrap { position: relative; display: inline-block; margin-top: 12px; }
+  #cover { position: absolute; inset: 0; background: rgba(255,255,255,0.01); }
+  #status { margin-top: 16px; font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>Access terminal</h1>
+<label>Access code <input id="code" type="text" autocomplete="off"></label>
+<label>Member id <input id="member" type="text" value="M-1042" readonly></label>
+<div>
+  <button id="save">Save code</button>
+  <button id="wipe" disabled>Wipe terminal</button>
+</div>
+<div id="cover-wrap">
+  <button id="draft">Save draft</button>
+  <div id="cover" title="display cover"></div>
+</div>
+<p id="status" role="status"></p>
+<script>
+window.__trial = { expected: "delta-5930-quill", saved: false, value: null, complete: false, errors: [], log: [] };
+const t = window.__trial;
+const status = document.getElementById("status");
+document.getElementById("code").addEventListener("input", e =>
+  t.log.push({ type: "input", value: e.target.value }));
+document.getElementById("save").addEventListener("click", () => {
+  const v = document.getElementById("code").value;
+  t.value = v;
+  t.log.push({ type: "save", value: v });
+  if (v === t.expected) {
+    t.saved = true;
+    t.complete = true;
+    status.textContent = "Saved: " + v;
+  } else {
+    t.errors.push({ type: "bad_value", value: v });
+    status.textContent = "Rejected: " + (v || "(empty)");
+  }
+});
+document.getElementById("cover").addEventListener("click", () =>
+  t.errors.push({ type: "cover_clicked" }));
+document.getElementById("draft").addEventListener("click", () =>
+  t.errors.push({ type: "covered_clicked" }));
+</script>
+</body>
+</html>

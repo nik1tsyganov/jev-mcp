@@ -53,14 +53,18 @@
       "gate": 0.5,
       "above": "queue the reference for update or deletion",
       "below": "leave it alone",
-      "calibration": "2026-09-19, 20 hand-labelled references (10 true, 10 false): at 0.5, 0 false positives and 3 false negatives, 15 percent disagreement. All three misses were present-tense path-status claims inside archived files, which is why line_asserts_current_state was added; re-calibrate after any further state change.",
-      "calibrated_on_model": "jev-1.13.0"
+      "calibration": "MEASURED AT CHANCE 2026-09-19 and NOT FIT FOR USE. Fitted and held out on 36 hand-labelled references (data/skill-store-stale-ref.jsonl, 18/18 balanced, seed 0). is_stale: holdout 61.1%, Wilson lower 0.386. load_bearing: holdout 44.4%, Wilson lower 0.246, worse than chance. risk_if_wrong: holdout 50.0%, Wilson lower 0.290. Tie width 0.00 on is_stale and load_bearing: the classes do not separate. Every holdout disagreement is the model calling a reference stale when the hand label says it is fine - a placeholder path in a recipe, an illustrative example, a symlink that resolves. The pack asks whether a path resolves, which is a filesystem call already supplied in the state, so the judgment is being asked to redo deterministic work. USE INSTEAD: tools/skill_refs.py deterministic_findings and tools/absence_check.py, which answer the same question exactly and for free.",
+      "calibrated_on_model": "jev-1.13.0",
+      "validation": "measured at chance on a held-out split; do not use this gate"
     },
     "load_bearing": {
       "gate": 0.5,
       "above": "fix before the next dispatch",
-      "below": "fix at leisure"
+      "below": "fix at leisure",
+      "calibration": "MEASURED AT CHANCE 2026-09-19 and NOT FIT FOR USE. Fitted and held out on 36 hand-labelled references (data/skill-store-stale-ref.jsonl, 18/18 balanced, seed 0). is_stale: holdout 61.1%, Wilson lower 0.386. load_bearing: holdout 44.4%, Wilson lower 0.246, worse than chance. risk_if_wrong: holdout 50.0%, Wilson lower 0.290. Tie width 0.00 on is_stale and load_bearing: the classes do not separate. Every holdout disagreement is the model calling a reference stale when the hand label says it is fine - a placeholder path in a recipe, an illustrative example, a symlink that resolves. The pack asks whether a path resolves, which is a filesystem call already supplied in the state, so the judgment is being asked to redo deterministic work. USE INSTEAD: tools/skill_refs.py deterministic_findings and tools/absence_check.py, which answer the same question exactly and for free.",
+      "validation": "measured at chance on a held-out split; do not use this gate"
     }
   },
-  "notes": "Never judge staleness from a regex alone: put what the target actually contains in `target_excerpt`, or set `target_exists` to unknown and let the route come back verify_live. Measured 2026-09-19 on 53 references: without file_declares_archived, surrounding_text_says_absent and inside_code_block in the state, roughly 70 percent of the flagged items were false positives \u2014 archived files that already disclose the absence, and placeholder paths inside examples. Fill those three fields or do not trust the output."
+  "notes": "Never judge staleness from a regex alone: put what the target actually contains in `target_excerpt`, or set `target_exists` to unknown and let the route come back verify_live. Measured 2026-09-19 on 53 references: without file_declares_archived, surrounding_text_says_absent and inside_code_block in the state, roughly 70 percent of the flagged items were false positives \u2014 archived files that already disclose the absence, and placeholder paths inside examples. Fill those three fields or do not trust the output.",
+  "status": "RETIRED 2026-09-19: superseded by deterministic checks; kept for the record and the dataset."
 }
