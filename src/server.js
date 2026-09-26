@@ -68,6 +68,7 @@ export const TOOLS = [
         purpose: PURPOSE_SCHEMA,
       },
       required: ["state", "questions"],
+      additionalProperties: false,
     },
   },
   {
@@ -89,6 +90,7 @@ export const TOOLS = [
         purpose: PURPOSE_SCHEMA,
       },
       required: ["state", "instructions"],
+      additionalProperties: false,
     },
   },
   {
@@ -110,6 +112,7 @@ export const TOOLS = [
         purpose: PURPOSE_SCHEMA,
       },
       required: ["state", "instructions", "criteria"],
+      additionalProperties: false,
     },
   },
   {
@@ -131,12 +134,13 @@ export const TOOLS = [
         purpose: PURPOSE_SCHEMA,
       },
       required: ["state", "instructions", "criteria"],
+      additionalProperties: false,
     },
   },
   {
     name: "jev_models",
     description: "List the TypeSafe Jev models the account can use. Costs no judgment tokens.",
-    inputSchema: { type: "object", properties: {} },
+    inputSchema: { type: "object", properties: {}, additionalProperties: false },
   },
   browserActionTool,
 ];
@@ -182,6 +186,15 @@ export function createToolRunner({ client = { systemOne, listModels }, clientLab
   const browserDecision = createBrowserDecision({ ask: askAs("decision_browser_action", "browser-action") });
 
   async function runTool(name, args = {}) {
+    // Clients do not all validate against the schema, so a misspelled key
+    // (for example `purpse`) is refused here instead of silently ignored.
+    const tool = TOOLS.find((t) => t.name === name);
+    if (tool && tool.name !== "decision_browser_action" && args && typeof args === "object") {
+      const unknown = Object.keys(args).filter((key) => !Object.hasOwn(tool.inputSchema.properties, key));
+      if (unknown.length) {
+        throw new Error(`Unknown argument ${unknown.map((k) => `\`${k}\``).join(", ")} for ${name}; allowed: ${Object.keys(tool.inputSchema.properties).join(", ")}.`);
+      }
+    }
     const ask = askAs(name);
     switch (name) {
       case "jev_ask":

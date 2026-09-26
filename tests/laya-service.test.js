@@ -259,3 +259,76 @@ test("unprofiled questions registered to a non-default profile require that prof
   assert.equal(local.calls.length, 0);
   assert.equal(JSON.parse(readFileSync(logPath, "utf8")).reason, "profile-required");
 });
+
+const ENV_KEYS = ["LAYA_PYTHON", "LAYA_MODEL_DIR", "LAYA_CHECKPOINT", "LAYA_MODEL_REVISION", "LAYA_TIMEOUT_MS", "LAYA_MAX_QUEUE"];
+
+// Points LAYA_* at the V2 profile runtime, with overrides, and restores the env after the test.
+function envLikeV2(t, overrides = {}) {
+  const saved = Object.fromEntries(ENV_KEYS.map((key) => [key, process.env[key]]));
+  t.after(() => {
+    for (const [key, value] of Object.entries(saved)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  });
+  const v2 = loadPolicy().profiles[V2];
+  const vars = { LAYA_PYTHON: v2.runtime.python, LAYA_MODEL_DIR: v2.runtime.modelPath,
+    LAYA_CHECKPOINT: v2.checkpoint, LAYA_MODEL_REVISION: v2.revision, ...overrides };
+  for (const key of ENV_KEYS) {
+    if (vars[key] === undefined) delete process.env[key];
+    else process.env[key] = vars[key];
+  }
+}
+
+test("an env runtime identical to a profile runtime shares one worker", async (t) => {
+  envLikeV2(t);
+  const { service, workers } = setup(t, { laya: undefined });
+  assert.equal(workers.length, 1);
+  const profiled = await service.ask({ state: "bookmark", questions: loadBookmarkQuestions() });
+  assert.equal(profiled.profile, V2);
+  const generic = await service.ask({ state: "s", questions: QUESTIONS });
+  assert.equal(generic.profile, null);
+  assert.equal(workers.length, 1);
+  assert.equal(workers[0].calls.length, 2);
+  assert.equal(service.status().profiles[V2].resident, true);
+  await service.close();
+  assert.equal(workers[0].closed, 1);
+});
+
+test("an env runtime that differs in revision or timeout gets its own worker", async (t) => {
+  for (const overrides of [{ LAYA_MODEL_REVISION: "other-revision" }, { LAYA_TIMEOUT_MS: "60000" }]) {
+    envLikeV2(t, overrides);
+    const { service, workers } = setup(t, { laya: undefined });
+    await service.ask({ state: "bookmark", questions: loadBookmarkQuestions() });
+    assert.equal(workers.length, 2);
+    assert.equal(workers[0].calls.length, 0);
+    assert.equal(workers[1].calls.length, 1);
+  }
+});
+
+test("refresh and eviction never close the shared env worker", async (t) => {
+  envLikeV2(t);
+  const registry = loadPolicy();
+  for (const id of ["x1", "x2", "x3"]) {
+    registry.profiles[id] = structuredClone(registry.profiles[V2]);
+    registry.profiles[id].runtime.modelPath += `-${id}`;
+  }
+  const policy = { loadPolicy: () => registry, questionsFingerprint, resolveProfileId, selectProvider };
+  const { service, workers } = setup(t, { laya: undefined, policy });
+  const shared = workers[0];
+  const questions = loadBookmarkQuestions();
+  await service.ask({ state: "s", questions, profile: V2 });
+  // The clones fail the evidence check, but each worker is created before that gate.
+  for (const profile of ["x1", "x2", "x3"]) await service.ask({ state: "s", questions, profile }).catch(() => {});
+  assert.equal(workers.length, 4);
+  assert.equal(workers[1].closed, 1);
+  const modelPath = registry.profiles[V2].runtime.modelPath;
+  registry.profiles[V2].runtime.modelPath += "-updated";
+  await service.ask({ state: "s", questions, profile: V2 });
+  registry.profiles[V2].runtime.modelPath = modelPath;
+  await service.ask({ state: "s", questions, profile: V2 });
+  assert.equal(shared.closed, 0);
+  assert.equal(shared.calls.length, 2);
+  await service.close();
+  assert.equal(shared.closed, 1);
+});
