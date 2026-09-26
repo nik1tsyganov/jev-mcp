@@ -1,8 +1,6 @@
 # Technical bookmark topic profile v1 (candidate)
 
-Status: evaluated and rejected for local answers on 2026-09-21. The candidate is
-registered but disabled. Jev remains authoritative, while configured background
-comparisons can continue. See [qualification results](evidence/technical-bookmark-topic-v1.json).
+This records the pre-split combined router (before 2026-09-25). Status: qualification FAILED on 2026-09-21; the profile is enabled on this machine by owner override on the `laya` server and is selected with `profile: technical-bookmark-topic-v1`. There are no background comparisons. See [qualification results](evidence/technical-bookmark-topic-v1.json).
 
 ## Intended scope
 
@@ -44,7 +42,7 @@ uses a spreadsheet formula is `other`.
 - `questions`: exactly one question, id `topic`
 - `enabled`: `false`
 
-`enabled` is `false` on purpose: this is a candidate, not an enabled profile. It is now listed as disabled in `config/decision-profiles.json`. The live registry schema additionally needs a `questionsHash`, a
+`enabled` is `false` on purpose: this is a candidate, not an enabled profile. The registry entry in `config/decision-profiles.json` is enabled by owner override; this candidate definition file stays `enabled: false`. The live registry schema additionally needs a `questionsHash`, a
 `minSelectedProbability` and a pinned `evidence` file; those are not in this candidate
 because no evaluation has produced them. The lead froze input hashes before evaluation and recorded the failed diagnostic afterward.
 

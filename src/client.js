@@ -212,11 +212,12 @@ function redactError(err) {
 export async function systemOne({ state, questions, model, caller }) {
   const validated = validateQuestions(questions);
   chargeOne();
-  const client = getClient();
   const count = Object.keys(validated || {}).length;
   const started = performance.now();
   let result;
   try {
+    // Inside the try so a missing key is logged as a failed call, not lost.
+    const client = getClient();
     result = await client.systemOne({
       state,
       questions: validated,

@@ -19,8 +19,7 @@ routes browser work to it automatically.
     { "id": "e12", "operation": "CLICK", "label": "Save" },
     { "id": "e15", "operation": "SELECT", "label": "Theme", "value": "Dark" }
   ],
-  "recentActions": [{ "operation": "CLICK", "targetId": "e9", "outcome": "ok" }],
-  "remoteAllowed": true
+  "recentActions": [{ "operation": "CLICK", "targetId": "e9", "outcome": "ok" }]
 }
 ```
 
@@ -36,8 +35,6 @@ routes browser work to it automatically.
   showed, not a desired value. For TYPE_TEXT, an optional `value` describes the current field content; it is never the text to type.
 - `recentActions` — optional `{ operation, targetId?, outcome }` history so a
   loop does not repeat a failed step.
-- `remoteAllowed` — optional; `false` fails the call because the helper always
-  asks Jev.
 
 ## Output
 
@@ -48,7 +45,6 @@ routes browser work to it automatically.
   "action": { "id": "e12", "operation": "CLICK", "label": "Save" },
   "model": "jev-1.13.0",
   "usage": { "input_tokens": 0, "output_tokens": 0 },
-  "routing": { "provider": "jev" },
   "advisory": true,
   "requiresFreshObservation": true
 }
@@ -61,7 +57,7 @@ caller-labelled snapshot, and it is stale the moment the page changes.
 
 ## Provider
 
-`decision_browser_action` remains on the `jev` server and asks TypeSafe Jev. Laya does not answer browser action requests. With no Jev key, or with `remoteAllowed: false`, the call fails. The caller must still check authorization and page freshness before it acts.
+`decision_browser_action` remains on the `jev` server and asks TypeSafe Jev. Laya does not answer browser action requests. With no Jev key, the call fails. Unknown input fields, including the former `remoteAllowed`, are rejected. The caller must still check authorization and page freshness before it acts.
 
 ## Practical flow
 
@@ -118,6 +114,8 @@ From the synthetic-fixture trial this feature is based on
 
 
 ## Local integration check — 2026-09-21
+
+Historical: this check ran on the pre-split combined router, before `remoteAllowed` was removed on 2026-09-25.
 
 The packaged runtime exposed nine MCP tools. Three live calls through
 `decision_browser_action` selected the expected item, editable field, and dropdown

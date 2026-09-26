@@ -320,6 +320,11 @@ export function createLayaService({
         record.reason = decision.reason || "no-eligible-local-profile";
         throw new Error(record.reason);
       }
+      // Questions registered to a non-default profile must name it; they never run thresholdless.
+      if (generic && Object.values(loadedPolicy.profiles).some((p) => p?.questionsHash === record.fingerprint)) {
+        record.reason = "profile-required";
+        throw new Error(record.reason);
+      }
       if (generic && Object.values(questions).some(overlapsCalibratedQuestion)) {
         record.reason = "pack-overlap";
         throw new Error(record.reason);

@@ -3,7 +3,7 @@
 `npx skills add typesafe-ai/skills --skill typesafe-ai` installs the upstream design
 skill. That teaches an agent what Jev is; it does not give the agent a way to call it.
 `scripts/install-typesafe-jev.sh` wraps that command into a setup that works: the skill,
-the credential, the `jev` MCP server, the `jev-audit` skill in both stores, and a live
+the credential, the `jev` and `laya` MCP servers, the `jev-audit` skill in both stores, and a live
 call that proves the whole path answers.
 
 ## What it does
@@ -15,11 +15,16 @@ call that proves the whole path answers.
    `TYPESAFE_API_KEY` when sourced. If it is missing the script prints the key-creation
    instructions and exits — it never asks you to type a secret into it.
 4. Runs `npm install` in `~/src/jev-mcp`, skipped when `node_modules` exists.
-5. Registers the MCP server with all four vendors, each skipped when already present:
-   `claude mcp add-json jev`, `codex mcp add jev -- node <server>`,
-   `agy mcp add jev node <server>`, and a `jev` entry written into `~/.cursor/mcp.json`
-   (the existing servers there are preserved, and the file is backed up first). The key
-   is passed by inheritance, never on argv, so it cannot appear in `ps`.
+5. Registers the `jev` MCP server (`node src/server.js`) and the `laya` MCP server
+   (`node src/laya-server.js`) with all four hosts. Claude and Codex go through their
+   CLIs (`claude mcp remove` then `claude mcp add-json -s user`; `codex mcp remove` then
+   `codex mcp add`), and a host whose CLI is not on PATH is skipped with a message.
+   Antigravity (`~/.gemini/config/mcp_config.json`) and Cursor (`~/.cursor/mcp.json`) get
+   an atomic JSON edit that keeps other servers and any extra keys on the two entries.
+   `jev` gets no env; the server reads `~/.config/typesafe/env.sh` itself, so the key
+   never appears on argv or in a config file. `laya` gets only the six `LAYA_*` settings:
+   shell env first, then the first saved value in Claude, Cursor, Antigravity, then the
+   default profile.
 6. Copies `skills/jev-audit` into `~/.claude/skills` and mirrors it byte-for-byte into
    `~/.codex/skills`. An existing copy that differs stops the script unless `--force`.
 7. Posts one tiny `noul` question and asserts HTTP 200, printing the status and the
@@ -42,12 +47,16 @@ call that proves the whole path answers.
 ## Verify by hand
 
 - The upstream skill is present: `ls ~/.claude/skills/typesafe-ai` or the plugin path.
-- `claude mcp list`, `codex mcp get jev` and `agy mcp list` each show `jev`.
-- `cursor-agent mcp list` shows `jev: ready`, and `cursor-agent mcp list-tools jev`
-  lists the five tools.
+- `claude mcp list`, `codex mcp get jev`, `codex mcp get laya` and `agy mcp list` each
+  show both `jev` and `laya`.
+- `cursor-agent mcp list` shows `jev: ready` and `laya: ready`.
+  `cursor-agent mcp list-tools jev` lists the six `jev` tools (`jev_ask`, `jev_noul`,
+  `jev_choice`, `jev_score`, `jev_models`, `decision_browser_action`), and
+  `cursor-agent mcp list-tools laya` lists the three `laya_*` tools (`laya_ask`,
+  `laya_bookmark_topic`, `laya_status`).
 - The smoke test printed `HTTP 200` and a `noul` near 1.
 - `ls ~/.claude/skills/jev-audit ~/.codex/skills/jev-audit` both resolve.
-- A fresh agent session lists the five `jev_*` tools.
+- A fresh agent session lists the six `jev` tools and the three `laya_*` tools.
 
 ## Troubleshooting
 
@@ -57,9 +66,9 @@ call that proves the whole path answers.
 | HTTP 422 | a malformed request; the body names the field | fix the question shape — `choice` needs an object criteria, `score` an ordered array of two or more |
 | HTTP 429 | rate limited | wait and re-run; the server and SDKs already back off |
 | HTTP 529 | the service is overloaded | wait and re-run |
-| a vendor's list has no `jev` | registration was skipped or that CLI is absent | re-run step 5; it registers each vendor independently |
+| a vendor's list has no `jev` or no `laya` | registration was skipped or that config file was not written | re-run step 5; it registers both servers with all four hosts (check that host's CLI is on PATH) |
 | a vendor has `jev` but no key | that CLI launched the server without `TYPESAFE_API_KEY` | nothing to do: the server falls back to reading `~/.config/typesafe/env.sh` itself |
-| the agent sees no `jev_*` tools | the session started before registration | restart the agent session |
+| the agent sees no `jev_*` or `laya_*` tools | the session started before registration | restart the agent session |
 
 ## A note on the standing rule
 

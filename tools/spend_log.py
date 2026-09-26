@@ -23,11 +23,12 @@ def record(tool, model, questions, usage, latency_ms=None):
                 "cwd": os.getcwd(),
                 "pid": os.getpid(),
                 "ok": usage is not None,
+                "error": None if usage is not None else "failed",
                 "latency_ms": latency_ms,
                 "model": model,
                 "questions": questions,
                 "input_tokens": (usage or {}).get("input_tokens"),
                 "output_tokens": (usage or {}).get("output_tokens"),
             }) + "\n")
-    except OSError:
+    except Exception:
         pass

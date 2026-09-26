@@ -47,7 +47,10 @@ export function createLayaClient(opts = {}) {
   const revision = pick(opts, "revision", "LAYA_MODEL_REVISION") ?? null;
   const timeoutMs = opts.timeoutMs ?? 30000;
   const maxQueue = opts.maxQueue ?? 8;
+  // A cold model load can take far longer than one request, so startup has its own limit.
+  const startupTimeoutMs = opts.startupTimeoutMs ?? Math.max(timeoutMs, 120000);
   if (!Number.isInteger(timeoutMs) || timeoutMs <= 0 || timeoutMs > 2147483647 ||
+      !Number.isInteger(startupTimeoutMs) || startupTimeoutMs <= 0 || startupTimeoutMs > 2147483647 ||
       !Number.isInteger(maxQueue) || maxQueue < 1) {
     throw new Error("Invalid local timeout or queue limit.");
   }
@@ -86,7 +89,8 @@ export function createLayaClient(opts = {}) {
       };
     }
     if (closed) return { available: false, checkpoint, revision, reason: "client is closed" };
-    if (deadReason) return { available: false, checkpoint, revision, reason: deadReason };
+    // A dead worker is respawned by the next predict(), so it stays available.
+    if (deadReason) return { available: true, checkpoint, revision, reason: null, lastError: deadReason };
     return { available: true, checkpoint, revision, reason: null };
   }
 
@@ -168,6 +172,12 @@ export function createLayaClient(opts = {}) {
       return startup;
     }
     child = proc;
+    const startupTimer = setTimeout(() => {
+      if (child !== proc || !readyResolve) return;
+      const message = `laya worker startup timed out after ${startupTimeoutMs} ms`;
+      killWorker(message, errorFor(message, "startup-timeout"));
+    }, startupTimeoutMs);
+    startup.then(() => clearTimeout(startupTimer), () => clearTimeout(startupTimer));
     proc.stdout.setEncoding("utf8");
     proc.stdout.on("data", (chunk) => { if (child === proc) onStdout(chunk); });
     proc.stdin.on("error", () => { if (child === proc) killWorker("worker write failed"); });
@@ -298,13 +308,15 @@ export function createLayaClient(opts = {}) {
     if (inFlight || closed || !pending.length) return;
     const request = pending.shift();
     inFlight = request;
-    request.timer = setTimeout(() => {
-      killWorker(`laya worker timed out after ${timeoutMs} ms`, errorFor(
-        `laya worker timed out after ${timeoutMs} ms`, "timeout"));
-    }, timeoutMs);
     ensureWorker().then(
       () => {
-        if (!request.settled) writeRequest(request);
+        if (request.settled) return;
+        // The request clock starts after the worker is ready, not during the model load.
+        request.timer = setTimeout(() => {
+          killWorker(`laya worker timed out after ${timeoutMs} ms`, errorFor(
+            `laya worker timed out after ${timeoutMs} ms`, "timeout"));
+        }, timeoutMs);
+        writeRequest(request);
       },
       (err) => {
         settle(request, err);

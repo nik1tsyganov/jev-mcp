@@ -265,3 +265,36 @@ test("a dying worker cannot invalidate its replacement", async () => {
   assert.equal((await client.predict(smallRequest)).model, "c@r");
   client.close();
 });
+
+test("a dead worker still reports available and respawns on the next predict", async () => {
+  const fake = fakeWorker({ onRequest: (req, child) => {
+    if (fake.calls.length === 1) child.emit("exit", 1, null);
+    else child.stdout.write(resultLine(req));
+  }});
+  const client = createLayaClient(configured({ spawn: fake.spawn }));
+  await assert.rejects(client.predict(smallRequest), /worker exited/);
+  const status = client.status();
+  assert.equal(status.available, true);
+  assert.match(status.lastError, /worker exited/);
+  assert.equal((await client.predict(smallRequest)).model, "c@r");
+  assert.equal(fake.calls.length, 2);
+  client.close();
+});
+
+test("a slow worker startup does not count against the request timeout", async () => {
+  const fake = fakeWorker({ ready: false, onRequest: (req, child) => child.stdout.write(resultLine(req)) });
+  const client = createLayaClient(configured({ spawn: fake.spawn, timeoutMs: 20, startupTimeoutMs: 5000 }));
+  const pending = client.predict(smallRequest);
+  await new Promise((resolve) => setTimeout(resolve, 60));
+  fake.calls[0].child.stdout.write(JSON.stringify({ type: "ready", checkpoint: "c", revision: "r" }) + "\n");
+  assert.equal((await pending).model, "c@r");
+  client.close();
+});
+
+test("a worker that never becomes ready fails with startup-timeout and is killed", async () => {
+  const fake = fakeWorker({ ready: false });
+  const client = createLayaClient(configured({ spawn: fake.spawn, timeoutMs: 5000, startupTimeoutMs: 20 }));
+  await assert.rejects(client.predict(smallRequest), (err) => err.code === "startup-timeout" && /startup timed out/.test(err.message));
+  assert.equal(fake.calls[0].child.killed, true);
+  client.close();
+});
