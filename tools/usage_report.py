@@ -6,7 +6,7 @@ one-week evaluation in docs/usage-evaluation.md.
 
     python3 tools/usage_report.py [--since YYYY-MM-DD] [--json]
 """
-import argparse, json, math, os, sys
+import argparse, datetime, json, math, os, sys
 from collections import Counter, defaultdict
 
 DEFAULT_SINCE = "2026-09-25"
@@ -185,6 +185,10 @@ def main(argv=None):
     ap.add_argument("--since", default=DEFAULT_SINCE, help="first day to include, YYYY-MM-DD")
     ap.add_argument("--json", action="store_true", help="print one JSON object")
     args = ap.parse_args(argv)
+    try:
+        datetime.date.fromisoformat(args.since)
+    except ValueError:
+        ap.error("--since must be YYYY-MM-DD, for example 2026-09-25")
     rep = build(args.since)
     if args.json:
         print(json.dumps(rep, indent=2))

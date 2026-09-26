@@ -203,7 +203,7 @@ class JevProvider:
             with urllib.request.urlopen(req, timeout=30) as r:
                 res = json.load(r)
         except Exception:
-            record_spend('laya-compare-failed', self.model, len(questions), None)
+            record_spend("laya-compare", self.model, len(questions), None)
             raise
         self.resolved_model = res.get("model") or self.resolved_model
         record_spend("laya-compare", res.get("model"), len(questions), res.get("usage"))

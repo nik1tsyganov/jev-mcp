@@ -51,7 +51,7 @@ classify, route, extract a field, verify a claim against evidence.
 - There is one item. One request for one decision is fine, but call it a decision, not
   an audit, and do not build a pack for it.
 
-## The pass## The pass
+## The pass
 
 1. **Define one item.** A finding, a file, a claim, a post. If you cannot say what one
    item is in a sentence, the corpus is not ready.

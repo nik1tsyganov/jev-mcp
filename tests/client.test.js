@@ -236,3 +236,26 @@ test("schema 2 spend rows record the caller, latency and failures", { skip: !pro
     _resetClient();
   }
 });
+
+test("a call that fails before reaching Jev is still logged as a failure", { skip: !process.env.TYPESAFE_SPEND_LOG && "run through npm test so the spend log is a temp file" }, async () => {
+  const { readFileSync, rmSync } = await import("node:fs");
+  const log = process.env.TYPESAFE_SPEND_LOG;
+  const names = ["DROPPY_CREDENTIAL_SCOPE", "DROPPY_JEV_API_KEY"];
+  const saved = Object.fromEntries(names.map((n) => [n, process.env[n]]));
+  rmSync(log, { force: true });
+  try {
+    process.env.DROPPY_CREDENTIAL_SCOPE = "app";
+    process.env.DROPPY_JEV_API_KEY = "";
+    _resetClient();
+    await assert.rejects(systemOne({
+      state: "s", questions: { q1: { type: "noul", instructions: "Is this valid?" } }, caller: { tool: "jev_noul" },
+    }), /DROPPY_JEV_API_KEY/);
+    const rows = readFileSync(log, "utf8").trim().split("\n").map((line) => JSON.parse(line));
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0].ok, false);
+    assert.equal(rows[0].tool, "jev_noul");
+  } finally {
+    for (const n of names) { if (saved[n] === undefined) delete process.env[n]; else process.env[n] = saved[n]; }
+    _resetClient();
+  }
+});

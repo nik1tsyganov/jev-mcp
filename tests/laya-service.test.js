@@ -4,6 +4,9 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createLayaService } from "../src/laya-service.js";
+import { createLayaClient } from "../src/laya-client.js";
+import { EventEmitter } from "node:events";
+import { PassThrough } from "node:stream";
 import { loadPolicy, questionsFingerprint, resolveProfileId, selectProvider } from "../src/provider-policy.js";
 import { loadBookmarkQuestions } from "../src/bookmark-questions.js";
 
@@ -218,4 +221,41 @@ test("local telemetry keeps hashes and override metadata without provider-routin
     assert.equal(Object.hasOwn(status, key), false);
   }
   assert.equal(status.counters.accepted, 1);
+});
+
+test("a worker crash does not leave Laya unavailable: the next ask respawns", async (t) => {
+  const builder = fakeWorker({ checkpoint: "c", revision: "r" });
+  const spawned = [];
+  const spawn = () => {
+    const child = new EventEmitter();
+    child.stdout = new PassThrough();
+    child.stderr = new PassThrough();
+    child.stdin = new PassThrough();
+    child.kill = () => {};
+    child.stdin.on("data", async (chunk) => {
+      const req = JSON.parse(chunk.toString());
+      if (spawned.length === 1) return child.emit("exit", 1, null);
+      const result = await builder.predict({ questions: req.questions });
+      child.stdout.write(JSON.stringify({ type: "result", id: req.id, result: { ...result, model: "c@r" } }) + "\n");
+    });
+    spawned.push(child);
+    setImmediate(() => child.stdout.write(JSON.stringify({ type: "ready", checkpoint: "c", revision: "r" }) + "\n"));
+    return child;
+  };
+  const laya = createLayaClient({ spawn, python: "/py", modelPath: "/m", checkpoint: "c", revision: "r", workerPath: "/w" });
+  const { service } = setup(t, { laya });
+  await assert.rejects(service.ask({ state: "s", questions: QUESTIONS }), /worker exited/);
+  const result = await service.ask({ state: "s", questions: QUESTIONS });
+  assert.equal(result.provider, "laya");
+  assert.equal(result.accepted, true);
+  assert.equal(spawned.length, 2);
+});
+
+test("unprofiled questions registered to a non-default profile require that profile", async (t) => {
+  const policy = loadPolicy();
+  policy.profiles["technical-bookmark-topic-v1"].questionsHash = questionsFingerprint(QUESTIONS);
+  const { service, local, logPath } = setup(t, { policy });
+  await assert.rejects(service.ask({ state: "s", questions: QUESTIONS }), /profile-required/);
+  assert.equal(local.calls.length, 0);
+  assert.equal(JSON.parse(readFileSync(logPath, "utf8")).reason, "profile-required");
 });

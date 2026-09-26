@@ -53,7 +53,7 @@ def read_spend_log(log_path):
                     continue
                 try:
                     r = json.loads(line)
-                    if isinstance(r, dict) and r.get("model"):
+                    if isinstance(r, dict) and r.get("model") and r.get("ok") is not False:
                         records.append(r)
                 except ValueError:
                     continue

@@ -60,7 +60,7 @@ A skill is a candidate when it repeats one bounded decision over many items.
   files. Advisory, never blocks.
 - **Inside a CONCLAVE run**, the arbiter already decides class, convening and the
   tally. The next addition is merge risk on the returned diff.
-- **Nothing else fires by itself.** The five MCP tools are available in every session on
+- **Nothing else fires by itself.** The six `jev` tools and three `laya` tools are available in every session on
   four vendors, and an agent calls them when a decision is bounded enough to deserve it.
 
 ## The rule that governs all of it

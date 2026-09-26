@@ -24,7 +24,8 @@ config file per provider (`claude`, `codex`, `copilot`, `gemini`) from the conne
 servers, and `ProviderRegistry.swift:274` hands the Antigravity CLI its file through
 `GEMINI_CLI_SYSTEM_SETTINGS_PATH`. Adding `jev` to the catalog costs nothing new: the
 server is a stdio process at `~/src/jev-mcp/src/server.js`, and every agent
-inside Droppy Code gains five tools. What it does **not** give you is any judgment
+inside Droppy Code gains six tools (`jev_ask`, `jev_noul`, `jev_choice`, `jev_score`, `jev_models`,
+`decision_browser_action`). What it does **not** give you is any judgment
 inside the app itself — the agent has to choose to ask.
 
 **Path B — native Swift.** `AppModel` calls the endpoint directly and uses the numbers
