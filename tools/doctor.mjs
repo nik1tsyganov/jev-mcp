@@ -9,7 +9,7 @@
 // Exit 0 only when every check passes. --live spends one Jev judgment (jev_noul) per distinct `jev`
 // registration and two local Laya inferences per distinct `laya` registration; both are logged to temp files, not the real logs.
 import { execFileSync } from "node:child_process";
-import { accessSync, constants, existsSync, lstatSync, mkdtempSync, readFileSync, readlinkSync, statSync } from "node:fs";
+import { accessSync, constants, existsSync, lstatSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, statSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -73,6 +73,8 @@ const registrations = [];
 function checkEntry(client, name, entry) {
   const where = `${client} ${name}`;
   if (!entry) return report(false, `${where} registered`, "missing");
+  // A client launches stdio only when the entry is stdio; an http/sse type would never start this command.
+  report([undefined, "stdio", "local"].includes(entry.type), `${where} transport is stdio`, entry.type ?? "stdio (default)");
   const command = entry.command;
   const argv = entry.args ?? [];
   const env = entry.env ?? {};
@@ -140,9 +142,27 @@ if (!codex) {
     try {
       const got = JSON.parse(execFileSync(codex, ["mcp", "get", name, "--json"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }));
       report(got.enabled === true, `codex ${name} enabled`);
-      checkEntry("codex", name, { command: got.transport?.command, args: got.transport?.args, env: got.transport?.env ?? {} });
+      const want = name === "jev" ? JEV_TOOLS : LAYA_TOOLS;
+      const hidden = want.filter((t) => (got.enabled_tools && !got.enabled_tools.includes(t)) || (got.disabled_tools ?? []).includes(t));
+      report(!hidden.length, `codex ${name} tool filters expose every tool`, hidden.join(",") || "no filters");
+      checkEntry("codex", name, { type: got.transport?.type, command: got.transport?.command, args: got.transport?.args, env: got.transport?.env ?? {} });
     } catch {
       report(false, `codex ${name} registered`, "codex mcp get failed");
+    }
+  }
+}
+
+// Project-scope configs outrank the user entry in Claude (.mcp.json) and Cursor
+// (.cursor/mcp.json); a jev/laya entry there must match too.
+for (const root of [join(HOME, "src"), join(HOME, "Repositories")]) {
+  let dirs = [];
+  try { dirs = readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => join(root, d.name)); } catch { /* absent */ }
+  for (const dir of dirs) {
+    for (const file of [join(dir, ".mcp.json"), join(dir, ".cursor", "mcp.json")]) {
+      if (!existsSync(file)) continue;
+      let servers = {};
+      try { servers = readJson(file).mcpServers ?? {}; } catch { report(false, `${file.replace(HOME, "~")} readable`); continue; }
+      for (const name of ["jev", "laya"]) if (servers[name]) checkEntry(`project ${file.replace(HOME, "~")}`, name, servers[name]);
     }
   }
 }
@@ -172,8 +192,10 @@ try {
     let started = null;
     try {
       // pgrep -x cannot match a name with a space, so read ps and match the app binary.
-      const lines = execFileSync("/bin/ps", ["-axo", "lstart=,command="], { encoding: "utf8", env: { ...process.env, LC_ALL: "C" } })
-        .split("\n").filter((l) => /\/Droppy Code\.app\/Contents\/MacOS\/Droppy Code(\s|$)/.test(l.trim()));
+      // Match the executable (comm), not the whole command line, so a debugger or
+      // a tool whose arguments mention the app path is not counted.
+      const lines = execFileSync("/bin/ps", ["-axo", "lstart=,comm="], { encoding: "utf8", env: { ...process.env, LC_ALL: "C" } })
+        .split("\n").filter((l) => /\/Droppy Code\.app\/Contents\/MacOS\/Droppy Code$/.test(l.trim()));
       // Two instances (installed app plus a dev build) share the exports, so neither proves anything.
       report(lines.length <= 1, "exactly one Droppy instance is running", `${lines.length} found`);
       if (lines.length === 1) {
@@ -267,8 +289,8 @@ async function liveChecks() {
 }
 
 async function call(client, name, argumentsObject) {
-  // A cold Laya model load can exceed the SDK's 60 s default.
-  const res = await client.callTool({ name, arguments: argumentsObject }, undefined, { timeout: 180000 });
+  // Codex and the MCP SDK give a tool call 60 s; the doctor holds every call to 55 s.
+  const res = await client.callTool({ name, arguments: argumentsObject }, undefined, { timeout: 55000 });
   const text = res.content?.[0]?.text ?? "";
   if (res.isError) throw new Error(`${name}: ${text.slice(0, 200)}`);
   return JSON.parse(text);

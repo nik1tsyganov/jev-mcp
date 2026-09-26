@@ -11,7 +11,8 @@
   },
   "scripts": {
     "test": "TYPESAFE_SPEND_LOG=${TMPDIR:-/tmp}/jev-mcp-test-spend.jsonl LAYA_DECISION_LOG=${TMPDIR:-/tmp}/jev-mcp-test-laya.jsonl node --test tests/*.test.js",
-    "doctor": "node tools/doctor.mjs --live"
+    "doctor": "node tools/doctor.mjs --live --after-restart",
+    "doctor:before-restart": "node tools/doctor.mjs --live"
   },
   "engines": {
     "node": ">=20"
