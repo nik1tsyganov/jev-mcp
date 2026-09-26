@@ -215,9 +215,11 @@ export async function systemOne({ state, questions, model, caller }) {
   const count = Object.keys(validated || {}).length;
   const started = performance.now();
   let result;
+  let sent = false;
   try {
     // Inside the try so a missing key is logged as a failed call, not lost.
     const client = getClient();
+    sent = true;
     result = await client.systemOne({
       state,
       questions: validated,
@@ -226,7 +228,8 @@ export async function systemOne({ state, questions, model, caller }) {
   } catch (err) {
     // Only the error class is logged: a message can carry request text or a credential.
     recordSpend(model || DEFAULT_MODEL, count, null, null, {
-      caller, latencyMs: Math.round(performance.now() - started), error: err?.constructor?.name || "Error",
+      // "no-request" marks a call refused locally (no key, local-only mode): Jev never saw it.
+      caller, latencyMs: Math.round(performance.now() - started), error: sent ? (err?.constructor?.name || "Error") : "no-request",
     });
     throw redactError(err);
   }

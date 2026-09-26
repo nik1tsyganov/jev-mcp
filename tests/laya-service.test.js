@@ -332,3 +332,80 @@ test("refresh and eviction never close the shared env worker", async (t) => {
   await service.close();
   assert.equal(shared.closed, 1);
 });
+
+// The first worker holds its request until released; retirement waits for in-flight work.
+function gatedWorkers() {
+  const workers = [];
+  let release;
+  const gate = new Promise((resolve) => { release = resolve; });
+  function createClient(config) {
+    const worker = fakeWorker(config);
+    const held = workers.length === 0;
+    const predict = worker.predict;
+    let inFlight = 0;
+    worker.retired = false;
+    worker.predict = async function (input) {
+      if (this.retired) throw new Error("client is retiring");
+      inFlight++;
+      if (held) await gate;
+      try { return await predict.call(this, input); } finally {
+        inFlight--;
+        if (this.retired && !inFlight) this.closed++;
+      }
+    };
+    worker.closeWhenIdle = function () {
+      this.retired = true;
+      if (!inFlight) this.closed++;
+    };
+    workers.push(worker);
+    return worker;
+  }
+  return { workers, createClient, release };
+}
+
+test("refresh retires a busy profile worker without failing its in-flight request", async (t) => {
+  const registry = loadPolicy();
+  const policy = { loadPolicy: () => registry, questionsFingerprint, resolveProfileId, selectProvider };
+  const { workers, createClient, release } = gatedWorkers();
+  const { service } = setup(t, { policy, createClient });
+  const input = { state: "s", questions: loadBookmarkQuestions(), profile: V2 };
+  const slow = service.ask(input);
+  await new Promise((resolve) => setImmediate(resolve));
+  const modelPath = registry.profiles[V2].runtime.modelPath;
+  registry.profiles[V2].runtime.modelPath += "-updated";
+  await service.ask(input);
+  registry.profiles[V2].runtime.modelPath = modelPath;
+  assert.equal(workers[0].retired, true);
+  assert.equal(workers[0].closed, 0);
+  release();
+  assert.equal((await slow).provider, "laya");
+  assert.equal(workers[0].closed, 1);
+  await service.ask(input);
+  assert.equal(workers.length, 3);
+  assert.equal(workers[0].calls.length, 1);
+  assert.equal(workers[2].calls.length, 1);
+});
+
+test("eviction retires a busy profile worker without failing its in-flight request", async (t) => {
+  const registry = loadPolicy();
+  for (const id of ["x1", "x2"]) {
+    registry.profiles[id] = structuredClone(registry.profiles[V2]);
+    registry.profiles[id].runtime.modelPath += `-${id}`;
+  }
+  const policy = { loadPolicy: () => registry, questionsFingerprint, resolveProfileId, selectProvider };
+  const { workers, createClient, release } = gatedWorkers();
+  const { service } = setup(t, { policy, createClient });
+  const questions = loadBookmarkQuestions();
+  const slow = service.ask({ state: "s", questions, profile: V2 });
+  await new Promise((resolve) => setImmediate(resolve));
+  // The clones fail the evidence check, but each worker is created before that gate.
+  for (const profile of ["x1", "x2"]) await service.ask({ state: "s", questions, profile }).catch(() => {});
+  assert.equal(workers[0].retired, true);
+  assert.equal(workers[0].closed, 0);
+  release();
+  assert.equal((await slow).provider, "laya");
+  assert.equal(workers[0].closed, 1);
+  await service.ask({ state: "s", questions, profile: V2 });
+  assert.equal(workers.length, 4);
+  assert.equal(workers[3].calls.length, 1);
+});

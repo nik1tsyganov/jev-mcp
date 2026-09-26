@@ -254,6 +254,7 @@ test("a call that fails before reaching Jev is still logged as a failure", { ski
     assert.equal(rows.length, 1);
     assert.equal(rows[0].ok, false);
     assert.equal(rows[0].tool, "jev_noul");
+    assert.equal(rows[0].error, "no-request");
   } finally {
     for (const n of names) { if (saved[n] === undefined) delete process.env[n]; else process.env[n] = saved[n]; }
     _resetClient();

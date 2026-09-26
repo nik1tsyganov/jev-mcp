@@ -164,6 +164,7 @@ python3 - "$REPO" "$HOME" "$LAYA_ENV_JSON" "$DRY_RUN" <<'PYEOF' || fail 5 "could
 import json
 import os
 from pathlib import Path
+import shutil
 import stat
 import sys
 import tempfile
@@ -212,16 +213,22 @@ try:
     }
 except (OSError, KeyError, TypeError, ValueError):
     defaults = {}
-laya_env = {k: str(os.environ.get(k) or saved.get(k) or defaults.get(k) or "")
+# The registry's default profile outranks saved values, so a profile change
+# re-points every client; explicit shell LAYA_* still overrides both.
+laya_env = {k: str(os.environ.get(k) or defaults.get(k) or saved.get(k) or "")
             for k in names}
 missing = [k for k, v in laya_env.items() if not v]
 if missing:
     raise SystemExit("missing Laya settings: " + ", ".join(missing))
 
 
+# Apps opened from the Dock get launchd's PATH, which has no ~/.local/bin, so a
+# bare `node` fails there. Every client gets the absolute path of this node.
+NODE = shutil.which("node") or "node"
+
+
 def command_for(cfg):
-    servers = cfg.get("mcpServers", {})
-    return servers.get("jev", {}).get("command") or servers.get("laya", {}).get("command") or "node"
+    return NODE
 
 
 out.write_text(json.dumps({"command": command_for(configs["claude"]), "env": laya_env}))
@@ -280,10 +287,10 @@ print(json.dumps(p))' "$LAYA_ENV_JSON" "$@"
 mcp_command="$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["command"])' "$LAYA_ENV_JSON")"
 
 if command -v claude >/dev/null 2>&1; then
-  for server_name in jev laya; do
-    run claude mcp remove -s user "$server_name" 2>/dev/null || true
-  done
+  # Remove and re-add one server at a time, so a failed add never leaves both gone.
+  run claude mcp remove -s user jev 2>/dev/null || true
   run claude mcp add-json -s user jev "$(mcp_json "$SERVER")" || fail 5 "claude mcp add-json jev failed"
+  run claude mcp remove -s user laya 2>/dev/null || true
   run claude mcp add-json -s user laya "$(mcp_json "$LAYA_SERVER" env)" || fail 5 "claude mcp add-json laya failed"
 else
   say "      claude is not on PATH; skipped Claude registration"
@@ -296,10 +303,9 @@ if command -v codex >/dev/null 2>&1; then
   done < <(python3 -c 'import json, sys
 for k, v in json.load(open(sys.argv[1]))["env"].items():
     print(k + "=" + v)' "$LAYA_ENV_JSON")
-  for server_name in jev laya; do
-    run codex mcp remove "$server_name" 2>/dev/null || true
-  done
+  run codex mcp remove jev 2>/dev/null || true
   run codex mcp add jev -- "$mcp_command" "$SERVER" || fail 5 "codex mcp add jev failed"
+  run codex mcp remove laya 2>/dev/null || true
   run codex mcp add laya "${codex_env[@]}" -- "$mcp_command" "$LAYA_SERVER" || fail 5 "codex mcp add laya failed"
 else
   say "      codex is not on PATH; skipped Codex registration"
