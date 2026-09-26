@@ -74,5 +74,18 @@ test("each Jev call carries its tool name and the MCP client label", async () =>
   const client = fakeClient();
   const { runTool } = createToolRunner({ client, clientLabel: () => "claude-code@9.9" });
   await runTool("jev_score", { state: "x", instructions: "How good?", criteria: ["low", "high"] });
-  assert.deepEqual(client.calls[0].caller, { tool: "jev_score", client: "claude-code@9.9" });
+  assert.deepEqual(client.calls[0].caller, { tool: "jev_score", client: "claude-code@9.9", purpose: null });
+});
+
+test("a purpose tag is logged with the call and never sent as a question", async () => {
+  const client = fakeClient();
+  const { runTool } = createToolRunner({ client });
+  const questions = { a: { type: "noul", instructions: "Is it on fire?" } };
+  await runTool("jev_ask", { state: "x", questions, purpose: "hydra-report-triage" });
+  assert.equal(client.calls[0].caller.purpose, "hydra-report-triage");
+  assert.deepEqual(Object.keys(client.calls[0].questions), ["a"]);
+  for (const purpose of ["Has Spaces", "x".repeat(65), 7]) {
+    await assert.rejects(runTool("jev_ask", { state: "x", questions, purpose }), /purpose must be/);
+  }
+  assert.equal(client.calls.length, 1);
 });

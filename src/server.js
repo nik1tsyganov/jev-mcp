@@ -42,6 +42,13 @@ const QUESTIONS_SCHEMA = {
   },
 };
 
+const PURPOSE_SCHEMA = {
+  type: "string",
+  pattern: "^[a-z0-9][a-z0-9._-]{0,63}$",
+  description:
+    "Optional short tag for why you are asking, e.g. hydra-report-triage, bookmark-tag, lesson-dedupe. Logged locally to score call sites; never sent to Jev.",
+};
+
 const MODEL_SCHEMA = {
   type: "string",
   description: `Jev model id. Defaults to ${DEFAULT_MODEL}.`,
@@ -58,6 +65,7 @@ export const TOOLS = [
         state: STATE_SCHEMA,
         questions: QUESTIONS_SCHEMA,
         model: MODEL_SCHEMA,
+        purpose: PURPOSE_SCHEMA,
       },
       required: ["state", "questions"],
     },
@@ -78,6 +86,7 @@ export const TOOLS = [
           additionalProperties: false,
         },
         model: MODEL_SCHEMA,
+        purpose: PURPOSE_SCHEMA,
       },
       required: ["state", "instructions"],
     },
@@ -98,6 +107,7 @@ export const TOOLS = [
           additionalProperties: { type: ["string", "null"] },
         },
         model: MODEL_SCHEMA,
+        purpose: PURPOSE_SCHEMA,
       },
       required: ["state", "instructions", "criteria"],
     },
@@ -118,6 +128,7 @@ export const TOOLS = [
           minItems: 2,
         },
         model: MODEL_SCHEMA,
+        purpose: PURPOSE_SCHEMA,
       },
       required: ["state", "instructions", "criteria"],
     },
@@ -129,6 +140,16 @@ export const TOOLS = [
   },
   browserActionTool,
 ];
+
+const PURPOSE_RE = /^[a-z0-9][a-z0-9._-]{0,63}$/;
+
+function purposeOf(value) {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== "string" || !PURPOSE_RE.test(value)) {
+    throw new Error("purpose must be a short lowercase tag such as hydra-report-triage (a-z, 0-9, . _ -, at most 64 characters).");
+  }
+  return value;
+}
 
 function guard(state, questions) {
   if (state === undefined || state === null || (typeof state !== "string" && typeof state !== "object")) {
@@ -149,15 +170,16 @@ function guard(state, questions) {
 /** `clientLabel` names the MCP client for the spend log, e.g. `claude-code@2.1.0`. */
 export function createToolRunner({ client = { systemOne, listModels }, clientLabel = () => null } = {}) {
 
-  function askAs(tool) {
-    return async function ask({ state, questions, model }) {
+  function askAs(tool, fixedPurpose) {
+    return async function ask({ state, questions, model, purpose }) {
+      const tag = purposeOf(purpose ?? fixedPurpose);
       const validated = validateQuestions(questions);
       guard(state, validated);
-      return client.systemOne({ state, questions: validated, model, caller: { tool, client: clientLabel() } });
+      return client.systemOne({ state, questions: validated, model, caller: { tool, client: clientLabel(), purpose: tag } });
     };
   }
 
-  const browserDecision = createBrowserDecision({ ask: askAs("decision_browser_action") });
+  const browserDecision = createBrowserDecision({ ask: askAs("decision_browser_action", "browser-action") });
 
   async function runTool(name, args = {}) {
     const ask = askAs(name);

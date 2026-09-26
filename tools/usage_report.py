@@ -93,6 +93,7 @@ def build(since):
             "projects": len({r.get("cwd") for r in rows if r.get("cwd")}),
         },
         "by_tool": group_stats(rows, lambda r: r.get("tool") or "(unknown)"),
+        "by_purpose": group_stats(rows, lambda r: r.get("purpose") or "(none)"),
         "by_client": group_stats(rows, lambda r: r.get("client") or "(none)"),
         "by_project": group_stats(rows, project),
     }
@@ -130,11 +131,11 @@ def build(since):
 
     sites = defaultdict(list)
     for r in rows:
-        sites[(r.get("tool") or "(unknown)", project(r))].append(r)
+        sites[(r.get("purpose") or "(none)", r.get("tool") or "(unknown)", project(r))].append(r)
     report["candidate_sites"] = [{
-        "tool": tool, "project": proj, "requests": len(rs),
+        "purpose": purpose, "tool": tool, "project": proj, "requests": len(rs),
         "with_answers": sum(1 for r in rs if r.get("answers")),
-    } for (tool, proj), rs in sorted(sites.items(), key=lambda kv: (-len(kv[1]), kv[0]))[:5]]
+    } for (purpose, tool, proj), rs in sorted(sites.items(), key=lambda kv: (-len(kv[1]), kv[0]))[:5]]
     return report
 
 
@@ -157,7 +158,7 @@ def print_text(rep):
           [[t["requests"], t["ok_rate_pct"], t["questions"], t["input_tokens"], t["output_tokens"],
             t["sessions"], t["projects"]]])
     heads = ["name", "requests", "share %", "mean q", "1-q %", "p50 ms", "p90 ms", "max ms", "errors"]
-    for key, title in (("by_tool", "By tool"), ("by_client", "By client"), ("by_project", "By project")):
+    for key, title in (("by_purpose", "By purpose"), ("by_tool", "By tool"), ("by_client", "By client"), ("by_project", "By project")):
         table(title, heads, [[g["name"], g["requests"], g["share_pct"], g["mean_questions"],
                               g["single_question_pct"], g["latency_p50"], g["latency_p90"],
                               g["latency_max"], g["errors"]] for g in rep[key]])
@@ -175,8 +176,8 @@ def print_text(rep):
     table("Laya reasons", ["reason", "count"], list(la["reasons"].items()))
     table("Laya by profile", ["profile", "requests", "accepted"],
           [[p["profile"], p["requests"], p["accepted"]] for p in la["by_profile"]])
-    table("Candidate call sites (score these by hand)", ["tool", "project", "requests", "with answers"],
-          [[s["tool"], s["project"], s["requests"], s["with_answers"]] for s in rep["candidate_sites"]])
+    table("Candidate call sites (score these by hand)", ["purpose", "tool", "project", "requests", "with answers"],
+          [[s["purpose"], s["tool"], s["project"], s["requests"], s["with_answers"]] for s in rep["candidate_sites"]])
 
 
 def main(argv=None):
