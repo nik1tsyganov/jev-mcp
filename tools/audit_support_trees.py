@@ -7,7 +7,9 @@ Import `collect()`; run directly for a summary.
 import os
 import re
 import sys
+from pathlib import Path
 
+HOME = re.escape(str(Path.home()))
 DEFAULT_ROOTS = (
     "~/.claude/docs",
     "~/.claude/hooks",
@@ -18,8 +20,8 @@ VALID_EXTS = (".md", ".js", ".json", ".sh", ".py")
 MAX_FILE_SIZE = 2 * 1024 * 1024  # 2 MB
 
 TICK = re.compile(r'`([^`\n]+)`')
-BARE = re.compile(r'(?<![\w`/])((?:~[\\/]|~[\\/])[^\s`"\'()<>,;]+)')
-PATHISH = re.compile(r'^(?:~[\\/]|~[\\/])')
+BARE = re.compile(r'(?<![\w`/])((?:~[\\/]|' + HOME + r'[\\/])[^\s`"\'()<>,;]+)')
+PATHISH = re.compile(r'^(?:~[\\/]|' + HOME + r'[\\/])')
 
 WINDOWS_HOME_RE = re.compile(
     r'C:[\\/]+Users|%USERPROFILE%|process\.env(?:\.USERPROFILE|\[[\'"]USERPROFILE[\'"]\])',

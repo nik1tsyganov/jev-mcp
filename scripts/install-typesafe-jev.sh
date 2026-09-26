@@ -11,7 +11,7 @@
 #
 set -euo pipefail
 
-REPO="~/src/jev-mcp"
+REPO="$HOME/src/jev-mcp"
 SERVER="$REPO/src/server.js"
 LAYA_SERVER="$REPO/src/laya-server.js"
 SKILL_SRC="$REPO/skills/jev-audit"
@@ -204,8 +204,8 @@ try:
     profile = registry["profiles"][registry["defaultProfile"]]
     runtime = profile["runtime"]
     defaults = {
-        "LAYA_PYTHON": runtime["python"],
-        "LAYA_MODEL_DIR": runtime["modelPath"],
+        "LAYA_PYTHON": os.path.expanduser(runtime["python"]),
+        "LAYA_MODEL_DIR": os.path.expanduser(runtime["modelPath"]),
         "LAYA_CHECKPOINT": profile["checkpoint"],
         "LAYA_MODEL_REVISION": profile["revision"],
         "LAYA_TIMEOUT_MS": runtime["timeoutMs"],
