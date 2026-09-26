@@ -119,8 +119,13 @@ for (const [client, path] of [
     continue;
   }
   for (const name of ["jev", "laya"]) checkEntry(client, name, servers[name]);
+  for (const name of ["jev", "laya"]) {
+    if (servers[name]) report(servers[name].disabled !== true, `${client} ${name} is not disabled`);
+  }
   if (client === "claude") {
     const projects = readJson(path).projects ?? {};
+    const off = Object.entries(projects).filter(([, p]) => (p?.disabledMcpServers ?? []).some((n) => n === "jev" || n === "laya")).map(([k]) => k);
+    report(!off.length, "claude has no project that disables jev or laya", off.join(", ") || "none");
     const shadows = Object.entries(projects).filter(([, p]) => p?.mcpServers?.jev || p?.mcpServers?.laya).map(([k]) => k);
     report(!shadows.length, "claude has no project-scope jev/laya shadowing the user entry", shadows.join(", ") || "none");
   }
@@ -167,14 +172,19 @@ try {
     let started = null;
     try {
       // pgrep -x cannot match a name with a space, so read ps and match the app binary.
-      const line = execFileSync("/bin/ps", ["-axo", "lstart=,command="], { encoding: "utf8" })
-        .split("\n").find((l) => /\/Droppy Code\.app\/Contents\/MacOS\/Droppy Code$/.test(l.trim()));
-      if (line) started = new Date(line.trim().split(/\s+/).slice(0, 5).join(" "));
+      const lines = execFileSync("/bin/ps", ["-axo", "lstart=,command="], { encoding: "utf8", env: { ...process.env, LC_ALL: "C" } })
+        .split("\n").filter((l) => /\/Droppy Code\.app\/Contents\/MacOS\/Droppy Code(\s|$)/.test(l.trim()));
+      // Two instances (installed app plus a dev build) share the exports, so neither proves anything.
+      report(lines.length <= 1, "exactly one Droppy instance is running", `${lines.length} found`);
+      if (lines.length === 1) {
+        const parsed = new Date(lines[0].trim().split(/\s+/).slice(0, 5).join(" "));
+        if (!Number.isNaN(parsed.getTime())) started = parsed;
+      }
     } catch { /* not running */ }
     report(Boolean(started), "droppy is running", started ? started.toISOString() : "not running");
     for (const file of ["claude.json", "codex.json", "copilot.json", "gemini-settings.json"]) {
       const exportedAt = statSync(join(DROPPY, "mcp", file)).mtime;
-      report(Boolean(started) && exportedAt >= new Date(started.getTime() - 1000), `droppy export ${file} written by the running app`, exportedAt.toISOString());
+      report(Boolean(started) && exportedAt >= started, `droppy export ${file} written by the running app`, exportedAt.toISOString());
       const exported = readJson(join(DROPPY, "mcp", file));
       const servers = exported.mcpServers ?? exported.mcp_servers ?? {};
       // The export is what providers launch, so it gets the same checks and a live start.
@@ -236,7 +246,11 @@ async function liveChecks() {
         report(status?.profiles?.[registry.defaultProfile]?.enabled === true && status?.local?.available === true,
           `${label}: laya_status lists the default profile and a configured env worker`, status?.local?.reason ?? "ok");
         {
+          const t0 = Date.now();
           const tag = await call(client, "laya_bookmark_topic", { state: { title: "Zustand vs Redux", description: "Choosing a React state store." } });
+          const firstMs = Date.now() - t0;
+          // Codex and the MCP SDK give a tool call 60 s by default; a cold first call must fit.
+          report(firstMs < 50000, `${label}: first Laya call (cold model load) under 50 s`, `${firstMs} ms`);
           report(tag?.provider === "laya" && tag?.checkpoint === profile.checkpoint && typeof tag?.answers?.topic?.choice === "string", `${label}: laya_bookmark_topic inference`, `${tag?.answers?.topic?.choice} accepted=${tag?.accepted}`);
           const generic = await call(client, "laya_ask", { state: "The build has been red since Monday and the release is tomorrow.", questions: { urgent: { type: "noul", instructions: "Does this message express urgency?" } } });
           report(generic?.provider === "laya" && generic?.qualification === "UNQUALIFIED" && typeof generic?.answers?.urgent?.noul === "number", `${label}: generic laya_ask inference`, `noul=${generic?.answers?.urgent?.noul}`);

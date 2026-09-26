@@ -2,3 +2,5 @@ node_modules/
 *.log
 __pycache__/
 docs/loop/
+experiments/decision-eval-2026-09-26/*.log
+experiments/decision-eval-2026-09-26/laya-decisions.eval.jsonl
