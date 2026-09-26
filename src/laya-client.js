@@ -63,6 +63,10 @@ export function createLayaClient(opts = {}) {
   let readyReject = null;
   let deadReason = null;
   let closed = false;
+  // A retiring client serves what is already queued, refuses new work, then closes.
+  let retiring = false;
+  let onClosed;
+  const whenClosed = new Promise((resolve) => { onClosed = resolve; });
   let stdoutBuf = "";
   let stderrTail = "";
   let nextId = 1;
@@ -138,6 +142,7 @@ export function createLayaClient(opts = {}) {
     readyResolve = readyReject = null;
     if (reject) reject(err);
     failAll(err);
+    if (retiring) close();
   }
 
   function killWorker(message, error) {
@@ -305,6 +310,7 @@ export function createLayaClient(opts = {}) {
   }
 
   function pump() {
+    if (retiring && !inFlight && !pending.length) return close();
     if (inFlight || closed || !pending.length) return;
     const request = pending.shift();
     inFlight = request;
@@ -328,6 +334,7 @@ export function createLayaClient(opts = {}) {
   function predict({ state, questions } = {}) {
     return new Promise((resolve, reject) => {
       if (closed) return reject(errorFor("client is closed", "closed"));
+      if (retiring) return reject(errorFor("client is retiring", "closed"));
       const missing = missingConfig();
       if (missing.length) {
         return reject(errorFor(`laya client is not configured: missing ${missing.join(", ")}`, "unconfigured"));
@@ -355,7 +362,17 @@ export function createLayaClient(opts = {}) {
     if (closed) return;
     closed = true;
     killWorker("client is closed", errorFor("client is closed", "closed"));
+    onClosed();
   }
 
-  return { predict, status, close };
+  /** Closes once the in-flight request and the queue are done; resolves when closed. */
+  function closeWhenIdle() {
+    if (!closed) {
+      retiring = true;
+      if (!inFlight && !pending.length) close();
+    }
+    return whenClosed;
+  }
+
+  return { predict, status, close, closeWhenIdle };
 }

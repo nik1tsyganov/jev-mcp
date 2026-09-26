@@ -298,3 +298,37 @@ test("a worker that never becomes ready fails with startup-timeout and is killed
   assert.equal(fake.calls[0].child.killed, true);
   client.close();
 });
+
+test("closeWhenIdle closes an idle client at once", async () => {
+  const { spawn } = fakeWorker({ onRequest: (req, child) => child.stdout.write(resultLine(req)) });
+  const client = createLayaClient(configured({ spawn }));
+  await client.predict({ state: "s", questions: { q: { type: "noul", instructions: "Is it?" } } });
+  await client.closeWhenIdle();
+  assert.equal(client.status().available, false);
+  await assert.rejects(
+    client.predict({ state: "s", questions: { q: { type: "noul", instructions: "Is it?" } } }),
+    (err) => err.code === "closed"
+  );
+});
+
+test("closeWhenIdle serves in-flight and queued requests, refuses new ones, then closes", async () => {
+  const held = [];
+  const { spawn, calls } = fakeWorker({ onRequest: (req, child) => held.push(() => child.stdout.write(resultLine(req))) });
+  const client = createLayaClient(configured({ spawn }));
+  const questions = { q: { type: "noul", instructions: "Is it?" } };
+  const first = client.predict({ state: "a", questions });
+  const second = client.predict({ state: "b", questions });
+  while (!held.length) await new Promise((resolve) => setImmediate(resolve));
+  let closedNow = false;
+  const retired = client.closeWhenIdle().then(() => { closedNow = true; });
+  await assert.rejects(client.predict({ state: "c", questions }), /retiring/);
+  held.shift()();
+  assert.equal((await first).model, "c@r");
+  while (!held.length) await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(closedNow, false);
+  held.shift()();
+  assert.equal((await second).model, "c@r");
+  await retired;
+  assert.equal(client.status().available, false);
+  assert.equal(calls[0].child.killed, true);
+});

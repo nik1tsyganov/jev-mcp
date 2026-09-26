@@ -194,9 +194,20 @@ export function createLayaService({
   // profileClients, so refresh and eviction cannot close it.
   const envKey = envClient && envConfig ? runtimeKey(envConfig) : null;
 
-  function closeClient(client) {
+  // Refresh and eviction retire a worker: a request it is serving or has queued
+  // still completes. Retired workers are kept until they close so shutdown can
+  // close them immediately.
+  const retiredClients = new Set();
+
+  function closeClient(client, { whenIdle = false } = {}) {
     if (!client || typeof client.close !== "function") return;
     try {
+      if (whenIdle && typeof client.closeWhenIdle === "function") {
+        retiredClients.add(client);
+        Promise.resolve(client.closeWhenIdle()).then(
+          () => retiredClients.delete(client), () => retiredClients.delete(client));
+        return;
+      }
       const result = client.close();
       if (result && typeof result.catch === "function") result.catch(() => {});
     } catch {
@@ -212,7 +223,7 @@ export function createLayaService({
       .map(profileRuntimeConfig).filter(Boolean).map(runtimeKey));
     for (const [key, client] of profileClients) {
       if (!keys.has(key)) {
-        closeClient(client);
+        closeClient(client, { whenIdle: true });
         profileClients.delete(key);
       }
     }
@@ -242,7 +253,7 @@ export function createLayaService({
     profileClients.set(key, client);
     while (profileClients.size > MAX_PROFILE_CLIENTS) {
       const oldest = profileClients.keys().next().value;
-      closeClient(profileClients.get(oldest));
+      closeClient(profileClients.get(oldest), { whenIdle: true });
       profileClients.delete(oldest);
     }
     return client;
@@ -434,8 +445,9 @@ export function createLayaService({
   async function close() {
     if (closed) return;
     closed = true;
-    const clients = [envClient, ...profileClients.values()];
+    const clients = [envClient, ...profileClients.values(), ...retiredClients];
     profileClients.clear();
+    retiredClients.clear();
     await Promise.all(clients.map(async (client) => {
       if (!client || typeof client.close !== "function") return;
       try {
