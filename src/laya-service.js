@@ -22,16 +22,14 @@ function envLayaConfig(env) {
   };
 }
 
-function resolveLocalClient(laya) {
+// Returns the generic worker and, when it was built here, the config it was built from.
+function resolveLocalClient(laya, createClient) {
   try {
-    if (!laya) {
-      const cfg = envLayaConfig(process.env);
-      return cfg ? createLayaClient(cfg) : null;
-    }
-    if (typeof laya.predict === "function") return laya;
-    return createLayaClient(laya);
+    if (laya && typeof laya.predict === "function") return { client: laya, config: null };
+    const config = laya || envLayaConfig(process.env);
+    return config ? { client: createClient(config), config } : { client: null, config: null };
   } catch {
-    return null;
+    return { client: null, config: null };
   }
 }
 
@@ -142,7 +140,7 @@ export function createLayaService({
     ? policy
     : { loadPolicy, questionsFingerprint, resolveProfileId, selectProvider };
   let loadedPolicy = policy && typeof policy.selectProvider !== "function" ? policy : null;
-  const envClient = resolveLocalClient(laya);
+  const { client: envClient, config: envConfig } = resolveLocalClient(laya, createClient);
   const decisionLog = logPath || process.env.LAYA_DECISION_LOG || DEFAULT_LOG;
   const counters = { asks: 0, accepted: 0, rejected: 0, errors: 0 };
   let lastReason = null;
@@ -178,16 +176,23 @@ export function createLayaService({
     };
   }
 
+  // Unset limits resolve to the laya-client defaults (30000 ms, queue 8), so an
+  // env config that omits them still matches a profile that pins those values.
   function runtimeKey(config) {
     return JSON.stringify([
       config.python ?? null,
       config.modelPath ?? null,
-      config.timeoutMs ?? null,
-      config.maxQueue ?? null,
+      config.timeoutMs ?? 30000,
+      config.maxQueue ?? 8,
       config.checkpoint ?? null,
       config.revision ?? null,
     ]);
   }
+
+  // A profile whose runtime identity equals the env config shares the env worker,
+  // so the same model is never loaded twice. The env worker is never cached in
+  // profileClients, so refresh and eviction cannot close it.
+  const envKey = envClient && envConfig ? runtimeKey(envConfig) : null;
 
   function closeClient(client) {
     if (!client || typeof client.close !== "function") return;
@@ -217,6 +222,7 @@ export function createLayaService({
     const config = profileRuntimeConfig(loadedPolicy?.profiles?.[profileId]);
     if (!config) return null;
     const key = runtimeKey(config);
+    if (key === envKey) return envClient;
     if (profileClients.has(key)) {
       const existing = profileClients.get(key);
       profileClients.delete(key);
@@ -389,7 +395,8 @@ export function createLayaService({
     for (const [id, profile] of Object.entries(profiles)) {
       if (!profile || typeof profile !== "object") continue;
       const config = profileRuntimeConfig(profile);
-      const client = config ? profileClients.get(runtimeKey(config)) ?? null : null;
+      const key = config ? runtimeKey(config) : null;
+      const client = key === null ? null : key === envKey ? envClient : profileClients.get(key) ?? null;
       out[id] = {
         configured: Boolean(config?.python && config?.modelPath && config?.checkpoint && config?.revision),
         enabled: profile.enabled === true,

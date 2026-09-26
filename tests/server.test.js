@@ -89,3 +89,11 @@ test("a purpose tag is logged with the call and never sent as a question", async
   }
   assert.equal(client.calls.length, 1);
 });
+
+test("a misspelled argument is refused before any Jev call", async () => {
+  const client = fakeClient();
+  const { runTool } = createToolRunner({ client });
+  await assert.rejects(runTool("jev_noul", { state: "x", instructions: "Yes?", purpse: "typo" }), /Unknown argument `purpse` for jev_noul/);
+  await assert.rejects(runTool("jev_models", { extra: 1 }), /Unknown argument `extra`/);
+  assert.equal(client.calls.length, 0);
+});
