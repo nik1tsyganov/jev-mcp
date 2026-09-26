@@ -19,6 +19,7 @@ def record(tool, model, questions, usage, latency_ms=None):
                 "source": "python",
                 "tool": tool,
                 "client": None,
+                "purpose": tool,
                 "cwd": os.getcwd(),
                 "pid": os.getpid(),
                 "ok": usage is not None,

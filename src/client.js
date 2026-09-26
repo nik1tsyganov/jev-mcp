@@ -122,7 +122,8 @@ function summarise(answers) {
 }
 
 /* Schema 2 (2026-09-25) adds who called and how long it took, so a week of normal
-   use can be scored per call site: source, tool, client, cwd, pid, latency_ms, ok.
+   use can be scored per call site: source, tool, client, purpose, cwd, pid, latency_ms, ok.
+   `purpose` is the caller's own tag; it is logged here and never sent to Jev.
    A failed call is logged too (ok:false, no tokens) so error rates are visible. */
 function recordSpend(model, questionCount, usage, answers, { caller = {}, latencyMs = null, error = null } = {}) {
   const used = usage || {};
@@ -136,6 +137,7 @@ function recordSpend(model, questionCount, usage, answers, { caller = {}, latenc
       source: "mcp",
       tool: caller.tool ?? null,
       client: caller.client ?? null,
+      purpose: caller.purpose ?? null,
       cwd: process.cwd(),
       pid: process.pid,
       ok: error === null,

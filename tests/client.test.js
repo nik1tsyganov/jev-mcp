@@ -203,7 +203,7 @@ test("schema 2 spend rows record the caller, latency and failures", { skip: !pro
   _resetClient();
   rmSync(log, { force: true });
   const questions = { q1: { type: "noul", instructions: "Is this valid?" } };
-  const caller = { tool: "jev_noul", client: "test-client@1" };
+  const caller = { tool: "jev_noul", client: "test-client@1", purpose: "unit-test" };
   try {
     globalThis.fetch = async () => new Response(JSON.stringify({
       model: "jev-test", answers: { q1: { type: "noul", noul: 0.9 } }, usage: { input_tokens: 5, output_tokens: 2 },
@@ -220,6 +220,7 @@ test("schema 2 spend rows record the caller, latency and failures", { skip: !pro
       assert.equal(row.source, "mcp");
       assert.equal(row.tool, "jev_noul");
       assert.equal(row.client, "test-client@1");
+      assert.equal(row.purpose, "unit-test");
       assert.equal(row.cwd, process.cwd());
       assert.equal(typeof row.latency_ms, "number");
     }
