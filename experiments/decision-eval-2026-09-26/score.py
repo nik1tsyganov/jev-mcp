@@ -12,6 +12,7 @@ import random
 from collections import defaultdict
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(os.path.dirname(HERE))
 SEED = 20260926
 THRESHOLDS = [round(0.30 + 0.05 * i, 2) for i in range(14)]  # 0.30 .. 0.95
 TARGET_ACC, TARGET_COV = 0.90, 0.30
@@ -269,7 +270,7 @@ def main():
         name = rows[0].get("provider") if rows else os.path.basename(path)
         providers[name] = rows
 
-    report = {"case_files": files, "providers": {}, "code_computable": {}, "agreement": {}}
+    report = {"case_files": [os.path.relpath(os.path.abspath(f), REPO_ROOT) for f in files], "providers": {}, "code_computable": {}, "agreement": {}}
     split = {False: [c for c in cases if not c.get("code_computable")], True: [c for c in cases if c.get("code_computable")]}
     items = {}
     for name, rows in providers.items():
