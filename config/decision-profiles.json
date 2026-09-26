@@ -26,7 +26,7 @@
       },
       "evidence": {
         "path": "docs/evidence/technical-bookmark-topic-v1.json",
-        "sha256": "7137a1880f441659ebccecea3f6fad99a13971309448001f4e8db85d72821c97"
+        "sha256": "551073f7df96d3feda71fc7b62eb681eefd2d3b1092ddb2a48eaafb0c03d919f"
       },
       "questionsHash": "ae65041f21091d170bf959062e096e47171aa02ce1ee0b61afb54e4cfb222b84"
     },
@@ -55,7 +55,7 @@
       "questionsHash": "ae65041f21091d170bf959062e096e47171aa02ce1ee0b61afb54e4cfb222b84",
       "evidence": {
         "path": "docs/evidence/technical-bookmark-topic-v2.json",
-        "sha256": "953a7a71ea77d90c909f87a2a249f08e7a1bccf49b9a5fe7bc068e7bc072438a"
+        "sha256": "8c3aa5833a8d446f9cb472bb5b183a02169f0ca078cf441e9ba1f472ffee2d53"
       }
     }
   }

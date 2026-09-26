@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { questionsFingerprint, loadPolicy, overlapsCalibratedQuestion, resolveProfileId, selectProvider } from "../src/provider-policy.js";
 
@@ -137,7 +137,7 @@ test("shipped profiles stay FAILED and route only by explicit owner override", (
     assert.strictEqual(profile.ownerOverride.requestedAt, "2026-09-21");
     assert.strictEqual(typeof profile.ownerOverride.instruction, "string");
     assert.strictEqual(typeof profile.ownerOverride.reason, "string");
-    assert.strictEqual(profile.runtime.python, "~/.local/scratch/laya-evaluation/venv/bin/python");
+    assert.strictEqual(profile.runtime.python, join(homedir(), ".local/scratch/laya-evaluation/venv/bin/python"));
     assert.strictEqual(typeof profile.runtime.modelPath, "string");
     assert.strictEqual(profile.runtime.timeoutMs, 30000);
     assert.strictEqual(profile.runtime.maxQueue, 8);

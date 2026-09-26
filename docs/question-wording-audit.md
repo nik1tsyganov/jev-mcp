@@ -80,7 +80,7 @@ VAGUE = re.compile(r"\b(good|bad|appropriate|relevant|quality|suitable|acceptabl
 Every question instruction and criterion across all eight packs in `~/src/jev-mcp/packs/` was audited against the rules.
 
 ### 1. `bookmark-triage.json` (Working Pack)
-*File: [bookmark-triage.json](file://~/src/jev-mcp/packs/bookmark-triage.json)*
+*File: [bookmark-triage.json](../packs/bookmark-triage.json)*
 
 | Question ID | Rule Triggered | Offending Text Quoted Exactly | Line Number |
 | :--- | :--- | :--- | :--- |
@@ -95,7 +95,7 @@ Every question instruction and criterion across all eight packs in `~/src/jev-mc
 ---
 
 ### 2. `code-review-triage.json` (Failing Pack)
-*File: [code-review-triage.json](file://~/src/jev-mcp/packs/code-review-triage.json)*
+*File: [code-review-triage.json](../packs/code-review-triage.json)*
 
 | Question ID | Rule Triggered | Offending Text Quoted Exactly | Line Number |
 | :--- | :--- | :--- | :--- |
@@ -109,7 +109,7 @@ Every question instruction and criterion across all eight packs in `~/src/jev-mc
 ---
 
 ### 3. `docs-staleness.json` (Working Pack)
-*File: [docs-staleness.json](file://~/src/jev-mcp/packs/docs-staleness.json)*
+*File: [docs-staleness.json](../packs/docs-staleness.json)*
 
 | Question ID | Rule Triggered | Offending Text Quoted Exactly | Line Number |
 | :--- | :--- | :--- | :--- |
@@ -121,7 +121,7 @@ Every question instruction and criterion across all eight packs in `~/src/jev-mc
 ---
 
 ### 4. `head-brief-quality.json` (Failing Pack)
-*File: [head-brief-quality.json](file://~/src/jev-mcp/packs/head-brief-quality.json)*
+*File: [head-brief-quality.json](../packs/head-brief-quality.json)*
 
 | Question ID | Rule Triggered | Offending Text Quoted Exactly | Line Number |
 | :--- | :--- | :--- | :--- |
@@ -136,7 +136,7 @@ Every question instruction and criterion across all eight packs in `~/src/jev-mc
 ---
 
 ### 5. `lesson-dedupe.json` (Working Pack)
-*File: [lesson-dedupe.json](file://~/src/jev-mcp/packs/lesson-dedupe.json)*
+*File: [lesson-dedupe.json](../packs/lesson-dedupe.json)*
 
 | Question ID | Rule Triggered | Offending Text Quoted Exactly | Line Number |
 | :--- | :--- | :--- | :--- |
@@ -150,7 +150,7 @@ Every question instruction and criterion across all eight packs in `~/src/jev-mc
 ---
 
 ### 6. `merge-risk.json` (Working Pack)
-*File: [merge-risk.json](file://~/src/jev-mcp/packs/merge-risk.json)*
+*File: [merge-risk.json](../packs/merge-risk.json)*
 
 | Question ID | Rule Triggered | Offending Text Quoted Exactly | Line Number |
 | :--- | :--- | :--- | :--- |
@@ -161,7 +161,7 @@ Every question instruction and criterion across all eight packs in `~/src/jev-mc
 ---
 
 ### 7. `research-claim-verification.json` (Working Pack)
-*File: [research-claim-verification.json](file://~/src/jev-mcp/packs/research-claim-verification.json)*
+*File: [research-claim-verification.json](../packs/research-claim-verification.json)*
 
 | Question ID | Rule Triggered | Offending Text Quoted Exactly | Line Number |
 | :--- | :--- | :--- | :--- |
@@ -173,7 +173,7 @@ Every question instruction and criterion across all eight packs in `~/src/jev-mc
 ---
 
 ### 8. `skill-store-stale-ref.json` (Working Pack)
-*File: [skill-store-stale-ref.json](file://~/src/jev-mcp/packs/skill-store-stale-ref.json)*
+*File: [skill-store-stale-ref.json](../packs/skill-store-stale-ref.json)*
 
 | Question ID | Rule Triggered | Offending Text Quoted Exactly | Line Number |
 | :--- | :--- | :--- | :--- |

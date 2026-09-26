@@ -9,6 +9,7 @@
 
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync, realpathSync } from "node:fs";
+import { homedir } from "node:os";
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateQuestions } from "./questions.js";
@@ -88,6 +89,16 @@ export function loadPolicy({ path } = {}) {
   const parsed = JSON.parse(readFileSync(target, "utf8"));
   if (!isPlainObject(parsed) || parsed.version !== 1 || !isPlainObject(parsed.profiles)) {
     throw new Error("decision profile file must be {version:1, profiles:{...}}.");
+  }
+  // The shipped file writes runtime paths as ~/... so no host home is committed.
+  for (const profile of Object.values(parsed.profiles)) {
+    const runtime = profile?.runtime;
+    if (!isPlainObject(runtime)) continue;
+    for (const key of ["python", "modelPath"]) {
+      if (typeof runtime[key] === "string" && runtime[key].startsWith("~/")) {
+        runtime[key] = join(homedir(), runtime[key].slice(2));
+      }
+    }
   }
   return parsed;
 }

@@ -1,10 +1,12 @@
 """Extract and resolve references in a skill store, with the document-level context a
 judgment needs. Import `collect()`; run directly for a summary."""
 import os, re, glob, json
+from pathlib import Path
 
+HOME = re.escape(str(Path.home()))
 TICK = re.compile(r'`([^`\n]+)`')
-BARE = re.compile(r'(?<![\w`/])((?:~/|~/)[^\s`"\'()<>,;]+)')
-PATHISH = re.compile(r'^(?:~/|~/)')
+BARE = re.compile(r'(?<![\w`/])((?:~/|' + HOME + r'/)[^\s`"\'()<>,;]+)')
+PATHISH = re.compile(r'^(?:~/|' + HOME + r'/)')
 URL = re.compile(r'https?://[^\s)>\]`"\',]+')
 # Relative pointers between skill files. This class hid the MAGI->CONCLAVE rename for
 # three days: every doc said `references/conclave-battery.md` and the file on disk was

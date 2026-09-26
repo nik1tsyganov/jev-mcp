@@ -13,6 +13,7 @@ import { accessSync, constants, existsSync, lstatSync, mkdtempSync, readdirSync,
 import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadPolicy } from "../src/provider-policy.js";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
 const HOME = homedir();
@@ -41,7 +42,7 @@ function sameList(a, b) {
 
 // The expected Laya env is the default profile's pinned runtime, so the generic
 // worker and bookmark tagging load one model.
-const registry = readJson(join(REPO, "config", "decision-profiles.json"));
+const registry = loadPolicy();
 const profile = registry.profiles[registry.defaultProfile];
 const EXPECTED_LAYA_ENV = {
   LAYA_PYTHON: profile.runtime.python,

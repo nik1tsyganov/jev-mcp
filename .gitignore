@@ -4,3 +4,8 @@ __pycache__/
 docs/loop/
 experiments/decision-eval-2026-09-26/*.log
 experiments/decision-eval-2026-09-26/laya-decisions.eval.jsonl
+
+# Private owner data: kept on disk, never published.
+data/skill-store-stale-ref.jsonl
+docs/usage-evaluation.md
+docs/opportunity-map.md
