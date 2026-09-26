@@ -28,6 +28,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { questionsFingerprint } from "../src/provider-policy.js";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+// Written output paths are repo-relative so reports never carry a home directory.
+const repoRelative = (p) => relative(projectRoot, resolve(p));
 
 /** Label names and critical groups. The row's group must equal its label. */
 export const CRITICAL_GROUPS = ["software_development", "machine_learning", "computer_hardware", "other"];
@@ -768,12 +770,12 @@ function cmdCalibrate(opts) {
   const definitionPath = opts.definition ?? DEFAULT_DEFINITION;
   const corpusPath = opts.corpus ?? DEFAULT_DEV_CORPUS;
   const definition = validateDefinition(readJson(definitionPath));
-  definition.path = definitionPath;
+  definition.path = repoRelative(definitionPath);
   const result = calibrate({
     definition,
     definitionSha256: fileSha256(definitionPath),
     questionsHash: questionsFingerprint(definition.questions),
-    corpus: loadCorpus(corpusPath),
+    corpus: { ...loadCorpus(corpusPath), path: repoRelative(corpusPath) },
     predictions: loadResult(opts.predictions, { provider: opts.provider }),
     generatedAt: opts["generated-at"] ?? new Date().toISOString(),
   });
@@ -788,11 +790,13 @@ function cmdEvaluate(opts) {
   const corpusPath = opts.corpus ?? DEFAULT_HOLDOUT_CORPUS;
   const calibrationPath = opts.calibration;
   const definition = validateDefinition(readJson(definitionPath));
-  definition.path = definitionPath;
+  definition.path = repoRelative(definitionPath);
   const document = readJson(calibrationPath);
   const artifact = document.status === "CALIBRATED" ? document.artifact : document;
   for (const [pathKey, hashKey] of [["corpusPath", "corpusSha256"], ["predictionsPath", "predictionsSha256"]]) {
-    if (fileSha256(artifact.development[pathKey]) !== artifact.development[hashKey]) throw new Error("development input changed after calibration");
+    // corpusPath is written repo-relative; resolve() keeps older absolute values unchanged.
+    const file = pathKey === "corpusPath" ? resolve(projectRoot, artifact.development[pathKey]) : artifact.development[pathKey];
+    if (fileSha256(file) !== artifact.development[hashKey]) throw new Error("development input changed after calibration");
   }
   artifact.path = calibrationPath;
   const now = opts.now ? Date.parse(opts.now) : Date.now();
@@ -803,7 +807,7 @@ function cmdEvaluate(opts) {
     questionsHash: questionsFingerprint(definition.questions),
     artifact,
     artifactSha256: fileSha256(calibrationPath),
-    corpus: loadCorpus(corpusPath),
+    corpus: { ...loadCorpus(corpusPath), path: repoRelative(corpusPath) },
     local: loadResult(opts.local, { provider: opts["local-provider"] }),
     jev: loadResult(opts.jev, { provider: opts["jev-provider"] }),
     now,

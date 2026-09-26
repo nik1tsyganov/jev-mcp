@@ -18,15 +18,16 @@ state per item, post it, then act on the numbers in code.
 
 ## Worked example
 
-`bookmark-triage.json` against one real saved post. The whole pack goes in one request:
+`bookmark-triage.json` against one saved post. The author and text below are a synthetic
+stand-in; the answer is from the live run on the original post. The whole pack goes in one request:
 
     {
       "model": "jev-latest",
       "state": {
-        "author": "Movez @0xMovez",
-        "text": "20 TIPS FOR USING JEV FROM 0 TO PRO. ... 3. batch your questions: one request can answer many questions about the same state.",
+        "author": "Example Author @example_author",
+        "text": "Tips for structured judgment APIs. ... 3. batch your questions: send every question about one state in a single request.",
         "links": ["https://docs.typesafe.ai"],
-        "posted_at": "2026-09-18T19:13:50Z",
+        "posted_at": "2026-09-18T12:00:00Z",
         "engagement": "1.2K likes, 180 reposts"
       },
       "questions": { ...the `questions` object from the pack, unchanged... }

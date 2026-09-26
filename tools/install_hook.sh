@@ -26,6 +26,10 @@ for repo in "${REPOS[@]}"; do
   common="$(git -C "$repo" rev-parse --git-common-dir 2>/dev/null)" || { echo "not a git repo: $repo" >&2; exit 1; }
   case "$common" in /*) ;; *) common="$(cd "$repo" && cd "$common" && pwd)" ;; esac
   dest="$common/hooks/pre-push"
+  # A leak-guard wrapper at pre-push runs pre-push.local first: install there and keep the wrapper.
+  if [ -e "$dest" ] && grep -q "leak-guard" "$dest" 2>/dev/null; then
+    dest="$common/hooks/pre-push.local"
+  fi
   mkdir -p "$(dirname "$dest")"
 
   if [ "$REMOVE" = 1 ]; then
