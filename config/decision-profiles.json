@@ -19,8 +19,8 @@
         "reason": "Owner selected combination after reviewing failed qualification results"
       },
       "runtime": {
-        "python": "~/.local/scratch/laya-evaluation/venv/bin/python",
-        "modelPath": "~/.local/scratch/laya-evaluation/hf/hub/models--aac6fef--laya-mlx/snapshots/047678560251f28113ee8f5df4be82102c7bf336",
+        "python": "{project.jev-mcp.laya_python}",
+        "modelPath": "{project.jev-mcp.laya_hf_home}/hub/models--aac6fef--laya-mlx/snapshots/047678560251f28113ee8f5df4be82102c7bf336",
         "timeoutMs": 30000,
         "maxQueue": 8
       },
@@ -47,8 +47,8 @@
         "reason": "Owner selected combination after reviewing failed qualification results"
       },
       "runtime": {
-        "python": "~/.local/scratch/laya-evaluation/venv/bin/python",
-        "modelPath": "~/.local/scratch/laya-evaluation/hf/hub/models--aac6fef--laya-typed-decisions-mlx/snapshots/28416e78cb26a239a4eabaa2e084904ec5e6cacb",
+        "python": "{project.jev-mcp.laya_python}",
+        "modelPath": "{project.jev-mcp.laya_hf_home}/hub/models--aac6fef--laya-typed-decisions-mlx/snapshots/28416e78cb26a239a4eabaa2e084904ec5e6cacb",
         "timeoutMs": 30000,
         "maxQueue": 8
       },

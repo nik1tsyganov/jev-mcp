@@ -11,14 +11,22 @@
 #
 set -euo pipefail
 
-REPO="$HOME/src/jev-mcp"
+# Paths outside this repo come from the machine path registry (pathof) when this
+# machine has one, else from the usual home layout.
+where() { command -v pathof >/dev/null 2>&1 && pathof "$1" --default "$2" 2>/dev/null || printf '%s\n' "$2"; }
+
+REPO="$(cd "$(dirname "$0")/.." && pwd)"
 SERVER="$REPO/src/server.js"
 LAYA_SERVER="$REPO/src/laya-server.js"
 SKILL_SRC="$REPO/skills/jev-audit"
-CLAUDE_SKILLS="$HOME/.claude/skills"
-CODEX_SKILLS="$HOME/.codex/skills"
-KEY_FILE="$HOME/.config/typesafe/env.sh"
-CURSOR_MCP="$HOME/[removed]/mcp.json"
+CLAUDE_HOME="$(where agents.claude_home "$HOME/.claude")"
+CLAUDE_SKILLS="$(where agents.skills_canonical "$HOME/.claude/skills")"
+CODEX_SKILLS="$(where agents.skills_mirror "$HOME/.codex/skills")"
+KEY_FILE="$(where config.typesafe_env "$HOME/.config/typesafe/env.sh")"
+CURSOR_MCP="$(where agents.[removed] "$HOME/[removed]")/mcp.json"
+CLAUDE_JSON="$(where agents.claude_json "$HOME/.claude.json")"
+CODEX_CONFIG="$(where agents.codex_config "$HOME/.codex/config.toml")"
+AGY_MCP="$(where agents.gemini_config "$HOME/.gemini/config")/mcp_config.json"
 
 DRY_RUN=0
 ASSUME_YES=0
@@ -56,8 +64,8 @@ run() {
 
 have_skill() {
   [ -d "$CLAUDE_SKILLS/typesafe-ai" ] \
-    || [ -d "$HOME/.claude/plugins/typesafe/skills/typesafe-ai" ] \
-    || ls -d "$HOME"/.claude/plugins/*/skills/typesafe-ai >/dev/null 2>&1
+    || [ -d "$CLAUDE_HOME/plugins/typesafe/skills/typesafe-ai" ] \
+    || ls -d "$CLAUDE_HOME"/plugins/*/skills/typesafe-ai >/dev/null 2>&1
 }
 
 mcp_registered() {
@@ -136,8 +144,8 @@ if [ ! -f "$KEY_FILE" ]; then
   say "      Create a key at https://console.typesafe.ai/settings/keys, then write the file"
   say "      yourself — this script never asks for or stores a secret:"
   say ""
-  say "        umask 077 && mkdir -p ~/.config/typesafe && \\"
-  say "          printf 'export TYPESAFE_API_KEY=%s\\n' \"\$KEY\" > ~/.config/typesafe/env.sh"
+  say "        umask 077 && mkdir -p \"$(dirname "$KEY_FILE")\" && \\"
+  say "          printf 'export TYPESAFE_API_KEY=%s\\n' \"\$KEY\" > \"$KEY_FILE\""
   say ""
   fail 3 "no credential file"
 fi
@@ -160,12 +168,13 @@ step 5 "MCP registration for both providers"
 # which have no add command used here, get a direct (atomic) JSON edit.
 LAYA_ENV_JSON="$(mktemp)"
 trap 'rm -f "$LAYA_ENV_JSON"' EXIT
-python3 - "$REPO" "$HOME" "$LAYA_ENV_JSON" "$DRY_RUN" <<'PYEOF' || fail 5 "could not update MCP registrations"
+python3 - "$REPO" "$LAYA_ENV_JSON" "$DRY_RUN" "$CLAUDE_JSON" "$CODEX_CONFIG" "$CURSOR_MCP" "$AGY_MCP" <<'PYEOF' || fail 5 "could not update MCP registrations"
 import json
 import os
 from pathlib import Path
 import shutil
 import stat
+import subprocess
 import sys
 import tempfile
 try:
@@ -173,16 +182,11 @@ try:
 except ImportError:  # macOS system python3 is 3.9; saved Codex env is then read from the other clients
     tomllib = None
 
-repo, home, out = map(Path, sys.argv[1:4])
-dry_run = sys.argv[4] == "1"
+repo, out = map(Path, sys.argv[1:3])
+dry_run = sys.argv[3] == "1"
 names = ("LAYA_PYTHON", "LAYA_MODEL_DIR", "LAYA_CHECKPOINT",
          "LAYA_MODEL_REVISION", "LAYA_TIMEOUT_MS", "LAYA_MAX_QUEUE")
-paths = {
-    "claude": home / ".claude.json",
-    "codex": home / ".codex/config.toml",
-    "cursor": home / "[removed]/mcp.json",
-    "antigravity": home / ".gemini/config/mcp_config.json",
-}
+paths = dict(zip(("claude", "codex", "cursor", "antigravity"), map(Path, sys.argv[4:8])))
 # First client with a value wins (claude, cursor, antigravity, then codex); shell env beats all.
 saved = {}
 configs = {}
@@ -200,18 +204,25 @@ if tomllib and paths["codex"].exists():
             if k in names and v is not None:
                 saved.setdefault(k, str(v))
 try:
-    registry = json.loads((repo / "config/decision-profiles.json").read_text())
+    # loadPolicy resolves the runtime paths (registry keys, else home defaults).
+    registry = json.loads(subprocess.run(
+        ["node", "--input-type=module", "-e",
+         "const { pathToFileURL } = await import('node:url');"
+         "const { loadPolicy } = await import(pathToFileURL(process.argv[1]).href);"
+         "process.stdout.write(JSON.stringify(loadPolicy()));",
+         str(repo / "src/provider-policy.js")],
+        capture_output=True, text=True, check=True).stdout)
     profile = registry["profiles"][registry["defaultProfile"]]
     runtime = profile["runtime"]
     defaults = {
-        "LAYA_PYTHON": os.path.expanduser(runtime["python"]),
-        "LAYA_MODEL_DIR": os.path.expanduser(runtime["modelPath"]),
+        "LAYA_PYTHON": runtime["python"],
+        "LAYA_MODEL_DIR": runtime["modelPath"],
         "LAYA_CHECKPOINT": profile["checkpoint"],
         "LAYA_MODEL_REVISION": profile["revision"],
         "LAYA_TIMEOUT_MS": runtime["timeoutMs"],
         "LAYA_MAX_QUEUE": runtime["maxQueue"],
     }
-except (OSError, KeyError, TypeError, ValueError):
+except (OSError, KeyError, TypeError, ValueError, subprocess.CalledProcessError):
     defaults = {}
 # The registry's default profile outranks saved values, so a profile change
 # re-points every client; explicit shell LAYA_* still overrides both.
@@ -222,7 +233,7 @@ if missing:
     raise SystemExit("missing Laya settings: " + ", ".join(missing))
 
 
-# Apps opened from the Dock get launchd's PATH, which has no ~/.local/bin, so a
+# Apps opened from the Dock get launchd's PATH, which has no user bin folder, so a
 # bare `node` fails there. Every client gets the absolute path of this node.
 NODE = shutil.which("node") or "node"
 

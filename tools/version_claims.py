@@ -9,6 +9,9 @@ import re
 import subprocess
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from machine_paths import path_of  # noqa: E402
+
 ARCHIVE_MARKS = (
     "archived generation",
     "previous-host text",
@@ -187,7 +190,7 @@ def claims(store, return_skipped=False):
             tool_matches = []
             for tm in TOOL_PAT.finditer(line):
                 raw = tm.group(0)
-                # `claude` inside `~/.claude/docs/...` is a directory, not the CLI:
+                # `claude` inside a `.claude/docs/...` path is a directory, not the CLI:
                 # it paired with a schema version (`v1.1`) and produced a false claim.
                 before = line[max(0, tm.start() - 1):tm.start()]
                 after = line[tm.end():tm.end() + 1]
@@ -326,7 +329,7 @@ def compare(claims, facts):
 
 
 if __name__ == "__main__":
-    store_arg = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/.claude/skills")
+    store_arg = sys.argv[1] if len(sys.argv) > 1 else path_of("agents.skills_canonical", ".claude/skills")
     facts_data = live_facts()
     print("Live facts:")
     for k in ("agy", "claude", "codex", "[removed]"):

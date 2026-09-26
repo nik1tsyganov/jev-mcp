@@ -12,7 +12,10 @@ import sys
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PACKS_DIR = os.path.join(HERE, "packs")
-LOG = os.environ.get("TYPESAFE_SPEND_LOG", os.path.expanduser("~/.claude/docs/telemetry/jev-spend.jsonl"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from machine_paths import path_of  # noqa: E402
+
+LOG = os.environ.get("TYPESAFE_SPEND_LOG", os.path.join(path_of("agents.claude_telemetry", ".claude/docs/telemetry"), "jev-spend.jsonl"))
 
 
 def get_pack_model(pack):

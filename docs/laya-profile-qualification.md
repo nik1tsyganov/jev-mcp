@@ -147,39 +147,40 @@ written), `2` invalid input (fail-closed validation error).
 
 Generate the saved predictions with the existing harness (one provider per run,
 as in `docs/laya-comparison-protocol.md`). Pin the local runtime exactly as the
-definition declares:
+definition declares (`{roots.scratch}` is any scratch folder outside the repository;
+`pathof roots.scratch` prints it on a machine with the path registry):
 
     python tools/laya_compare.py --provider laya-mlx \
       --checkpoint <definition.checkpoint> --revision <definition.revision> \
       --cases data/technical-bookmark-topic-dev.jsonl \
-      --warmup 0 --repetitions 1 --live --out ~/.local/scratch/tbt-dev-local
+      --warmup 0 --repetitions 1 --live --out {roots.scratch}/tbt-dev-local
 
     python tools/laya_compare.py --provider jev \
       --cases data/technical-bookmark-topic-holdout.jsonl \
-      --warmup 0 --repetitions 1 --live --out ~/.local/scratch/tbt-holdout-jev
+      --warmup 0 --repetitions 1 --live --out {roots.scratch}/tbt-holdout-jev
 
     python tools/laya_compare.py --provider laya-mlx \
       --checkpoint <definition.checkpoint> --revision <definition.revision> \
       --cases data/technical-bookmark-topic-holdout.jsonl \
-      --warmup 0 --repetitions 1 --live --out ~/.local/scratch/tbt-holdout-local
+      --warmup 0 --repetitions 1 --live --out {roots.scratch}/tbt-holdout-local
 
 Calibrate from the development local run only:
 
     node tools/qualify-laya-profile.js calibrate \
       --definition config/technical-bookmark-topic-v1.json \
       --corpus data/technical-bookmark-topic-dev.jsonl \
-      --predictions ~/.local/scratch/tbt-dev-local/run.json \
-      --out ~/.local/scratch/tbt-calibration.json
+      --predictions {roots.scratch}/tbt-dev-local/run.json \
+      --out {roots.scratch}/tbt-calibration.json
 
 Evaluate the frozen calibration against the held-out runs:
 
     node tools/qualify-laya-profile.js evaluate \
-      --calibration ~/.local/scratch/tbt-calibration.json \
+      --calibration {roots.scratch}/tbt-calibration.json \
       --definition config/technical-bookmark-topic-v1.json \
       --corpus data/technical-bookmark-topic-holdout.jsonl \
-      --local ~/.local/scratch/tbt-holdout-local/run.json \
-      --jev ~/.local/scratch/tbt-holdout-jev/run.json \
-      --out ~/.local/scratch/tbt-evidence.json
+      --local {roots.scratch}/tbt-holdout-local/run.json \
+      --jev {roots.scratch}/tbt-holdout-jev/run.json \
+      --out {roots.scratch}/tbt-evidence.json
 
 Both commands default `--definition`, `--corpus` (dev for `calibrate`, holdout
 for `evaluate`) to the paths above, so only `--predictions`/`--local`/`--jev` and

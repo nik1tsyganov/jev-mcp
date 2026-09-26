@@ -4,7 +4,7 @@
 #
 set -euo pipefail
 
-SRC="$HOME/src/jev-mcp/hooks/pre-push"
+SRC="$(cd "$(dirname "$0")/.." && pwd)/hooks/pre-push"
 FORCE=0
 REMOVE=0
 REPOS=()

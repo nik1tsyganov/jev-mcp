@@ -45,6 +45,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from spend_log import record as record_spend  # noqa: E402
+from machine_paths import path_of  # noqa: E402
 
 try:
     from calibrate import api_key as _resolve_api_key  # reuse the existing credential path
@@ -54,7 +55,7 @@ except Exception:  # pragma: no cover - fallback keeps the harness runnable
         k = os.environ.get("TYPESAFE_API_KEY")
         if k:
             return k
-        path = os.path.expanduser("~/.config/typesafe/env.sh")
+        path = path_of("config.typesafe_env", ".config/typesafe/env.sh")
         try:
             m = re.search(r'^\s*export\s+TYPESAFE_API_KEY=["\']?([^"\'\s]+)', open(path).read(), re.M)
         except OSError:
@@ -187,7 +188,7 @@ class JevProvider:
     def __init__(self, args):
         self.key = _resolve_api_key()
         if not self.key:
-            raise RuntimeError("no TYPESAFE_API_KEY found (env or ~/.config/typesafe/env.sh)")
+            raise RuntimeError("no TYPESAFE_API_KEY found (env or the TypeSafe env.sh key file)")
         self.model = args.checkpoint
         self.resolved_model = None
         self.requests = 0
@@ -665,7 +666,7 @@ def select_providers(requested):
 
 def default_out_dir():
     stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    return os.path.expanduser(f"~/.local/scratch/laya-compare-{stamp}")
+    return os.path.join(path_of("roots.scratch", ".local/scratch"), f"laya-compare-{stamp}")
 
 
 def main(argv=None):

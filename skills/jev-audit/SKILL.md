@@ -1,7 +1,7 @@
 ---
 name: "jev-audit"
 description: "Use when auditing, triaging, ranking, classifying or verifying more than a handful of items of any kind — skill files, review findings, lessons, saved posts, dependencies, doc sections, memory entries, agent briefs. Covers turning a corpus into a state-plus-questions pass over TypeSafe Jev, batching questions into one request per item, thresholds, calibration against hand labels, and reporting the numbers rather than the verdicts."
-metadata: {"canonical-home": "~/.claude/skills/jev-audit", "packs": "~/src/jev-mcp/packs", "verified-live": "2026-09-19"}
+metadata: {"canonical-home": "{agents.skills_canonical}/jev-audit", "packs": "{project.jev-mcp.packs}", "verified-live": "2026-09-19"}
 ---
 
 # Jev audit
@@ -64,8 +64,8 @@ classify, route, extract a field, verify a claim against evidence.
 5. **State the request count before running.** One request per item. Two hundred items
    is two hundred requests. Cost is NOT the constraint (owner, 2026-09-19): Jev is cheap
    and no budget limits it. Say the count so nobody discovers a corpus pass afterwards.
-   Every judgment is logged to `~/.claude/docs/telemetry/jev-spend.jsonl`; read it with
-   `~/src/jev-mcp/tools/spend.py`.
+   Every judgment is logged to `{agents.claude_telemetry}/jev-spend.jsonl`; read it with
+   `{project.jev-mcp.root}/tools/spend.py`.
 6. **Apply thresholds in code.** Never ask the model what to do with its own number.
 
 ## Route on confidence, not only on the answer
@@ -137,7 +137,7 @@ absence must refuse loudly rather than silently allow.
 
 ## Packs
 
-Ready-made question sets, one JSON file each, at `~/src/jev-mcp/packs`:
+Ready-made question sets, one JSON file each, at `{project.jev-mcp.packs}`:
 
 | Pack | One item |
 | --- | --- |
@@ -155,12 +155,12 @@ Thresholds ship uncalibrated on purpose.
 
 ## Running a pass
 
-Either the `jev` MCP server at `~/src/jev-mcp` (tool `jev_ask` takes a
+Either the `jev` MCP server at `{project.jev-mcp.root}` (tool `jev_ask` takes a
 state and a questions map in one call), or a direct `POST https://api.typesafe.ai/v1/systemone`.
 
 ## Credential
 
-`TYPESAFE_API_KEY`, stored on this Mac at `~/.config/typesafe/env.sh`. Check presence
+`TYPESAFE_API_KEY`, stored on this Mac at `{config.typesafe_env}`. Check presence
 with `[ -n "${TYPESAFE_API_KEY:-}" ]`. Never print it, never write it into a repository,
 never paste it into a report.
 

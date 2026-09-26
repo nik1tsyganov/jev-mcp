@@ -15,13 +15,17 @@ command -v python3 >/dev/null 2>&1 || exit 0
 # Drift first, and outside merge-risk's preconditions: a gate measured against one model
 # version is not evidence about another, and that is worth saying even on a push where
 # merge-risk cannot run.
-LOCK="$HOME/src/jev-mcp/tools/calibration_lock.py"
+# This file is copied into other repos, so it finds jev-mcp through JEV_MCP_ROOT, else
+# the machine path registry, else the usual clone location.
+ROOT="${JEV_MCP_ROOT:-$(pathof project.jev-mcp.root --default "$HOME/src/jev-mcp" 2>/dev/null || echo "$HOME/src/jev-mcp")}"
+
+LOCK="$ROOT/tools/calibration_lock.py"
 [ -f "$LOCK" ] && { python3 "$LOCK" || true; }
 
-CONTRACT="$HOME/src/jev-mcp/tools/jev_contract_check.py"
+CONTRACT="$ROOT/tools/jev_contract_check.py"
 [ -f "$CONTRACT" ] && { python3 "$CONTRACT" || true; }
 
-TOOL="$HOME/src/jev-mcp/tools/merge_risk.py"
+TOOL="$ROOT/tools/merge_risk.py"
 [ -x "$TOOL" ] || exit 0
 
 repo="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0

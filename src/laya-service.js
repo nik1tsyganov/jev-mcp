@@ -1,13 +1,13 @@
 import { createHash } from "node:crypto";
 import { appendFileSync, mkdirSync } from "node:fs";
-import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 
 import { validateQuestions } from "./questions.js";
 import { loadPolicy, overlapsCalibratedQuestion, questionsFingerprint, resolveProfileId, selectProvider } from "./provider-policy.js";
 import { createLayaClient, sanitizeLayaError } from "./laya-client.js";
+import { pathOf } from "./machine-paths.js";
 
-const DEFAULT_LOG = join(homedir(), ".claude", "docs", "telemetry", "laya-decisions.jsonl");
+const DEFAULT_LOG = join(pathOf("agents.claude_telemetry", join(".claude", "docs", "telemetry")), "laya-decisions.jsonl");
 
 function envLayaConfig(env) {
   const modelPath = env.LAYA_MODEL_DIR;

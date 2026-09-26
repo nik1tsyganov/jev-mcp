@@ -13,6 +13,7 @@ import { homedir } from "node:os";
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateQuestions } from "./questions.js";
+import { pathOf } from "./machine-paths.js";
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(moduleDir, "..");
@@ -90,17 +91,32 @@ export function loadPolicy({ path } = {}) {
   if (!isPlainObject(parsed) || parsed.version !== 1 || !isPlainObject(parsed.profiles)) {
     throw new Error("decision profile file must be {version:1, profiles:{...}}.");
   }
-  // The shipped file writes runtime paths as ~/... so no host home is committed.
+  // The shipped file writes runtime paths as a registry key plus a rest (or a
+  // home-relative tilde path), so no host home is committed.
   for (const profile of Object.values(parsed.profiles)) {
     const runtime = profile?.runtime;
     if (!isPlainObject(runtime)) continue;
     for (const key of ["python", "modelPath"]) {
-      if (typeof runtime[key] === "string" && runtime[key].startsWith("~/")) {
-        runtime[key] = join(homedir(), runtime[key].slice(2));
-      }
+      if (typeof runtime[key] === "string") runtime[key] = expandRuntimePath(runtime[key]);
     }
   }
   return parsed;
+}
+
+/** Home-relative fallbacks for the registry keys runtime paths may use. */
+const RUNTIME_KEY_DEFAULTS = {
+  "project.jev-mcp.laya_python": join(".local", "scratch", "laya-evaluation", "venv", "bin", "python"),
+  "project.jev-mcp.laya_venv": join(".local", "scratch", "laya-evaluation", "venv"),
+  "project.jev-mcp.laya_hf_home": join(".local", "scratch", "laya-evaluation", "hf"),
+};
+
+/** An unknown key is left as written, so the runtime check reports it missing. */
+function expandRuntimePath(value) {
+  const token = /^\{([\w.-]+)\}(.*)$/.exec(value);
+  if (token && Object.hasOwn(RUNTIME_KEY_DEFAULTS, token[1])) {
+    return pathOf(token[1], RUNTIME_KEY_DEFAULTS[token[1]]) + token[2];
+  }
+  return value.startsWith("~/") ? join(homedir(), value.slice(2)) : value;
 }
 
 function assertTrustedPolicyPath(path) {

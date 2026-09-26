@@ -20,6 +20,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from spend_log import record as _record_spend
+from machine_paths import path_of
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PACK = json.load(open(os.path.join(HERE, "packs", "bookmark-triage.json")))
@@ -30,7 +31,7 @@ def api_key():
     k = os.environ.get("TYPESAFE_API_KEY")
     if k:
         return k
-    path = os.path.expanduser("~/.config/typesafe/env.sh")
+    path = path_of("config.typesafe_env", ".config/typesafe/env.sh")
     if not os.path.exists(path):
         sys.exit(f"TYPESAFE_API_KEY is unset and {path} does not exist.")
     m = re.search(r'^\s*export\s+TYPESAFE_API_KEY=["\']?([^"\'\s]+)', open(path).read(), re.M)

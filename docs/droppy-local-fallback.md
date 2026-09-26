@@ -20,7 +20,7 @@ providers behind one decision call:
 
 - The Jev key is **optional**. Droppy Code stores it in the macOS Keychain.
 - App-scoped credentials are the only source the managed entry reads: it ignores
-  legacy credential files such as `~/.config/typesafe/env.sh` and an inherited
+  legacy credential files such as `{config.typesafe_env}` and an inherited
   `TYPESAFE_API_KEY`. A key that works for this repo's MCP registrations is not
   silently reused by the app.
 - An explicit Jev request fails when no key is saved.
@@ -88,7 +88,7 @@ fails locally; the convenience tool does not invent an approved profile.
 
 The local worker processes state and questions on this Mac without network
 access. Routing metadata is logged outside the runtime directory under
-`~/.claude/docs/telemetry`; that log excludes raw state and question text. Remote use is optional and happens only
+`{agents.claude_telemetry}`; that log excludes raw state and question text. Remote use is optional and happens only
 when a key is saved and the mode permits it — auto mode, never Local only.
 
 ## Changing modes

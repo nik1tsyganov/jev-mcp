@@ -136,5 +136,5 @@ added a per-call service switch to suppress local shadows for browser advice.
 Existing tools retain their prior shadow behavior. The app's sample tool listing
 now includes the browser helper. The app was not installed or relaunched.
 
-Local evidence: `~/.local/scratch/jev-ultrafast-evaluation/feature-integration.json`,
+Local evidence: `{roots.scratch}/jev-ultrafast-evaluation/feature-integration.json`,
 `feature-initial-failure.json`, `feature-tests.log`, and `feature-build.log`.

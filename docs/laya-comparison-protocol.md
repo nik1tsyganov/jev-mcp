@@ -57,7 +57,7 @@ Final adoption also requires representative held-out tasks, recalibrated gates, 
 
 ## Execution
 
-Dependencies live in `~/.local/scratch/laya-evaluation/venv`.
+Dependencies live in `{project.jev-mcp.laya_venv}`.
 Model caches and raw results live under the same scratch directory.
 The runtime source pins used for this evaluation are:
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit support trees (~/.claude/docs, hooks, commands, workflows) for broken references,
+"""Audit Claude support trees (docs, hooks, commands, workflows) for broken references,
 Windows path leftovers, and unexpanded home paths.
 
 Import `collect()`; run directly for a summary.
@@ -9,12 +9,15 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from machine_paths import path_of  # noqa: E402
+
 HOME = re.escape(str(Path.home()))
 DEFAULT_ROOTS = (
-    "~/.claude/docs",
-    "~/.claude/hooks",
-    "~/.claude/commands",
-    "~/.claude/workflows",
+    path_of("agents.claude_docs", ".claude/docs"),
+    path_of("agents.claude_hooks", ".claude/hooks"),
+    os.path.join(path_of("agents.claude_home", ".claude"), "commands"),
+    path_of("agents.claude_workflows", ".claude/workflows"),
 )
 VALID_EXTS = (".md", ".js", ".json", ".sh", ".py")
 MAX_FILE_SIZE = 2 * 1024 * 1024  # 2 MB
@@ -94,8 +97,8 @@ def check_path_status(ref, line=None):
     # A path stopping at whitespace whose prefix matches a real file is truncated.
     clean_target = target.rstrip("/\\")
     parent, base = os.path.dirname(clean_target), os.path.basename(clean_target)
-    # The extractor cuts a path at the first space, so `~/Library/Application Support/x`
-    # arrives as `~/Library/Application`. Rebuild it from the line and see whether it
+    # The extractor cuts a path at the first space, so `Library/Application Support/x`
+    # arrives as `Library/Application`. Rebuild it from the line and see whether it
     # RESOLVES: a prefix heuristic guessed, and guessed both ways - it called a real
     # truncation missing and a genuinely absent path truncated (2026-09-19).
     if line:

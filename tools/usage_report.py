@@ -9,18 +9,21 @@ one-week evaluation in docs/usage-evaluation.md.
 import argparse, datetime, json, math, os, sys
 from collections import Counter, defaultdict
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from machine_paths import path_of  # noqa: E402
+
 DEFAULT_SINCE = "2026-09-25"
 BATCH_BINS = (("1", 1, 1), ("2-4", 2, 4), ("5-16", 5, 16), ("17+", 17, None))
 
 
 def spend_log():
     return os.environ.get("TYPESAFE_SPEND_LOG",
-                          os.path.expanduser("~/.claude/docs/telemetry/jev-spend.jsonl"))
+                          os.path.join(path_of("agents.claude_telemetry", ".claude/docs/telemetry"), "jev-spend.jsonl"))
 
 
 def laya_log():
     return os.environ.get("LAYA_DECISION_LOG",
-                          os.path.expanduser("~/.claude/docs/telemetry/laya-decisions.jsonl"))
+                          os.path.join(path_of("agents.claude_telemetry", ".claude/docs/telemetry"), "laya-decisions.jsonl"))
 
 
 def read_rows(path):

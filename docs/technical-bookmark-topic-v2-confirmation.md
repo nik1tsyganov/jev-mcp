@@ -167,6 +167,6 @@ a general ranking beyond this authored synthetic corpus.
 
 The [saved diagnostic](qualification/technical-bookmark-topic-v2.json) records metrics,
 failed gates, frozen input hashes and prediction-file hashes. Raw results remain at
-`~/.local/scratch/laya-activation/v2-confirmation-{local,jev}/run.json`.
+`{roots.scratch}/laya-activation/v2-confirmation-{local,jev}/run.json`.
 The lead corrected misleading success descriptions in the qualification report;
 this changed report text only, not gates, measurements or the result.

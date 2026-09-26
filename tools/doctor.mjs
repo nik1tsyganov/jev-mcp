@@ -13,6 +13,7 @@ import { accessSync, constants, existsSync, lstatSync, mkdtempSync, readdirSync,
 import { homedir, tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { pathOf } from "../src/machine-paths.js";
 import { loadPolicy } from "../src/provider-policy.js";
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -106,13 +107,13 @@ try {
 }
 report(existsSync(join(EXPECTED_LAYA_ENV.LAYA_MODEL_DIR, "model.safetensors")), "LAYA_MODEL_DIR holds model weights");
 report(existsSync(join(REPO, "node_modules", "@modelcontextprotocol", "sdk")) && existsSync(join(REPO, "node_modules", "@typesafe-ai", "sdk")), "npm dependencies installed");
-report(existsSync(join(HOME, ".config", "typesafe", "env.sh")), "TypeSafe key file present", "value not read");
+report(existsSync(pathOf("config.typesafe_env", join(".config", "typesafe", "env.sh"))), "TypeSafe key file present", "value not read");
 
 // Claude, [removed], Antigravity: JSON configs.
 for (const [client, path] of [
-  ["claude", join(HOME, ".claude.json")],
-  ["cursor", join(HOME, "[removed]", "mcp.json")],
-  ["antigravity", join(HOME, ".gemini", "config", "mcp_config.json")],
+  ["claude", pathOf("agents.claude_json", ".claude.json")],
+  ["cursor", join(pathOf("agents.[removed]", "[removed]"), "mcp.json")],
+  ["antigravity", join(pathOf("agents.gemini_config", join(".gemini", "config")), "mcp_config.json")],
 ]) {
   let servers = {};
   try {
@@ -155,7 +156,7 @@ if (!codex) {
 
 // Project-scope configs outrank the user entry in Claude (.mcp.json) and [removed]
 // ([removed]/mcp.json); a jev/laya entry there must match too.
-for (const root of [join(HOME, "src"), join(HOME, "Repositories")]) {
+for (const root of [pathOf("roots.src", "src"), pathOf("roots.repositories", "Repositories")]) {
   let dirs = [];
   try { dirs = readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => join(root, d.name)); } catch { /* absent */ }
   for (const dir of dirs) {
@@ -221,12 +222,12 @@ try {
 }
 
 // Rules reach Codex and Gemini through links to the one host file.
-for (const link of [join(HOME, ".codex", "AGENTS.md"), join(HOME, ".gemini", "GEMINI.md")]) {
+for (const link of [join(pathOf("agents.codex_home", ".codex"), "AGENTS.md"), join(pathOf("agents.gemini_home", ".gemini"), "GEMINI.md")]) {
   let ok = false;
   try {
     ok = lstatSync(link).isSymbolicLink() && readlinkSync(link).endsWith(join(".claude", "AGENTS.md"));
   } catch { /* missing */ }
-  report(ok, `${link.replace(HOME, "~")} links to ~/.claude/AGENTS.md`);
+  report(ok, `${link.replace(HOME, "~")} links to the Claude AGENTS.md`);
 }
 
 if (LIVE) await liveChecks();

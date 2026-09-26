@@ -7,10 +7,10 @@ code or a measured number; anything unproven says so.
 
 | Decision | Tool | Status |
 | --- | --- | --- |
-| Task class per unit | `~/src/conclave/tools/jev-plan-classify.js` | live, bound into `plan-seal.json` |
+| Task class per unit | `{project.conclave.root}/tools/jev-plan-classify.js` | live, bound into `plan-seal.json` |
 | Convene and net-benefit | arbiter policy | live |
-| Panel tally | `~/src/conclave/tools/panel-tally-jev.js` | live |
-| Tie-break and the final verdict | `~/src/conclave/tools/jev-arbiter.js` | live; xAI retired as arbiter 2026-09-16 |
+| Panel tally | `{project.conclave.root}/tools/panel-tally-jev.js` | live |
+| Tie-break and the final verdict | `{project.conclave.root}/tools/jev-arbiter.js` | live; xAI retired as arbiter 2026-09-16 |
 
 Deterministic code gates every one of those. That is the rule, not a preference: a
 judgment ranks and routes, a check decides.

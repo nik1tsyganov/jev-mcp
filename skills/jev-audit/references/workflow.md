@@ -13,8 +13,8 @@ eleven items, because each one is kept, updated or deleted on its own.
 ## 2. The state
 
     {
-      "skill_file": "~/.claude/skills/gemini-bridge/SKILL.md",
-      "reference_text": "[a deliberately STALE example] Binary ~/.local/bin/agy, `agy --version` = 1.2.4 (checked 2026-09-16); the installed binary is 1.2.7",
+      "skill_file": "{agents.skills_canonical}/gemini-bridge/SKILL.md",
+      "reference_text": "[a deliberately STALE example] Binary {tools.agy}, `agy --version` = 1.2.4 (checked 2026-09-16); the installed binary is 1.2.7",
       "reference_kind": "version",
       "target_exists": true,
       "target_excerpt": "1.2.7",

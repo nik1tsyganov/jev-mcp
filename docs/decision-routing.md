@@ -92,5 +92,5 @@ quality measurements; both qualification results remain FAILED.
 The lead corrected registry refresh order, closed obsolete cached workers, prevented
 environment-worker substitution after a profile runtime failure, and corrected MCP
 tool descriptions and documentation. The raw host report is
-`~/.local/scratch/laya-activation/combination-integration.json`.
+`{roots.scratch}/laya-activation/combination-integration.json`.
 Existing application sessions were not restarted; reconnect MCP to load this code.

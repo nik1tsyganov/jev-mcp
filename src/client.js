@@ -1,11 +1,11 @@
 import { appendFileSync, mkdirSync, readFileSync } from "node:fs";
-import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { TypeSafeClient } from "@typesafe-ai/sdk";
+import { pathOf } from "./machine-paths.js";
 import { validateQuestions } from "./questions.js";
 
 export const DEFAULT_MODEL = process.env.TYPESAFE_DEFAULT_MODEL || "jev-latest";
-export const KEY_FILE = join(homedir(), ".config", "typesafe", "env.sh");
+export const KEY_FILE = pathOf("config.typesafe_env", join(".config", "typesafe", "env.sh"));
 
 export function baseUrl() {
   return (process.env.TYPESAFE_BASE_URL || "https://api.typesafe.ai").replace(/\/+$/, "");
@@ -22,7 +22,7 @@ export function credentialScope() {
 
 /** Resolves the API key. Never returns it in an error message or log line.
  *  Scope "app" reads DROPPY_JEV_API_KEY alone: never TYPESAFE_API_KEY, never a
- *  previously cached legacy credential, never ~/.config/typesafe/env.sh. The
+ *  previously cached legacy credential, never the TypeSafe env.sh key file. The
  *  cache key records the scope and the env value it came from, so a scope or
  *  key change cannot inherit a stale credential. */
 export function resolveApiKey() {
@@ -82,7 +82,7 @@ export function redact(text) {
 const MAX_REQUESTS = Number(process.env.TYPESAFE_MAX_REQUESTS || 5000);
 const WARN_EVERY = Number(process.env.TYPESAFE_WARN_EVERY || 50);
 const SPEND_LOG = process.env.TYPESAFE_SPEND_LOG
-  || join(homedir(), ".claude", "docs", "telemetry", "jev-spend.jsonl");
+  || join(pathOf("agents.claude_telemetry", join(".claude", "docs", "telemetry")), "jev-spend.jsonl");
 let spent = 0;
 let inputTokens = 0;
 let outputTokens = 0;

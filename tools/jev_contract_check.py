@@ -222,7 +222,10 @@ def check_question_guards(questions_code):
 # This reads the peer client's source directly - never imports it, so the
 # dependency-free rule holds - and compares the three shared constants. If the peer is
 # not on this machine the check is SKIPPED, because absence is not disagreement.
-PEER_CLIENT = os.path.expanduser("~/src/conclave/tools/jev-client.js")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from machine_paths import path_of  # noqa: E402
+
+PEER_CLIENT = os.path.join(path_of("project.conclave.root", "src/conclave"), "tools", "jev-client.js")
 
 def check_peer_agreement(expected):
     if not os.path.exists(PEER_CLIENT):

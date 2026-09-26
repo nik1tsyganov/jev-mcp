@@ -9,6 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from spend_log import record as _record_spend
+from machine_paths import path_of
 
 ENDPOINT = os.environ.get("TYPESAFE_BASE_URL", "https://api.typesafe.ai") + "/v1/systemone"
 
@@ -16,7 +17,7 @@ def api_key():
     k = os.environ.get("TYPESAFE_API_KEY")
     if k:
         return k
-    path = os.path.expanduser("~/.config/typesafe/env.sh")
+    path = path_of("config.typesafe_env", ".config/typesafe/env.sh")
     try:
         m = re.search(r'^\s*export\s+TYPESAFE_API_KEY=["\']?([^"\'\s]+)', open(path).read(), re.M)
     except OSError:

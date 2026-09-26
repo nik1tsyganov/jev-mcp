@@ -8,6 +8,9 @@ thresholds in code. Advisory by design: it prints a verdict and exits 0 unless -
 import argparse, json, os, re, sys, time, urllib.request, urllib.error
 from concurrent.futures import ThreadPoolExecutor
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from machine_paths import path_of
+
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PACK_PATH = os.path.join(HERE, "packs", "head-brief-quality.json")
 ENDPOINT = os.environ.get("TYPESAFE_BASE_URL", "https://api.typesafe.ai") + "/v1/systemone"
@@ -24,7 +27,7 @@ def api_key():
     k = os.environ.get("TYPESAFE_API_KEY")
     if k:
         return k
-    path = os.path.expanduser("~/.config/typesafe/env.sh")
+    path = path_of("config.typesafe_env", ".config/typesafe/env.sh")
     m = re.search(r'^\s*export\s+TYPESAFE_API_KEY=["\']?([^"\'\s]+)', open(path).read(), re.M)
     if not m:
         sys.exit(f"TYPESAFE_API_KEY is unset and no export line was found in {path}")

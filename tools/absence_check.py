@@ -11,6 +11,9 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from machine_paths import path_of  # noqa: E402
+
 # Paths in backticks starting with ~/ or /Users/
 PATH_TICK = re.compile(r'`((?:~/|/Users/)[^`\n]+)`')
 
@@ -57,7 +60,7 @@ CONTRAST_PAT = re.compile(
 #   claims about the live macOS system state today.
 # What it might miss (blind spot):
 #   Any line that mixes historical context with a genuine current false absence claim
-#   (for example, a line mentioning previous-host migration or ~/src/magi-kit that also falsely
+#   (for example, a line mentioning previous-host migration or {project.magi-kit.root} that also falsely
 #   asserts a current macOS file is absent) will be suppressed by this filter.
 HISTORICAL_PAT = re.compile(
     r"(previous[- ]host|ARCHIVED|2026-08|was renamed|pre-rename|magi-kit|skills-retired)",
@@ -67,7 +70,7 @@ HISTORICAL_PAT = re.compile(
 # Sentence boundary delimiter:
 # What it suppresses:
 #   Suppresses cross-sentence conflation on multi-sentence lines. When an author places an
-#   informative sentence mentioning existing files (e.g. "Engineering ledger ~/.claude/... exists")
+#   informative sentence mentioning existing files (e.g. "Engineering ledger {agents.claude_docs}/... exists")
 #   on the same line as a separate absence sentence (e.g. "Not present: Synara..."), evaluating
 #   sentences independently ensures paths from the presence sentence are not attributed to the
 #   absence sentence.
@@ -176,7 +179,7 @@ def check_presence_claims(store_root, allowlist_file=None):
                     discloses_empty = bool(EMPTY_CAVEAT_PAT.search(prose))
                     for raw_p in PATH_TICK.findall(sentence):
                         # A backticked string may be a COMMAND, not a path:
-                        # `~/.local/bin/codex doctor` is the binary plus an
+                        # `{tools.codex} doctor` is the binary plus an
                         # argument. Take the first token and test that.
                         clean_p = raw_p.split()[0].rstrip(".,;:) ") if raw_p.split() else ""
                         if not clean_p:
@@ -293,7 +296,7 @@ def selftest():
     asserts exactly two findings.
     """
     import shutil, tempfile
-    root = os.path.expanduser("~/.local/scratch/absence-selftest")
+    root = os.path.join(path_of("roots.scratch", ".local/scratch"), "absence-selftest")
     shutil.rmtree(root, ignore_errors=True)
     os.makedirs(os.path.join(root, "fake-skill"))
     ledger = os.path.join(root, "ledger.jsonl")
@@ -319,7 +322,7 @@ def selftest():
 def main():
     ap = argparse.ArgumentParser(description="Check skill stores for false absence claims.")
     ap.add_argument("pos_store", nargs="?", default=None, help="Skill store root directory")
-    ap.add_argument("--store", default=os.path.expanduser("~/.claude/skills"), help="Skill store root directory")
+    ap.add_argument("--store", default=path_of("agents.skills_canonical", ".claude/skills"), help="Skill store root directory")
     ap.add_argument("--selftest", action="store_true",
                     help="prove the checks can fire, then exit")
     ap.add_argument("--json", nargs="?", const=True, default=False, help="Emit JSON to stdout (or to specified file)")

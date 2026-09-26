@@ -1,6 +1,6 @@
 # Jev Client Contract
 
-Shared specification for TypeSafe Jev clients in this environment: `~/src/jev-mcp/src/client.js` (official `@typesafe-ai/sdk`) and `~/src/conclave/tools/jev-client.js` (zero-dependency global `fetch`). Neither repository may import the other.
+Shared specification for TypeSafe Jev clients in this environment: `src/client.js` in this repository (official `@typesafe-ai/sdk`) and `{project.conclave.root}/tools/jev-client.js` (zero-dependency global `fetch`). Neither repository may import the other.
 
 ## MUST AGREE
 
@@ -33,11 +33,11 @@ Declared differences between clients, so checkers do not flag intended design de
    - `conclave`: Sets none.
    - *Why*: SDK client configures an explicit timeout; Conclave relies on external caller/session deadlines.
 4. **Key Resolution**:
-   - `jev-mcp`: Reads `process.env.TYPESAFE_API_KEY` with fallback to reading `~/.config/typesafe/env.sh`.
-   - `conclave`: Requires `process.env.TYPESAFE_API_KEY` directly, expecting the lead to source `~/.config/typesafe/env.sh` first.
+   - `jev-mcp`: Reads `process.env.TYPESAFE_API_KEY` with fallback to reading `{config.typesafe_env}`.
+   - `conclave`: Requires `process.env.TYPESAFE_API_KEY` directly, expecting the lead to source `{config.typesafe_env}` first.
    - *Why*: Conclave minimizes filesystem coupling and environment assumptions.
 5. **Spend / Provenance Log**:
-   - `jev-mcp`: Logs to `~/.claude/docs/telemetry/jev-spend.jsonl` tracking input/output tokens, request count, and answer summaries.
+   - `jev-mcp`: Logs to `{agents.claude_telemetry}/jev-spend.jsonl` tracking input/output tokens, request count, and answer summaries.
    - `conclave`: Logs to a caller-specified `provenancePath` (JSONL) with request/response SHA256 hashes and usage.
    - *Why*: Host environments require distinct telemetry structures and provenance trails.
 
@@ -53,7 +53,7 @@ exists because the first two cannot catch the interesting failure.
    own suite. It drives `systemOne` with an injected `fetchImpl` that throws a fake key,
    so it proves redaction is APPLIED rather than merely defined.
 3. **The two are compared against each other** — `check_peer_agreement` in
-   `tools/jev_contract_check.py` reads `~/src/conclave/tools/jev-client.js` as TEXT and
+   `tools/jev_contract_check.py` reads `{project.conclave.root}/tools/jev-client.js` as TEXT and
    compares `ENDPOINT`, `DEFAULT_MODEL` and `PINNED_MODEL` to the values above. It never
    imports, so the dependency-free rule holds. If conclave is not on the machine the
    check reports SKIP, because absence is not disagreement.

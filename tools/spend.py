@@ -2,7 +2,8 @@
 """What has Jev cost, by day and by model. Reads the spend log the client writes."""
 import json, os, sys
 from collections import defaultdict
-LOG = os.environ.get("TYPESAFE_SPEND_LOG", os.path.expanduser("~/.claude/docs/telemetry/jev-spend.jsonl"))
+from machine_paths import path_of
+LOG = os.environ.get("TYPESAFE_SPEND_LOG", os.path.join(path_of("agents.claude_telemetry", ".claude/docs/telemetry"), "jev-spend.jsonl"))
 if not os.path.exists(LOG):
     sys.exit(f"no spend log at {LOG} yet")
 days = defaultdict(lambda: {"requests": 0, "questions": 0, "in": 0, "out": 0})

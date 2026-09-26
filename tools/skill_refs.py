@@ -148,7 +148,8 @@ def collect(store):
 if __name__ == "__main__":
     import sys
     from collections import Counter
-    store = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/.claude/skills")
+    from machine_paths import path_of
+    store = sys.argv[1] if len(sys.argv) > 1 else path_of("agents.skills_canonical", ".claude/skills")
     refs = collect(store)
     paths = [r for r in refs if r["kind"] == "path"]
     print("files with refs :", len({r["file"] for r in refs}))

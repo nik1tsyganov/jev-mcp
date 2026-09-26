@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from spend_log import record as _record_spend
+from machine_paths import path_of
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(HERE, "tools"))
@@ -33,7 +34,7 @@ def api_key():
     k = os.environ.get("TYPESAFE_API_KEY")
     if k:
         return k
-    path = os.path.expanduser("~/.config/typesafe/env.sh")
+    path = path_of("config.typesafe_env", ".config/typesafe/env.sh")
     if not os.path.isfile(path):
         sys.exit(f"TYPESAFE_API_KEY unset and no export line in {path}")
     try:
@@ -74,7 +75,7 @@ def judge(key, r):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("store", nargs="?", default=os.path.expanduser("~/.claude/skills"))
+    ap.add_argument("store", nargs="?", default=path_of("agents.skills_canonical", ".claude/skills"))
     ap.add_argument("--run", action="store_true", help="spend requests; without it, only the plan is printed")
     ap.add_argument("--force-chance-pack", action="store_true",
                     help="spend on the stale-ref judgment anyway; it measured at chance")

@@ -42,9 +42,11 @@ For bookmark tagging, call `laya_bookmark_topic` with `{ "state": { "title": "â€
 
 ## Environment and telemetry
 
-Jev needs a TypeSafe key. It reads `TYPESAFE_API_KEY` from its environment or the single export line in `~/.config/typesafe/env.sh`. The key is never printed by the server. Laya uses `LAYA_PYTHON`, `LAYA_MODEL_DIR`, `LAYA_CHECKPOINT`, `LAYA_MODEL_REVISION`, `LAYA_TIMEOUT_MS`, and `LAYA_MAX_QUEUE`. Its worker uses cached model files and stays offline. The trusted profile registry also holds pinned worker settings and evidence.
+Paths in braces, such as `{config.typesafe_env}`, are keys of an optional per-machine path registry (`~/.config/machine-paths/paths.json`). Without the registry the code uses the usual place under the home folder: `.config/typesafe/env.sh` and `.claude/docs/telemetry/`.
 
-Jev spend goes to `~/.claude/docs/telemetry/jev-spend.jsonl` (`TYPESAFE_SPEND_LOG` overrides the path). Laya decisions go to `~/.claude/docs/telemetry/laya-decisions.jsonl` (`LAYA_DECISION_LOG` overrides the path). A Laya request does not create Jev spend.
+Jev needs a TypeSafe key. It reads `TYPESAFE_API_KEY` from its environment or the single export line in `{config.typesafe_env}`. The key is never printed by the server. Laya uses `LAYA_PYTHON`, `LAYA_MODEL_DIR`, `LAYA_CHECKPOINT`, `LAYA_MODEL_REVISION`, `LAYA_TIMEOUT_MS`, and `LAYA_MAX_QUEUE`. Its worker uses cached model files and stays offline. The trusted profile registry also holds pinned worker settings and evidence.
+
+Jev spend goes to `{agents.claude_telemetry}/jev-spend.jsonl` (`TYPESAFE_SPEND_LOG` overrides the path). Laya decisions go to `{agents.claude_telemetry}/laya-decisions.jsonl` (`LAYA_DECISION_LOG` overrides the path). A Laya request does not create Jev spend.
 
 `tools/usage_report.py` reports usage from both logs by tool, client, project and session; the one-week evaluation plan is `docs/usage-evaluation.md`.
 
