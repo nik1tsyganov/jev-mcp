@@ -1,0 +1,1035 @@
+{
+  "case_files": [
+    "~/src/jev-mcp/experiments/decision-eval-2026-09-26/cases-conclave.jsonl",
+    "~/src/jev-mcp/experiments/decision-eval-2026-09-26/cases-general.jsonl",
+    "~/src/jev-mcp/experiments/decision-eval-2026-09-26/cases-oracle.jsonl"
+  ],
+  "providers": {
+    "jev": {
+      "overall": {
+        "cases": 138,
+        "questions": 173,
+        "answered": 173,
+        "coverage": 1.0,
+        "errors": 0,
+        "missing": 0,
+        "accuracy": 0.861271676300578,
+        "ci95": [
+          0.8070175438596491,
+          0.9112426035502958
+        ]
+      },
+      "by": {
+        "source": {
+          "conclave": {
+            "cases": 18,
+            "questions": 18,
+            "answered": 18,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8888888888888888,
+            "ci95": [
+              0.7222222222222222,
+              1.0
+            ]
+          },
+          "general": {
+            "cases": 80,
+            "questions": 115,
+            "answered": 115,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8956521739130435,
+            "ci95": [
+              0.8363636363636363,
+              0.9469026548672567
+            ]
+          },
+          "oracle": {
+            "cases": 40,
+            "questions": 40,
+            "answered": 40,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.75,
+            "ci95": [
+              0.625,
+              0.875
+            ]
+          }
+        },
+        "category": {
+          "bookmark-topic": {
+            "cases": 6,
+            "questions": 6,
+            "answered": 6,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "claim-verification": {
+            "cases": 8,
+            "questions": 16,
+            "answered": 16,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "convene-or-not": {
+            "cases": 5,
+            "questions": 5,
+            "answered": 5,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8,
+            "ci95": [
+              0.4,
+              1.0
+            ]
+          },
+          "delegate-or-not": {
+            "cases": 18,
+            "questions": 19,
+            "answered": 19,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8421052631578947,
+            "ci95": [
+              0.6666666666666666,
+              1.0
+            ]
+          },
+          "everyday": {
+            "cases": 16,
+            "questions": 18,
+            "answered": 18,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.9444444444444444,
+            "ci95": [
+              0.8125,
+              1.0
+            ]
+          },
+          "evidence-check": {
+            "cases": 3,
+            "questions": 3,
+            "answered": 3,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "head-profile": {
+            "cases": 6,
+            "questions": 6,
+            "answered": 6,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.6666666666666666,
+            "ci95": [
+              0.3333333333333333,
+              1.0
+            ]
+          },
+          "merge-risk": {
+            "cases": 5,
+            "questions": 10,
+            "answered": 10,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8,
+            "ci95": [
+              0.6,
+              1.0
+            ]
+          },
+          "other": {
+            "cases": 4,
+            "questions": 4,
+            "answered": 4,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.5,
+            "ci95": [
+              0.0,
+              1.0
+            ]
+          },
+          "pairing": {
+            "cases": 7,
+            "questions": 7,
+            "answered": 7,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "plan-class": {
+            "cases": 7,
+            "questions": 7,
+            "answered": 7,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "provider-choice": {
+            "cases": 5,
+            "questions": 5,
+            "answered": 5,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8,
+            "ci95": [
+              0.4,
+              1.0
+            ]
+          },
+          "refusal": {
+            "cases": 10,
+            "questions": 10,
+            "answered": 10,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.5,
+            "ci95": [
+              0.2,
+              0.8
+            ]
+          },
+          "review-triage": {
+            "cases": 10,
+            "questions": 20,
+            "answered": 20,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "risk": {
+            "cases": 1,
+            "questions": 1,
+            "answered": 1,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "routing": {
+            "cases": 25,
+            "questions": 34,
+            "answered": 34,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8235294117647058,
+            "ci95": [
+              0.696969696969697,
+              0.9411764705882353
+            ]
+          },
+          "tally": {
+            "cases": 2,
+            "questions": 2,
+            "answered": 2,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "difficulty": {
+          "ambiguous": {
+            "cases": 18,
+            "questions": 21,
+            "answered": 21,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8571428571428571,
+            "ci95": [
+              0.6842105263157895,
+              1.0
+            ]
+          },
+          "clear": {
+            "cases": 120,
+            "questions": 152,
+            "answered": 152,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8618421052631579,
+            "ci95": [
+              0.8041958041958042,
+              0.9113924050632911
+            ]
+          }
+        }
+      },
+      "calibration": {
+        "bins": [
+          {
+            "bin": "0.0-0.1",
+            "count": 0,
+            "mean_prob": null,
+            "accuracy": null
+          },
+          {
+            "bin": "0.1-0.2",
+            "count": 0,
+            "mean_prob": null,
+            "accuracy": null
+          },
+          {
+            "bin": "0.2-0.3",
+            "count": 0,
+            "mean_prob": null,
+            "accuracy": null
+          },
+          {
+            "bin": "0.3-0.4",
+            "count": 0,
+            "mean_prob": null,
+            "accuracy": null
+          },
+          {
+            "bin": "0.4-0.5",
+            "count": 0,
+            "mean_prob": null,
+            "accuracy": null
+          },
+          {
+            "bin": "0.5-0.6",
+            "count": 18,
+            "mean_prob": 0.5344444444444444,
+            "accuracy": 0.5
+          },
+          {
+            "bin": "0.6-0.7",
+            "count": 25,
+            "mean_prob": 0.6411999999999998,
+            "accuracy": 0.72
+          },
+          {
+            "bin": "0.7-0.8",
+            "count": 14,
+            "mean_prob": 0.7514285714285716,
+            "accuracy": 0.7142857142857143
+          },
+          {
+            "bin": "0.8-0.9",
+            "count": 20,
+            "mean_prob": 0.8525000000000003,
+            "accuracy": 0.95
+          },
+          {
+            "bin": "0.9-1.0",
+            "count": 96,
+            "mean_prob": 0.9719791666666663,
+            "accuracy": 0.96875
+          }
+        ],
+        "ece": 0.03104046242774545,
+        "mean_prob_correct": 0.8777852348993288,
+        "mean_prob_wrong": 0.6558333333333334,
+        "mean_prob_clear": 0.8538157894736842,
+        "mean_prob_ambiguous": 0.7976190476190477
+      },
+      "threshold": {
+        "sweep": [
+          {
+            "threshold": 0.3,
+            "coverage": 1.0,
+            "accuracy": 0.861271676300578
+          },
+          {
+            "threshold": 0.35,
+            "coverage": 1.0,
+            "accuracy": 0.861271676300578
+          },
+          {
+            "threshold": 0.4,
+            "coverage": 1.0,
+            "accuracy": 0.861271676300578
+          },
+          {
+            "threshold": 0.45,
+            "coverage": 1.0,
+            "accuracy": 0.861271676300578
+          },
+          {
+            "threshold": 0.5,
+            "coverage": 1.0,
+            "accuracy": 0.861271676300578
+          },
+          {
+            "threshold": 0.55,
+            "coverage": 0.9364161849710982,
+            "accuracy": 0.8950617283950617
+          },
+          {
+            "threshold": 0.6,
+            "coverage": 0.8959537572254336,
+            "accuracy": 0.9032258064516129
+          },
+          {
+            "threshold": 0.65,
+            "coverage": 0.8092485549132948,
+            "accuracy": 0.9285714285714286
+          },
+          {
+            "threshold": 0.7,
+            "coverage": 0.7514450867052023,
+            "accuracy": 0.9384615384615385
+          },
+          {
+            "threshold": 0.75,
+            "coverage": 0.7109826589595376,
+            "accuracy": 0.9512195121951219
+          },
+          {
+            "threshold": 0.8,
+            "coverage": 0.6705202312138728,
+            "accuracy": 0.9655172413793104
+          },
+          {
+            "threshold": 0.85,
+            "coverage": 0.6242774566473989,
+            "accuracy": 0.9722222222222222
+          },
+          {
+            "threshold": 0.9,
+            "coverage": 0.5549132947976878,
+            "accuracy": 0.96875
+          },
+          {
+            "threshold": 0.95,
+            "coverage": 0.4277456647398844,
+            "accuracy": 1.0
+          }
+        ],
+        "lowest_threshold": 0.6,
+        "halves": [
+          {
+            "lowest_threshold": 0.55,
+            "chosen_accuracy": 0.9315068493150684,
+            "chosen_coverage": 0.8588235294117647,
+            "holds": true
+          },
+          {
+            "lowest_threshold": 0.55,
+            "chosen_accuracy": 0.9090909090909091,
+            "chosen_coverage": 0.8850574712643678,
+            "holds": true
+          },
+          {
+            "lowest_threshold": 0.55,
+            "chosen_accuracy": 0.925,
+            "chosen_coverage": 0.898876404494382,
+            "holds": true
+          },
+          {
+            "lowest_threshold": 0.65,
+            "chosen_accuracy": 0.8860759493670886,
+            "chosen_coverage": 0.8977272727272727,
+            "holds": false
+          },
+          {
+            "lowest_threshold": 0.55,
+            "chosen_accuracy": 0.9125,
+            "chosen_coverage": 0.9090909090909091,
+            "holds": true
+          }
+        ],
+        "stable": false
+      },
+      "latency_ms": {
+        "p50": 133,
+        "p90": 169,
+        "max": 318
+      },
+      "tokens": {
+        "input_tokens": 77300,
+        "output_tokens": 7900
+      }
+    },
+    "laya": {
+      "overall": {
+        "cases": 138,
+        "questions": 173,
+        "answered": 166,
+        "coverage": 0.9595375722543352,
+        "errors": 7,
+        "missing": 0,
+        "accuracy": 0.45180722891566266,
+        "ci95": [
+          0.38125,
+          0.5246913580246914
+        ]
+      },
+      "by": {
+        "source": {
+          "conclave": {
+            "cases": 18,
+            "questions": 18,
+            "answered": 11,
+            "coverage": 0.6111111111111112,
+            "errors": 7,
+            "missing": 0,
+            "accuracy": 0.5454545454545454,
+            "ci95": [
+              0.2222222222222222,
+              0.8461538461538461
+            ]
+          },
+          "general": {
+            "cases": 80,
+            "questions": 115,
+            "answered": 115,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.45217391304347826,
+            "ci95": [
+              0.3611111111111111,
+              0.5398230088495575
+            ]
+          },
+          "oracle": {
+            "cases": 40,
+            "questions": 40,
+            "answered": 40,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.425,
+            "ci95": [
+              0.275,
+              0.6
+            ]
+          }
+        },
+        "category": {
+          "bookmark-topic": {
+            "cases": 6,
+            "questions": 6,
+            "answered": 6,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8333333333333334,
+            "ci95": [
+              0.5,
+              1.0
+            ]
+          },
+          "claim-verification": {
+            "cases": 8,
+            "questions": 16,
+            "answered": 16,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.4375,
+            "ci95": [
+              0.3125,
+              0.5
+            ]
+          },
+          "convene-or-not": {
+            "cases": 5,
+            "questions": 5,
+            "answered": 5,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.8,
+            "ci95": [
+              0.4,
+              1.0
+            ]
+          },
+          "delegate-or-not": {
+            "cases": 18,
+            "questions": 19,
+            "answered": 19,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.631578947368421,
+            "ci95": [
+              0.3888888888888889,
+              0.85
+            ]
+          },
+          "everyday": {
+            "cases": 16,
+            "questions": 18,
+            "answered": 18,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.4444444444444444,
+            "ci95": [
+              0.21052631578947367,
+              0.7058823529411765
+            ]
+          },
+          "evidence-check": {
+            "cases": 3,
+            "questions": 3,
+            "answered": 3,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.3333333333333333,
+            "ci95": [
+              0.0,
+              1.0
+            ]
+          },
+          "head-profile": {
+            "cases": 6,
+            "questions": 6,
+            "answered": 6,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.5,
+            "ci95": [
+              0.16666666666666666,
+              0.8333333333333334
+            ]
+          },
+          "merge-risk": {
+            "cases": 5,
+            "questions": 10,
+            "answered": 10,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.6,
+            "ci95": [
+              0.5,
+              0.8
+            ]
+          },
+          "other": {
+            "cases": 4,
+            "questions": 4,
+            "answered": 4,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.5,
+            "ci95": [
+              0.0,
+              1.0
+            ]
+          },
+          "pairing": {
+            "cases": 7,
+            "questions": 7,
+            "answered": 7,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.14285714285714285,
+            "ci95": [
+              0.0,
+              0.42857142857142855
+            ]
+          },
+          "plan-class": {
+            "cases": 7,
+            "questions": 7,
+            "answered": 0,
+            "coverage": 0.0,
+            "errors": 7,
+            "missing": 0,
+            "accuracy": null,
+            "ci95": null
+          },
+          "provider-choice": {
+            "cases": 5,
+            "questions": 5,
+            "answered": 5,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.6,
+            "ci95": [
+              0.2,
+              1.0
+            ]
+          },
+          "refusal": {
+            "cases": 10,
+            "questions": 10,
+            "answered": 10,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.4,
+            "ci95": [
+              0.1,
+              0.7
+            ]
+          },
+          "review-triage": {
+            "cases": 10,
+            "questions": 20,
+            "answered": 20,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.35,
+            "ci95": [
+              0.15,
+              0.55
+            ]
+          },
+          "risk": {
+            "cases": 1,
+            "questions": 1,
+            "answered": 1,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "routing": {
+            "cases": 25,
+            "questions": 34,
+            "answered": 34,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.3235294117647059,
+            "ci95": [
+              0.15625,
+              0.48717948717948717
+            ]
+          },
+          "tally": {
+            "cases": 2,
+            "questions": 2,
+            "answered": 2,
+            "coverage": 1.0,
+            "errors": 0,
+            "missing": 0,
+            "accuracy": 0.5,
+            "ci95": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "difficulty": {
+          "ambiguous": {
+            "cases": 18,
+            "questions": 21,
+            "answered": 19,
+            "coverage": 0.9047619047619048,
+            "errors": 2,
+            "missing": 0,
+            "accuracy": 0.3684210526315789,
+            "ci95": [
+              0.17647058823529413,
+              0.6
+            ]
+          },
+          "clear": {
+            "cases": 120,
+            "questions": 152,
+            "answered": 147,
+            "coverage": 0.9671052631578947,
+            "errors": 5,
+            "missing": 0,
+            "accuracy": 0.46258503401360546,
+            "ci95": [
+              0.3829787234042553,
+              0.54
+            ]
+          }
+        }
+      },
+      "calibration": {
+        "bins": [
+          {
+            "bin": "0.0-0.1",
+            "count": 0,
+            "mean_prob": null,
+            "accuracy": null
+          },
+          {
+            "bin": "0.1-0.2",
+            "count": 0,
+            "mean_prob": null,
+            "accuracy": null
+          },
+          {
+            "bin": "0.2-0.3",
+            "count": 4,
+            "mean_prob": 0.28022499999999995,
+            "accuracy": 0.25
+          },
+          {
+            "bin": "0.3-0.4",
+            "count": 47,
+            "mean_prob": 0.35300851063829786,
+            "accuracy": 0.3191489361702128
+          },
+          {
+            "bin": "0.4-0.5",
+            "count": 37,
+            "mean_prob": 0.4461351351351351,
+            "accuracy": 0.43243243243243246
+          },
+          {
+            "bin": "0.5-0.6",
+            "count": 33,
+            "mean_prob": 0.5463818181818182,
+            "accuracy": 0.5151515151515151
+          },
+          {
+            "bin": "0.6-0.7",
+            "count": 23,
+            "mean_prob": 0.650382608695652,
+            "accuracy": 0.5217391304347826
+          },
+          {
+            "bin": "0.7-0.8",
+            "count": 18,
+            "mean_prob": 0.7435722222222223,
+            "accuracy": 0.5555555555555556
+          },
+          {
+            "bin": "0.8-0.9",
+            "count": 4,
+            "mean_prob": 0.8305499999999999,
+            "accuracy": 1.0
+          },
+          {
+            "bin": "0.9-1.0",
+            "count": 0,
+            "mean_prob": null,
+            "accuracy": null
+          }
+        ],
+        "ece": 0.06187228915662647,
+        "mean_prob_correct": 0.5406920000000001,
+        "mean_prob_wrong": 0.47651978021978003,
+        "mean_prob_clear": 0.5080068027210888,
+        "mean_prob_ambiguous": 0.486221052631579
+      },
+      "threshold": {
+        "sweep": [
+          {
+            "threshold": 0.3,
+            "coverage": 0.9364161849710982,
+            "accuracy": 0.4567901234567901
+          },
+          {
+            "threshold": 0.35,
+            "coverage": 0.791907514450867,
+            "accuracy": 0.48905109489051096
+          },
+          {
+            "threshold": 0.4,
+            "coverage": 0.6647398843930635,
+            "accuracy": 0.5130434782608696
+          },
+          {
+            "threshold": 0.45,
+            "coverage": 0.5433526011560693,
+            "accuracy": 0.5212765957446809
+          },
+          {
+            "threshold": 0.5,
+            "coverage": 0.4508670520231214,
+            "accuracy": 0.5512820512820513
+          },
+          {
+            "threshold": 0.55,
+            "coverage": 0.32947976878612717,
+            "accuracy": 0.543859649122807
+          },
+          {
+            "threshold": 0.6,
+            "coverage": 0.26011560693641617,
+            "accuracy": 0.5777777777777777
+          },
+          {
+            "threshold": 0.65,
+            "coverage": 0.19653179190751446,
+            "accuracy": 0.5882352941176471
+          },
+          {
+            "threshold": 0.7,
+            "coverage": 0.12716763005780346,
+            "accuracy": 0.6363636363636364
+          },
+          {
+            "threshold": 0.75,
+            "coverage": 0.06358381502890173,
+            "accuracy": 0.8181818181818182
+          },
+          {
+            "threshold": 0.8,
+            "coverage": 0.023121387283236993,
+            "accuracy": 1.0
+          },
+          {
+            "threshold": 0.85,
+            "coverage": 0.0,
+            "accuracy": null
+          },
+          {
+            "threshold": 0.9,
+            "coverage": 0.0,
+            "accuracy": null
+          },
+          {
+            "threshold": 0.95,
+            "coverage": 0.0,
+            "accuracy": null
+          }
+        ],
+        "lowest_threshold": null,
+        "halves": [
+          {
+            "lowest_threshold": null,
+            "chosen_accuracy": null,
+            "chosen_coverage": null,
+            "holds": false
+          },
+          {
+            "lowest_threshold": null,
+            "chosen_accuracy": null,
+            "chosen_coverage": null,
+            "holds": false
+          },
+          {
+            "lowest_threshold": null,
+            "chosen_accuracy": null,
+            "chosen_coverage": null,
+            "holds": false
+          },
+          {
+            "lowest_threshold": null,
+            "chosen_accuracy": null,
+            "chosen_coverage": null,
+            "holds": false
+          },
+          {
+            "lowest_threshold": null,
+            "chosen_accuracy": null,
+            "chosen_coverage": null,
+            "holds": false
+          }
+        ],
+        "stable": false
+      },
+      "latency_ms": {
+        "p50": 9,
+        "p90": 13,
+        "max": 23
+      },
+      "tokens": {
+        "input_tokens": 34523,
+        "output_tokens": 0
+      }
+    }
+  },
+  "code_computable": {
+    "jev": {
+      "cases": 12,
+      "questions": 12,
+      "answered": 12,
+      "coverage": 1.0,
+      "errors": 0,
+      "missing": 0,
+      "accuracy": 0.75,
+      "ci95": [
+        0.5,
+        1.0
+      ]
+    },
+    "laya": {
+      "cases": 12,
+      "questions": 12,
+      "answered": 12,
+      "coverage": 1.0,
+      "errors": 0,
+      "missing": 0,
+      "accuracy": 0.4166666666666667,
+      "ci95": [
+        0.16666666666666666,
+        0.6666666666666666
+      ]
+    }
+  },
+  "agreement": {
+    "jev~laya": {
+      "both_answered": 166,
+      "agreement": 0.4759036144578313,
+      "disagreements": 87,
+      "accuracy_on_disagreement": [
+        0.8620689655172413,
+        0.09195402298850575
+      ]
+    }
+  }
+}
