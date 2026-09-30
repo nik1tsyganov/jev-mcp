@@ -71,7 +71,7 @@ HISTORICAL_PAT = re.compile(
 # What it suppresses:
 #   Suppresses cross-sentence conflation on multi-sentence lines. When an author places an
 #   informative sentence mentioning existing files (e.g. "Engineering ledger {agents.claude_docs}/... exists")
-#   on the same line as a separate absence sentence (e.g. "Not present: Synara..."), evaluating
+#   on the same line as a separate absence sentence (e.g. "Not present: <tool>..."), evaluating
 #   sentences independently ensures paths from the presence sentence are not attributed to the
 #   absence sentence.
 # What it might miss (blind spot):
