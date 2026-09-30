@@ -82,8 +82,8 @@ remains project-scoped. Lead validation is recorded below.
 ## Combination integration validation (2026-09-21)
 
 All 131 Node tests passed after lead integration. Fresh MCP connections using the
-saved [removed], Codex, Antigravity and project-scoped Claude registrations returned
-local answers from both pinned profiles. The [removed] connection also exercised
+saved Codex, Antigravity and project-scoped Claude registrations returned
+local answers from both pinned profiles. A separate connection also exercised
 omitted-profile V2 selection, low-probability refusal with remote access disabled,
 and exactly one Jev fallback for each profile (two Jev requests total). Changed
 questions and unknown profiles refused offline. These are runtime checks, not new

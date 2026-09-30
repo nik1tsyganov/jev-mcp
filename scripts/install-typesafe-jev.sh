@@ -23,7 +23,6 @@ CLAUDE_HOME="$(where agents.claude_home "$HOME/.claude")"
 CLAUDE_SKILLS="$(where agents.skills_canonical "$HOME/.claude/skills")"
 CODEX_SKILLS="$(where agents.skills_mirror "$HOME/.codex/skills")"
 KEY_FILE="$(where config.typesafe_env "$HOME/.config/typesafe/env.sh")"
-CURSOR_MCP="$(where agents.[removed] "$HOME/[removed]")/mcp.json"
 CLAUDE_JSON="$(where agents.claude_json "$HOME/.claude.json")"
 CODEX_CONFIG="$(where agents.codex_config "$HOME/.codex/config.toml")"
 AGY_MCP="$(where agents.gemini_config "$HOME/.gemini/config")/mcp_config.json"
@@ -80,10 +79,6 @@ agy_registered() {
   command -v agy >/dev/null 2>&1 && agy mcp list 2>/dev/null | grep -q "^$1[[:space:]]"
 }
 
-cursor_registered() {
-  [ -f "$CURSOR_MCP" ] && grep -q "\"$1\"" "$CURSOR_MCP"
-}
-
 if [ "$UNINSTALL" = 1 ]; then
   step 1 "Remove the jev and laya MCP registrations"
   for server_name in jev laya; do
@@ -91,11 +86,6 @@ if [ "$UNINSTALL" = 1 ]; then
     if codex_registered "$server_name"; then run codex mcp remove "$server_name" || true; else skip "codex: $server_name not registered"; fi
     if agy_registered "$server_name"; then run agy mcp remove "$server_name" || true; else skip "antigravity: $server_name not registered"; fi
   done
-  if cursor_registered jev || cursor_registered laya; then
-    run python3 -c 'import json,sys; p=sys.argv[1]; c=json.load(open(p)); [c.get("mcpServers",{}).pop(n,None) for n in ("jev","laya")]; json.dump(c,open(p,"w"),indent=2)' "$CURSOR_MCP"
-  else
-    skip "cursor: not registered"
-  fi
   step 2 "Remove the copied jev-audit skill"
   for dest in "$CLAUDE_SKILLS/jev-audit" "$CODEX_SKILLS/jev-audit"; do
     if [ -d "$dest" ]; then run rm -rf "$dest"; else skip "$dest absent"; fi
@@ -110,7 +100,7 @@ say "  1. check Node >= 20 and npm"
 say "  2. npx skills add typesafe-ai/skills --skill typesafe-ai"
 say "  3. check the TypeSafe credential at $KEY_FILE"
 say "  4. npm install in $REPO"
-say "  5. register the jev and laya MCP servers with Claude (user scope), Codex, Antigravity and [removed]"
+say "  5. register the jev and laya MCP servers with Claude (user scope), Codex and Antigravity"
 say "  6. copy skills/jev-audit into $CLAUDE_SKILLS and mirror to $CODEX_SKILLS"
 say "  7. one live call to prove it answers"
 [ "$DRY_RUN" = 1 ] && say "" && say "(dry run: nothing will change)"
@@ -164,11 +154,11 @@ else
 fi
 
 step 5 "MCP registration for both providers"
-# Claude and Codex are registered through their own CLIs; only [removed] and Antigravity,
-# which have no add command used here, get a direct (atomic) JSON edit.
+# Claude and Codex are registered through their own CLIs; Antigravity,
+# which has no add command used here, gets a direct (atomic) JSON edit.
 LAYA_ENV_JSON="$(mktemp)"
 trap 'rm -f "$LAYA_ENV_JSON"' EXIT
-python3 - "$REPO" "$LAYA_ENV_JSON" "$DRY_RUN" "$CLAUDE_JSON" "$CODEX_CONFIG" "$CURSOR_MCP" "$AGY_MCP" <<'PYEOF' || fail 5 "could not update MCP registrations"
+python3 - "$REPO" "$LAYA_ENV_JSON" "$DRY_RUN" "$CLAUDE_JSON" "$CODEX_CONFIG" "$AGY_MCP" <<'PYEOF' || fail 5 "could not update MCP registrations"
 import json
 import os
 from pathlib import Path
@@ -186,11 +176,11 @@ repo, out = map(Path, sys.argv[1:3])
 dry_run = sys.argv[3] == "1"
 names = ("LAYA_PYTHON", "LAYA_MODEL_DIR", "LAYA_CHECKPOINT",
          "LAYA_MODEL_REVISION", "LAYA_TIMEOUT_MS", "LAYA_MAX_QUEUE")
-paths = dict(zip(("claude", "codex", "cursor", "antigravity"), map(Path, sys.argv[4:8])))
-# First client with a value wins (claude, cursor, antigravity, then codex); shell env beats all.
+paths = dict(zip(("claude", "codex", "antigravity"), map(Path, sys.argv[4:7])))
+# First client with a value wins (claude, antigravity, then codex); shell env beats all.
 saved = {}
 configs = {}
-for client in ("claude", "cursor", "antigravity"):
+for client in ("claude", "antigravity"):
     path = paths[client]
     configs[client] = json.loads(path.read_text()) if path.exists() else {}
     for server in ("laya", "jev"):
@@ -256,7 +246,7 @@ def entry(old, command, script, env=None):
     return new
 
 
-for client in ("cursor", "antigravity"):
+for client in ("antigravity",):
     path = paths[client]
     cfg = configs[client]
     servers = cfg.setdefault("mcpServers", {})

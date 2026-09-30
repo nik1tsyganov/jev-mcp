@@ -109,10 +109,9 @@ report(existsSync(join(EXPECTED_LAYA_ENV.LAYA_MODEL_DIR, "model.safetensors")), 
 report(existsSync(join(REPO, "node_modules", "@modelcontextprotocol", "sdk")) && existsSync(join(REPO, "node_modules", "@typesafe-ai", "sdk")), "npm dependencies installed");
 report(existsSync(pathOf("config.typesafe_env", join(".config", "typesafe", "env.sh"))), "TypeSafe key file present", "value not read");
 
-// Claude, [removed], Antigravity: JSON configs.
+// Claude, Antigravity: JSON configs.
 for (const [client, path] of [
   ["claude", pathOf("agents.claude_json", ".claude.json")],
-  ["cursor", join(pathOf("agents.[removed]", "[removed]"), "mcp.json")],
   ["antigravity", join(pathOf("agents.gemini_config", join(".gemini", "config")), "mcp_config.json")],
 ]) {
   let servers = {};
@@ -154,13 +153,13 @@ if (!codex) {
   }
 }
 
-// Project-scope configs outrank the user entry in Claude (.mcp.json) and [removed]
-// ([removed]/mcp.json); a jev/laya entry there must match too.
+// Project-scope configs outrank the user entry in Claude (.mcp.json);
+// a jev/laya entry there must match too.
 for (const root of [pathOf("roots.src", "src"), pathOf("roots.repositories", "Repositories")]) {
   let dirs = [];
   try { dirs = readdirSync(root, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => join(root, d.name)); } catch { /* absent */ }
   for (const dir of dirs) {
-    for (const file of [join(dir, ".mcp.json"), join(dir, "[removed]", "mcp.json")]) {
+    for (const file of [join(dir, ".mcp.json")]) {
       if (!existsSync(file)) continue;
       let servers = {};
       try { servers = readJson(file).mcpServers ?? {}; } catch { report(false, `${file.replace(HOME, "~")} readable`); continue; }

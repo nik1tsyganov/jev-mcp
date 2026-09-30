@@ -26,11 +26,10 @@ TOOL_MAP = {
     "claude code": "claude",
     "codex": "codex",
     "codex cli": "codex",
-    "[removed]": "[removed]",
 }
 
 TOOL_PAT = re.compile(
-    r"\b(antigravity\s+cli|claude\s+code|codex\s+cli|[removed]|agy|claude|codex)\b",
+    r"\b(antigravity\s+cli|claude\s+code|codex\s+cli|agy|claude|codex)\b",
     re.IGNORECASE,
 )
 
@@ -119,7 +118,6 @@ def live_facts(timeout=5):
         "agy": _extract_version(_run_cmd(["agy", "--version"], timeout=timeout)),
         "claude": _extract_version(_run_cmd(["claude", "--version"], timeout=timeout)),
         "codex": _extract_version(_run_cmd(["codex", "--version"], timeout=timeout)),
-        "[removed]": _extract_version(_run_cmd(["[removed]", "--version"], timeout=timeout)),
         "models": _get_models(timeout=timeout),
     }
 
@@ -332,7 +330,7 @@ if __name__ == "__main__":
     store_arg = sys.argv[1] if len(sys.argv) > 1 else path_of("agents.skills_canonical", ".claude/skills")
     facts_data = live_facts()
     print("Live facts:")
-    for k in ("agy", "claude", "codex", "[removed]"):
+    for k in ("agy", "claude", "codex"):
         print(f"  {k}: {facts_data.get(k)}")
     live_models = facts_data.get("models")
     if isinstance(live_models, set):

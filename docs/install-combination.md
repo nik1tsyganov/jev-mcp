@@ -16,14 +16,14 @@ call that proves the whole path answers.
    instructions and exits — it never asks you to type a secret into it.
 4. Runs `npm install` in this repository, skipped when `node_modules` exists.
 5. Registers the `jev` MCP server (`node src/server.js`) and the `laya` MCP server
-   (`node src/laya-server.js`) with all four hosts. Claude and Codex go through their
+   (`node src/laya-server.js`) with all three hosts. Claude and Codex go through their
    CLIs (`claude mcp remove` then `claude mcp add-json -s user`; `codex mcp remove` then
    `codex mcp add`), and a host whose CLI is not on PATH is skipped with a message.
-   Antigravity (`{agents.gemini_config}/mcp_config.json`) and [removed] (`{agents.[removed]}/mcp.json`) get
+   Antigravity (`{agents.gemini_config}/mcp_config.json`) gets
    an atomic JSON edit that keeps other servers and any extra keys on the two entries.
    `jev` gets no env; the server reads `{config.typesafe_env}` itself, so the key
    never appears on argv or in a config file. `laya` gets only the six `LAYA_*` settings:
-   shell env first, then the first saved value in Claude, [removed], Antigravity, then the
+   shell env first, then the first saved value in Claude, Antigravity, then the
    default profile.
 6. Copies `skills/jev-audit` into `{agents.skills_canonical}` and mirrors it byte-for-byte into
    `{agents.skills_mirror}`. An existing copy that differs stops the script unless `--force`.
@@ -51,11 +51,6 @@ From the repository root:
 - The upstream skill is present: `ls {agents.skills_canonical}/typesafe-ai` or the plugin path.
 - `claude mcp list`, `codex mcp get jev`, `codex mcp get laya` and `agy mcp list` each
   show both `jev` and `laya`.
-- `[removed] mcp list` shows `jev: ready` and `laya: ready`.
-  `[removed] mcp list-tools jev` lists the six `jev` tools (`jev_ask`, `jev_noul`,
-  `jev_choice`, `jev_score`, `jev_models`, `decision_browser_action`), and
-  `[removed] mcp list-tools laya` lists the three `laya_*` tools (`laya_ask`,
-  `laya_bookmark_topic`, `laya_status`).
 - The smoke test printed `HTTP 200` and a `noul` near 1.
 - `ls {agents.skills_canonical}/jev-audit {agents.skills_mirror}/jev-audit` both resolve.
 - A fresh agent session lists the six `jev` tools and the three `laya_*` tools.
@@ -68,7 +63,7 @@ From the repository root:
 | HTTP 422 | a malformed request; the body names the field | fix the question shape — `choice` needs an object criteria, `score` an ordered array of two or more |
 | HTTP 429 | rate limited | wait and re-run; the server and SDKs already back off |
 | HTTP 529 | the service is overloaded | wait and re-run |
-| a vendor's list has no `jev` or no `laya` | registration was skipped or that config file was not written | re-run step 5; it registers both servers with all four hosts (check that host's CLI is on PATH) |
+| a vendor's list has no `jev` or no `laya` | registration was skipped or that config file was not written | re-run step 5; it registers both servers with all three hosts (check that host's CLI is on PATH) |
 | a vendor has `jev` but no key | that CLI launched the server without `TYPESAFE_API_KEY` | nothing to do: the server falls back to reading `{config.typesafe_env}` itself |
 | the agent sees no `jev_*` or `laya_*` tools | the session started before registration | restart the agent session |
 

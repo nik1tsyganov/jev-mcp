@@ -52,7 +52,7 @@ Jev spend goes to `{agents.claude_telemetry}/jev-spend.jsonl` (`TYPESAFE_SPEND_L
 
 ## Install and register
 
-Node >= 20 is required. Run `npm install` once; there is no build step. `scripts/install-typesafe-jev.sh` registers both servers for Claude, Codex, [removed], and Antigravity. It removes old combined routing environment keys from `jev` on repeat runs. Jev starts from `src/server.js`; Laya starts from `src/laya-server.js`.
+Node >= 20 is required. Run `npm install` once; there is no build step. `scripts/install-typesafe-jev.sh` registers both servers for Claude, Codex, and Antigravity. It removes old combined routing environment keys from `jev` on repeat runs. Jev starts from `src/server.js`; Laya starts from `src/laya-server.js`.
 
 For a portable Droppy Code runtime, run `python3 scripts/install-decision-runtime.py --download-laya`. It packages both servers. Use `node launch.mjs jev` or `node launch.mjs laya` in that runtime; omitting the argument selects Jev. A Laya launch requires the installed `runtime.json` Laya settings. A fresh install has an empty profile registry and does not inherit this machine's owner overrides. The earlier combined managed-entry design is retained as a [historical record](docs/droppy-local-fallback.md).
 
