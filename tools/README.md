@@ -5,7 +5,7 @@ Jev only what a script cannot settle.
 
 ## `skill_refs.py` — extract and resolve references in a skill store
 
-    python3 tools/skill_refs.py ~/.claude/skills
+    python3 tools/skill_refs.py "$(pathof agents.skills_canonical)"
 
 Prints the reference census and writes `/tmp/skill-refs3.json`. Each reference carries
 the document-level context a judgment needs: `file_declares_archived`,
@@ -53,14 +53,16 @@ reported with no requests at all.
 
 ## `merge_risk.py` and `hooks/pre-push` — rank what to read before a push
 
-    python3 tools/merge_risk.py origin/main..HEAD --repo ~/src/conclave
-    tools/install_hook.sh ~/src/conclave          # install the advisory hook
-    tools/install_hook.sh --remove ~/src/conclave
+    python3 tools/merge_risk.py origin/main..HEAD --repo "$(pathof project.conclave.root)"
+    tools/install_hook.sh "$(pathof project.conclave.root)"          # install the advisory hook
+    tools/install_hook.sh --remove "$(pathof project.conclave.root)"
 
 One request per changed file, capped at 25 (a 35-file range refuses rather than
 spending silently). The hook never blocks: a missing key, a missing tool, a timeout or
 a failed call all exit 0, and `JEV_MERGE_RISK=0 git push` silences it for one push. A
-judgment ranks what a human reads; the tests gate the push.
+judgment ranks what a human reads; the tests gate the push. Each call's answers, the
+repository, the pushed range, the file and its READ flag go into the spend log, so a
+review can check what later happened to the files it flagged.
 
 The state carries what the diff cannot show: what kind of file it is, how many other
 files in the repository name it, whether the change is deletion-only, and which
@@ -109,7 +111,7 @@ the preview rather than the post.
 Jev is cheap, so nothing here is a budget. The rule this serves is different: never loop
 a corpus silently, and be able to say afterwards what a pass cost.
 
-Every judgment request writes one line to `~/.claude/docs/telemetry/jev-spend.jsonl` —
+Every judgment request writes one line to `{agents.claude_telemetry}/jev-spend.jsonl` —
 from `src/client.js` for anything through the MCP server, and from `tools/spend_log.py`
 for the tools that post directly. Override the path with `TYPESAFE_SPEND_LOG`.
 

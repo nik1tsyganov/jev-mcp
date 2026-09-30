@@ -9,15 +9,27 @@ from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from spend_log import record as _record_spend
+from machine_paths import path_of
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PACK = json.load(open(os.path.join(HERE, "packs", "merge-risk.json")))
 ENDPOINT = os.environ.get("TYPESAFE_BASE_URL", "https://api.typesafe.ai") + "/v1/systemone"
 DIFF_CHARS = 6000
 
-def _logged(tool, payload):
+def needs_read(blast, irreversible):
+    gates = PACK["thresholds"]
+    return irreversible > gates["irreversible_path"]["gate"] or blast > gates["blast_radius"]["gate"]
+
+def _logged(tool, payload, context):
+    # Answers and the pushed range go into the log so a later review can join each READ
+    # flag to what happened to that file afterwards. Without them the hook's value is unmeasurable.
     try:
-        _record_spend(tool, payload.get("model"), len(payload.get("answers") or {}), payload.get("usage"))
+        a = payload.get("answers") or {}
+        try:
+            context = {**context, "read": needs_read(a["blast_radius"]["score"], a["irreversible_path"]["noul"])}
+        except (KeyError, TypeError):
+            pass
+        _record_spend(tool, payload.get("model"), len(a), payload.get("usage"), answers=a, context=context)
     except Exception:
         pass
     return payload
@@ -27,7 +39,7 @@ def api_key():
     k = os.environ.get("TYPESAFE_API_KEY")
     if k:
         return k
-    path = os.path.expanduser("~/.config/typesafe/env.sh")
+    path = path_of("config.typesafe_env", ".config/typesafe/env.sh")
     try:
         m = re.search(r'^\s*export\s+TYPESAFE_API_KEY=["\']?([^"\'\s]+)', open(path).read(), re.M)
     except OSError:
@@ -99,7 +111,7 @@ def changed_files(repo, rng, max_files=None):
                     "deletion_only": added in ("0", "?") and removed not in ("0", "?")})
     return out
 
-def judge(key, item):
+def judge(key, item, context):
     refs = item["refs"]
     reach = ("unknown" if refs < 0 else
              "nothing else in the repository names this file" if refs == 0 else
@@ -115,7 +127,7 @@ def judge(key, item):
     for attempt in range(2):
         try:
             with urllib.request.urlopen(req, timeout=20) as r:
-                return {**item, "answers": _logged("merge_risk", json.load(r))}
+                return {**item, "answers": _logged("merge_risk", json.load(r), {**context, "file": item["file"]})}
         except urllib.error.HTTPError as e:
             if e.code in (429, 529) and attempt < 1:
                 time.sleep(1); continue
@@ -150,8 +162,9 @@ def main():
         return 0
 
     print(f"merge-risk: {len(files)} file(s) in {args.range} = {len(files)} request(s)")
+    context = {"repo": git(args.repo, "rev-parse", "--show-toplevel").strip(), "range": args.range}
     with ThreadPoolExecutor(max_workers=6) as ex:
-        out = list(ex.map(lambda f: judge(key, f), files))
+        out = list(ex.map(lambda f: judge(key, f, context), files))
 
     rows, errors, tin, tout = [], 0, 0, 0
     for o in out:
@@ -173,16 +186,13 @@ def main():
                          "route": a["route"]["choice"]})
         except (KeyError, TypeError):
             errors += 1; continue
-    gates = PACK["thresholds"]
     rows.sort(key=lambda r: (-r["irreversible"], -r["blast"]))
     print()
     for r in rows:
-        mark = "READ" if (r["irreversible"] > gates["irreversible_path"]["gate"]
-                          or r["blast"] > gates["blast_radius"]["gate"]) else "    "
+        mark = "READ" if needs_read(r["blast"], r["irreversible"]) else "    "
         print(f"  {mark}  blast {r['blast']:.2f}  irreversible {r['irreversible']:.2f}  "
               f"+{r['added']}/-{r['removed']}  {r['file']}")
-    read = sum(1 for r in rows if r["irreversible"] > gates["irreversible_path"]["gate"]
-               or r["blast"] > gates["blast_radius"]["gate"])
+    read = sum(1 for r in rows if needs_read(r["blast"], r["irreversible"]))
     print(f"\n  {read} of {len(rows)} file(s) worth a human read first. "
           f"usage {tin} in / {tout} out." + (f" {errors} call(s) failed." if errors else ""))
     print("  Advisory: this ranks what to read. It does not gate the push; the tests do.")

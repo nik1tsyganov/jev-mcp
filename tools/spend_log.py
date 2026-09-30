@@ -6,10 +6,12 @@ corpus pass. Never raises: telemetry must not be able to fail a judgment.
 """
 import json, os, time
 
-LOG = os.environ.get("TYPESAFE_SPEND_LOG",
-                     os.path.expanduser("~/.claude/docs/telemetry/jev-spend.jsonl"))
+from machine_paths import path_of
 
-def record(tool, model, questions, usage, latency_ms=None):
+LOG = os.environ.get("TYPESAFE_SPEND_LOG",
+                     os.path.join(path_of("agents.claude_telemetry", ".claude/docs/telemetry"), "jev-spend.jsonl"))
+
+def record(tool, model, questions, usage, latency_ms=None, answers=None, context=None):
     try:
         os.makedirs(os.path.dirname(LOG), exist_ok=True)
         with open(LOG, "a") as fh:
@@ -29,6 +31,8 @@ def record(tool, model, questions, usage, latency_ms=None):
                 "questions": questions,
                 "input_tokens": (usage or {}).get("input_tokens"),
                 "output_tokens": (usage or {}).get("output_tokens"),
+                "answers": answers,
+                "context": context,
             }) + "\n")
     except Exception:
         pass
