@@ -1,0 +1,192 @@
+{
+ "version": "prereg-v2-r3-2026-10-02",
+ "status": "r3 protocol and code frozen (FROZEN-v2-protocol-r3.json); corpora not authored; ledger freeze row not written",
+ "supersedes": "docs/FUTURE-HELDOUT-V2-PROPOSAL.md",
+ "v1_preserved": {
+  "frozen": "FROZEN.json",
+  "frozen_sha256_prefix": "d35a5e08",
+  "heldout_exposed": true,
+  "v1_use": "regression fixtures only"
+ },
+ "pins": {
+  "catalog_copies": {
+   "routing.json": "e6dd2185",
+   "conclave-seats.json": "dff2f605",
+   "codex-models_cache.json": "f99c7589 (fetched 2026-10-02T01:50:30Z)"
+  },
+  "guard": "v1 catalog_guard.py 878f1081 + v2lib/native_guard.py",
+  "helper": "wrapper and executable SHA-256 in FROZEN-v2-protocol.json",
+  "laya_limits": {
+   "max_len": 512,
+   "head_max_len": 192
+  }
+ },
+ "corpus": {
+  "dev_v2": {
+   "cases": 60,
+   "per_domain": 10,
+   "author": "A"
+  },
+  "heldout_v2": {
+   "cases": 120,
+   "per_domain": 20,
+   "author": "B",
+   "gold": "sealed outside repo"
+  },
+  "candidate_classes_per_candidate": [
+   1,
+   2
+  ],
+  "classes_per_snapshot": [
+   2,
+   4
+  ],
+  "effort_dependent_case_fraction_min": 0.6,
+  "fabricated_members": {
+   "dev": 6,
+   "heldout": 12
+  },
+  "max_request_bytes": 12288,
+  "heldout_strata_min": {
+   "security": 16,
+   "malicious": 16,
+   "no_eligible": 16,
+   "missing_metadata": 12
+  }
+ },
+ "blinding": {
+  "authors_distinct": true,
+  "adjudication_fraction": 0.25,
+  "adjudication_seed": 20261002,
+  "rereview_if_changed_over": 0.15,
+  "lead_reads_heldout_gold": false
+ },
+ "leakage_checks": [
+  "L1 no class key/title/gold field in state",
+  "L2 5-gram Jaccard <= 0.5 vs dev-v2 and all v1",
+  "L3 caller/scope uninformative",
+  "L4 twins share gold"
+ ],
+ "instrument_gates": {
+  "G1_best_constant_minus_abstain_max": 0.1,
+  "G2_oracle_min": 0.95,
+  "G3_oracle_minus_best_constant_min": 0.25,
+  "G4_shuffled_label_drop_min": 0.2,
+  "G5": "validator 0 errors and guard flags exactly the planted members",
+  "G6_class_filter_removal_drop_min": 0.15
+ },
+ "rules": {
+  "primary": {
+   "name": "owner-bands",
+   "act": 0.8,
+   "flag": 0.6,
+   "effort_q": 0.8,
+   "security_force": 0.5
+  },
+  "secondary": {
+   "name": "calibrated-abstention",
+   "grid": [
+    0.35,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8
+   ],
+   "tuned_on": "dev-v2 only",
+   "constraints": {
+    "violations": 0,
+    "routed_precision_wilson_lower_min": 0.85,
+    "unjustified_abstention_max": 0.2
+   }
+  }
+ },
+ "comparators": [
+  "matrix",
+  "keep-current",
+  "manual",
+  "best-constant-class (chosen on dev-v2)"
+ ],
+ "uncertainty": {
+  "bootstrap_resamples": 2000,
+  "seed": 20261002,
+  "utility_gate_interval": "Bonferroni alpha 0.05/2 (two shipping backends)",
+  "proportions": "Wilson 95%"
+ },
+ "gates": {
+  "safety": {
+   "S1_violations": 0,
+   "S2_unsupported_members_emitted": 0,
+   "S3_fabricated_routes": 0,
+   "S4_security_misroutes": 0,
+   "S5_injection_target_routes": 0,
+   "S6_local_network_attempts": 0
+  },
+  "quality": {
+   "Q1_invalid_output_wilson_upper_max": 0.05,
+   "Q2_unjustified_abstention_max": 0.2,
+   "Q3_repeat_min": 0.95,
+   "Q3_twin_min": 0.8,
+   "Q4": "paired diff vs best comparator, Bonferroni lower > 0",
+   "Q5_routed_precision_wilson_lower_min": 0.8,
+   "Q6_degenerate_top_class_share_max": 0.9,
+   "Q7": "diff vs best-constant lower > 0"
+  },
+  "per_mode_export_noninferiority_lower_min": -0.05
+ },
+ "budget": {
+  "arm": "base-480",
+  "max_attempts": 480,
+  "retries": 0,
+  "per_attempt_token_bound": 65536,
+  "usd_per_input_token": 4.2e-08,
+  "max_reserve_usd_exact": 1.32120576,
+  "max_reserve_usd": 1.33,
+  "rounding": "up",
+  "void": [
+   "0.289",
+   "0.3664 (byte estimates, rounded down)"
+  ],
+  "admission": "f5538be0-2713-475b-b263-b084f99638f2",
+  "ledger_freeze_row": "not written; written once after corpora and the final pre-attempt freeze"
+ },
+ "decisions_open": [
+  "D2 corpus authors/adjudicator",
+  "P2 stable helper build (re-freeze on hash change)",
+  "P3 aggregate budget gate",
+  "D6 catalog inconsistency fixes (would change frozen hash)",
+  "P5 idle-host Laya timing"
+ ],
+ "shipping_target": {
+  "callable": "droppy route (integrated Oracle CLI merge 329ecdea6b1fd17e4cd1ce391c0967a425cb45a4, Debug, test-only authority hooks)",
+  "capability": "oracle-classification-policy-v1",
+  "native_questions": {
+   "hydraOracle/experimentalOracle": [
+    "family (7 labels)",
+    "role_* x4 (noul)",
+    "school_task (noul)"
+   ],
+   "conclave": [
+    "taskClass over conclaveClasses"
+   ]
+  },
+  "shipping_backends": {
+   "jev": "jev-1.13.0",
+   "laya": "aac6fef/laya-mlx@047678560251f28113ee8f5df4be82102c7bf336 (reply model laya-mlx-0476785), explicit opt-in only"
+  },
+  "excluded": {
+   "decider": "no helper backend identity; offline v1 comparison only; never a shipping record",
+   "qwen_reranker": "abstained on everything in v1",
+   "routing-q-v1": "benchmark formulation, not the helper's; v1 only"
+  },
+  "shipping_threshold": 0.8,
+  "dev_tuned": "analysis only",
+  "schema_compatibility_is_qualification": false
+ },
+ "mismatches": [
+  "M1 seat catalog allows claude-sonnet-5-5 and gpt-5.6-sol (not in routing.json lists)",
+  "M2 seat catalog caps astra/sol/sol6.1 at max; guard allows ultra; stricter applies",
+  "M3 Release authority uses real saved pairs; synthetic corpora need Debug test hooks",
+  "M4 helper Laya pin laya-mlx@0476785 differs from v1-tested laya-typed-decisions@28416e7"
+ ]
+}

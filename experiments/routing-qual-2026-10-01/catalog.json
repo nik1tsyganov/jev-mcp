@@ -1,0 +1,408 @@
+{
+  "catalog_version": "routing-catalog-2026-10-01",
+  "source": {
+    "path": "Skills/mix-mode/references/routing.json",
+    "sha256": "e6dd2185c4b1e3bb3f21a7e2d6290126d328f7e67a30c97353a6a0847a840207",
+    "read_date": "2026-10-01"
+  },
+  "vendor_to_provider": {
+    "claude": "anthropic",
+    "codex": "openai",
+    "gemini": "google",
+    "devin": "cognition"
+  },
+  "classes": {
+    "planning": {
+      "title": "Planning / architecture",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "opus",
+          "effort": "high"
+        }
+      ],
+      "fallback": null,
+      "nDefault": 1,
+      "source_path": "classes.planning"
+    },
+    "standard-feature": {
+      "title": "Standard feature slice",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "codex",
+          "provider": "openai",
+          "model": "gpt-6-astra",
+          "effort": "medium"
+        }
+      ],
+      "fallback": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "opus",
+          "effort": "medium"
+        }
+      ],
+      "nDefault": 1,
+      "source_path": "classes.standard-feature"
+    },
+    "hard-risky": {
+      "title": "Hard / risky change",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "gemini",
+          "provider": "google",
+          "model": "gemini-3.8-flash-high",
+          "effort": "high"
+        }
+      ],
+      "fallback": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "fable",
+          "effort": "xhigh"
+        }
+      ],
+      "nDefault": 1,
+      "source_path": "classes.hard-risky"
+    },
+    "security-sensitive": {
+      "title": "Security-sensitive change (auth, secrets, payments)",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "fable",
+          "effort": "high"
+        }
+      ],
+      "fallback": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "opus",
+          "effort": "high"
+        }
+      ],
+      "nDefault": 1,
+      "source_path": "classes.security-sensitive"
+    },
+    "bulk-mechanical": {
+      "title": "Bulk mechanical edits",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "codex",
+          "provider": "openai",
+          "model": "gpt-6-astra",
+          "effort": "high"
+        }
+      ],
+      "fallback": null,
+      "nDefault": 1,
+      "source_path": "classes.bulk-mechanical"
+    },
+    "parallel-slices": {
+      "title": "Independent parallel slices",
+      "low_confidence": false,
+      "mode": "dual-lead",
+      "implement": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "fable",
+          "effort": "xhigh"
+        },
+        {
+          "vendor": "codex",
+          "provider": "openai",
+          "model": "gpt-6-astra",
+          "effort": "medium"
+        }
+      ],
+      "fallback": null,
+      "nDefault": 2,
+      "source_path": "classes.parallel-slices"
+    },
+    "debug-mystery": {
+      "title": "Debugging a mystery failure",
+      "low_confidence": false,
+      "mode": "dual-lead",
+      "implement": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "fable",
+          "effort": "xhigh"
+        },
+        {
+          "vendor": "codex",
+          "provider": "openai",
+          "model": "gpt-6-astra",
+          "effort": "high"
+        },
+        {
+          "vendor": "gemini",
+          "provider": "google",
+          "model": "gemini-3.8-flash-high",
+          "effort": "high"
+        }
+      ],
+      "fallback": null,
+      "nDefault": 2,
+      "source_path": "classes.debug-mystery"
+    },
+    "tie-break": {
+      "title": "Tie-break / second opinion",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "opus",
+          "effort": "xhigh"
+        }
+      ],
+      "fallback": null,
+      "nDefault": 1,
+      "source_path": "classes.tie-break"
+    },
+    "long-context-analysis": {
+      "title": "Long-context analysis",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "opus",
+          "effort": "high"
+        }
+      ],
+      "fallback": null,
+      "nDefault": 1,
+      "source_path": "classes.long-context-analysis"
+    },
+    "research-synthesis": {
+      "title": "Research synthesis",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "fable",
+          "effort": "high"
+        }
+      ],
+      "fallback": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "opus",
+          "effort": "high"
+        }
+      ],
+      "nDefault": 1,
+      "source_path": "classes.research-synthesis"
+    },
+    "prose-writing": {
+      "title": "Prose / creative writing \u2014 LOW-CONFIDENCE",
+      "low_confidence": true,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "codex",
+          "provider": "openai",
+          "model": "gpt-6-astra",
+          "effort": "high"
+        }
+      ],
+      "fallback": null,
+      "nDefault": 1,
+      "source_path": "classes.prose-writing"
+    },
+    "ui-design": {
+      "title": "UI design (dual-render) \u2014 LOW-CONFIDENCE",
+      "low_confidence": true,
+      "mode": "dual-lead",
+      "implement": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "fable",
+          "effort": "medium"
+        },
+        {
+          "vendor": "codex",
+          "provider": "openai",
+          "model": "gpt-6-astra",
+          "effort": "medium"
+        }
+      ],
+      "fallback": [
+        {
+          "vendor": "codex",
+          "provider": "openai",
+          "model": "gpt-6.1-sol",
+          "effort": "medium"
+        }
+      ],
+      "nDefault": 2,
+      "source_path": "classes.ui-design"
+    },
+    "tutoring-dispatch": {
+      "title": "Tutoring / teaching-explanation dispatch",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "codex",
+          "provider": "openai",
+          "model": "gpt-6-astra",
+          "effort": "medium"
+        }
+      ],
+      "fallback": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "opus",
+          "effort": "medium"
+        }
+      ],
+      "nDefault": 1,
+      "source_path": "classes.tutoring-dispatch"
+    },
+    "research-swarm": {
+      "title": "Orchestrated research swarm",
+      "low_confidence": false,
+      "mode": "single",
+      "implement": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "fable",
+          "effort": "high"
+        }
+      ],
+      "fallback": [
+        {
+          "vendor": "claude",
+          "provider": "anthropic",
+          "model": "opus",
+          "effort": "high"
+        }
+      ],
+      "nDefault": 2,
+      "source_path": "classes.research-swarm"
+    }
+  },
+  "models": {
+    "opus": {
+      "provider": "anthropic",
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ]
+    },
+    "fable": {
+      "provider": "anthropic",
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ]
+    },
+    "gpt-6-luna": {
+      "provider": "openai",
+      "efforts": []
+    },
+    "gpt-6-sol": {
+      "provider": "openai",
+      "efforts": []
+    },
+    "gpt-6.1-sol": {
+      "provider": "openai",
+      "efforts": []
+    },
+    "gpt-6-astra": {
+      "provider": "openai",
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max",
+        "ultra"
+      ]
+    },
+    "gemini-3.8-flash-high": {
+      "provider": "google",
+      "efforts": [
+        "high"
+      ]
+    },
+    "gemini-3.8-flash-medium": {
+      "provider": "google",
+      "efforts": [
+        "medium"
+      ]
+    },
+    "gemini-3.8-flash-low": {
+      "provider": "google",
+      "efforts": [
+        "low"
+      ]
+    },
+    "gemini-3.1-pro-high": {
+      "provider": "google",
+      "efforts": [
+        "high"
+      ]
+    },
+    "gemini-3.1-pro-low": {
+      "provider": "google",
+      "efforts": [
+        "low"
+      ]
+    }
+  },
+  "hydra": null,
+  "notes": [
+    "Skills/hydra-lead/SKILL.md states no maximum helper count. hydra is null; routing.json fanOutGuideline.maxInitial=15 is not a Hydra cap. The playbook describes saved caps of 1-8, not a skill-wide cap.",
+    "Skills/mix-mode/references/routing.json: efforts.codexByModel lacks gpt-6-luna, gpt-6-sol, and gpt-6.1-sol despite codexModels listing them. Their efforts are empty; no support is inferred from assignments.",
+    "Skills/mix-mode/references/routing.json: efforts.codexByModel includes gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna, gpt-5.5, and codex-auto-review outside codexModels. They are not imported as catalog models.",
+    "Skills/mix-mode/references/routing.json: claudeModelAliases includes sonnet and haiku outside claudeModels; fallback chains still select those aliases. Only claudeModels entries are imported.",
+    "Skills/mix-mode/references/routing.json: classes.debug-mystery.roles.implement.mode is dual-lead and nDefault is 2, but leads has 3 entries. The third has a conditional read-only role; all three declared entries are preserved.",
+    "Skills/mix-mode/references/routing.json: Gemini efforts use both fused and fused-high. Catalog efforts are normalized from model slug suffixes; no separate effort flag is implied.",
+    "Skills/mix-mode/references/routing.json: classes.parallel-slices.roles.implement.threeWayOption names sonnet, gpt-5.6-terra and gemini-3.1-pro-high, unlike the current leads. This prose option is not an extra implement assignment.",
+    "Skills/mix-mode/references/routing.json: classes.*.roles.implement fallback fields and fallbacks.classes are distinct, sometimes divergent sources. Catalog fallback contains only inline implement fallbacks, including nested dual-lead fallbacks; null means no inline fallback, not no fallback chain.",
+    "Skills/mix-mode/references/routing.json: fallbacks._meta.qualityBarRule says not to add verification for fallback, while fallbacks.classes includes mandatoryExtraVerify=true and older evidence requiring extra verification. Frozen benchmark policy adds no such roles.",
+    "Skills/mix-mode/references/routing.json: fallbacks.classes.hard-risky.implement[0] calls Claude a same-vendor fallback for a Gemini primary; bulk-mechanical.implement calls Codex cross-vendor for a Codex primary and describes a Haiku primary. These chain labels conflict with classes.",
+    "Skills/mix-mode/references/routing.json: classes.standard-feature.roles.review and classes.hard-risky.roles.review are populated while modelJudgmentPolicy disables default model verification and dual review. These are optional candidates, not automatic checker authorization.",
+    "Skills/mix-mode/references/routing.json: classes.security-sensitive.roles.mandatoryDual and autoRoutingPolicy.conclave describe a duo plus joining third seat. The benchmark independently applies its frozen C8 checker quorum; this catalog does not import seat bindings.",
+    "Skills/mix-mode/references/routing.json: autoRoutingPolicy.optOutInteraction preserves the requested single vendor, but autoRoutingPolicy.conclave says every opt-out disables Codex and Gemini mixing, including Codex only. No opt-out policy is inferred here.",
+    "Skills/mix-mode/references/routing.json: distributionFloor.enforcement.mechanism3 is empty; mechanism3_circuitBreaker contains dated state and references missing vendorImplementSeats.scriptedDispatcherGap. Historical claims are not live availability evidence.",
+    "Skills/mix-mode/references/routing.json: agyThirdPartyModels lists cross-provider models but is outside the requested claudeModels/codexModels/geminiModels projection. They are not silently assigned a provider.",
+    "Context/CONCLAVE-DESIGN.md is explicitly a previous-host historical record. Current routing.json remains the sole model catalog; no historical seats are imported.",
+    "Catalog entries describe source assignments only. They do not establish current availability, qualification, context windows, native identity, or supported effort for missing arrays."
+  ]
+}

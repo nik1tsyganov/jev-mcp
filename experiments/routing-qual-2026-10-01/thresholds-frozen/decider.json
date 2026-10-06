@@ -1,0 +1,344 @@
+{
+  "name": "dev-tuned",
+  "act": 0.35,
+  "flag": 0.35,
+  "effort_q": 0.8,
+  "mean_utility": 0.8716666666666666,
+  "violations": 0,
+  "records": 120,
+  "backend": "decider",
+  "tuned_at": "2026-10-02T00:46:53.744406+00:00",
+  "grid": [
+    {
+      "name": "dev-tuned",
+      "act": 0.35,
+      "flag": 0.35,
+      "effort_q": 0.35,
+      "mean_utility": 0.8716666666666666,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.35,
+      "flag": 0.35,
+      "effort_q": 0.4,
+      "mean_utility": 0.8716666666666666,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.35,
+      "flag": 0.35,
+      "effort_q": 0.5,
+      "mean_utility": 0.8716666666666666,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.35,
+      "flag": 0.35,
+      "effort_q": 0.6,
+      "mean_utility": 0.8716666666666666,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.35,
+      "flag": 0.35,
+      "effort_q": 0.7,
+      "mean_utility": 0.8716666666666666,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.35,
+      "flag": 0.35,
+      "effort_q": 0.8,
+      "mean_utility": 0.8716666666666666,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.4,
+      "flag": 0.4,
+      "effort_q": 0.35,
+      "mean_utility": 0.825,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.4,
+      "flag": 0.4,
+      "effort_q": 0.4,
+      "mean_utility": 0.825,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.4,
+      "flag": 0.4,
+      "effort_q": 0.5,
+      "mean_utility": 0.825,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.4,
+      "flag": 0.4,
+      "effort_q": 0.6,
+      "mean_utility": 0.825,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.4,
+      "flag": 0.4,
+      "effort_q": 0.7,
+      "mean_utility": 0.825,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.4,
+      "flag": 0.4,
+      "effort_q": 0.8,
+      "mean_utility": 0.825,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.5,
+      "flag": 0.5,
+      "effort_q": 0.35,
+      "mean_utility": 0.7083333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.5,
+      "flag": 0.5,
+      "effort_q": 0.4,
+      "mean_utility": 0.7083333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.5,
+      "flag": 0.5,
+      "effort_q": 0.5,
+      "mean_utility": 0.7083333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.5,
+      "flag": 0.5,
+      "effort_q": 0.6,
+      "mean_utility": 0.7083333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.5,
+      "flag": 0.5,
+      "effort_q": 0.7,
+      "mean_utility": 0.7083333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.5,
+      "flag": 0.5,
+      "effort_q": 0.8,
+      "mean_utility": 0.7083333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.6,
+      "flag": 0.6,
+      "effort_q": 0.35,
+      "mean_utility": 0.6733333333333333,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.6,
+      "flag": 0.6,
+      "effort_q": 0.4,
+      "mean_utility": 0.6733333333333333,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.6,
+      "flag": 0.6,
+      "effort_q": 0.5,
+      "mean_utility": 0.6733333333333333,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.6,
+      "flag": 0.6,
+      "effort_q": 0.6,
+      "mean_utility": 0.6733333333333333,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.6,
+      "flag": 0.6,
+      "effort_q": 0.7,
+      "mean_utility": 0.6733333333333333,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.6,
+      "flag": 0.6,
+      "effort_q": 0.8,
+      "mean_utility": 0.6733333333333333,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.7,
+      "flag": 0.6,
+      "effort_q": 0.35,
+      "mean_utility": 0.6033333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.7,
+      "flag": 0.6,
+      "effort_q": 0.4,
+      "mean_utility": 0.6033333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.7,
+      "flag": 0.6,
+      "effort_q": 0.5,
+      "mean_utility": 0.6033333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.7,
+      "flag": 0.6,
+      "effort_q": 0.6,
+      "mean_utility": 0.6033333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.7,
+      "flag": 0.6,
+      "effort_q": 0.7,
+      "mean_utility": 0.6033333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.7,
+      "flag": 0.6,
+      "effort_q": 0.8,
+      "mean_utility": 0.6033333333333334,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.8,
+      "flag": 0.6,
+      "effort_q": 0.35,
+      "mean_utility": 0.545,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.8,
+      "flag": 0.6,
+      "effort_q": 0.4,
+      "mean_utility": 0.545,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.8,
+      "flag": 0.6,
+      "effort_q": 0.5,
+      "mean_utility": 0.545,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.8,
+      "flag": 0.6,
+      "effort_q": 0.6,
+      "mean_utility": 0.545,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.8,
+      "flag": 0.6,
+      "effort_q": 0.7,
+      "mean_utility": 0.545,
+      "violations": 0,
+      "records": 120
+    },
+    {
+      "name": "dev-tuned",
+      "act": 0.8,
+      "flag": 0.6,
+      "effort_q": 0.8,
+      "mean_utility": 0.545,
+      "violations": 0,
+      "records": 120
+    }
+  ],
+  "dev_gold_sha256": "49567a49a5d8013e6d41004b56130e11521d354febb2b4fb21a4bc039b0da401",
+  "source_runs": [
+    {
+      "manifest": "09a446c8974de507aa642af8107894cb51cd3be2ca1bc923d965c47599e7726b",
+      "records": "110060d9a1441b383418cb27e8fa9924959d1d47f4577d649f2c8112552a1ed0"
+    }
+  ]
+}

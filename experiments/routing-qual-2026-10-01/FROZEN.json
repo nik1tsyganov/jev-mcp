@@ -1,0 +1,36 @@
+{
+  "frozen_at": "2026-10-02T00:47:19.357790+00:00",
+  "hashes": {
+    "catalog.json": "544724b45b1c1f14ed1a3c4ac8011b3e6854859ce46d8feb7aac210915b69a07",
+    "questions.py": "cd802c848134830a667d18b16fcba8f07aeacba8e3f4dd9debeef2ba1831cbd5",
+    "policy.py": "831afa0d7c728231a18a32087c9452a06631b7208fc0b9c4a70ba098652a8485",
+    "baselines.py": "eba0465dd86c170296f65f24f8a44da87e8ba977c904bb0e648e54289cff012a",
+    "harness.py": "848c5a4e22d10d365679beb9677363421b19e7504fbce56e40f28a7bbefab64e",
+    "score.py": "50b808af188813b0a92a2dae40ad89dbed3e0f5d5574f4fb08c561bc01beafe5",
+    "controls.py": "a638e122141c6e38fad0f15774c0d7e1372e3cce6cd41a01cdce66e718c262b1",
+    "cases/heldout.jsonl": "9ac28f6626298045801972b7e0cd34feb31036fe12d910d02655f250d2c608bb",
+    "adapters/__init__.py": "42206c3c279bd7cd4cccfe05dd0ed1c378ca5ac22092d8025b7c058fcd50e80f",
+    "adapters/common_worker.py": "0370fdf6d78ce05671d6fc9da5f3db4c431694832864b261c6dcd6252254b4c7",
+    "adapters/control_network.py": "c4e99776aad704a34f3790248bdd846311015a0aa11e9b28472da645fcda4ef5",
+    "adapters/control_network_worker.py": "588361387c57de4070998a1118336697e1444b1ee9c7fef9996c4d40b085abf4",
+    "adapters/decider.py": "dd98a9bdaadcc9b7eb5ae03601c51ec224c91dee487d371b3394e57a4423908f",
+    "adapters/decider_worker.py": "0a3a303568c1259fce67146b8e7baa65a55f0e31df75e29a46d07d717ab35b3a",
+    "adapters/jev.py": "ac7cb29342a0da18c2514158e19322f0722cabd2d78c9a7d1d8672c88207a454",
+    "adapters/laya.py": "a219dbab127994b18dd1c837d5681dc0ab568e0a2130c54563d1dacf67bf54cf",
+    "adapters/laya_worker.py": "80c279ce22676365c31d0c2cbc7e0b0670b89ff955a655eb385342915f363b22",
+    "adapters/local_sandbox.py": "5fc2907da855ae0b54cf5cab73bc5d61afb4b6332ef95c3a1273359d021bb2e3",
+    "adapters/qwen_reranker.py": "2256ad547c4b1fd8c18da5c128fde64842d4232ab157e31b6c925a1e0a98811a",
+    "adapters/qwen_reranker_worker.py": "0a2b72259ccc8faf46e5413a33414ddb6530c916b8cad5601d897be29868dc6c",
+    "../../../../.local/scratch/routing-qual-20261001/runs/thresholds/decider.json": "a6c191a6db8530e0b0a43d94c92f9f77e1ffc9bdac23e4d56070b3b5e4261a85",
+    "../../../../.local/scratch/routing-qual-20261001/runs/thresholds/jev.json": "3413434c63141e4efbea9f2670beb80399b8a71518cdf43eb9c9e40257107b1c",
+    "../../../../.local/scratch/routing-qual-20261001/runs/thresholds/laya.json": "cc3511d99e0e78d58117fd5a1114a6776e87a7b8c66513c289ec9448b3f81a5b",
+    "../../../../.local/scratch/routing-qual-20261001/runs/thresholds/qwen_reranker.json": "655779a76fee8c8d28605d4a87680682b5792b609d5d537d9340a04b798d7dd0"
+  },
+  "threshold_files": [
+    "../../../../.local/scratch/routing-qual-20261001/runs/thresholds/decider.json",
+    "../../../../.local/scratch/routing-qual-20261001/runs/thresholds/jev.json",
+    "../../../../.local/scratch/routing-qual-20261001/runs/thresholds/laya.json",
+    "../../../../.local/scratch/routing-qual-20261001/runs/thresholds/qwen_reranker.json"
+  ],
+  "heldout_gold_sha256": "9ac28f6626298045801972b7e0cd34feb31036fe12d910d02655f250d2c608bb  heldout.jsonl\nbbff0b94fa5cb667842401caa554af8add1bff4562c36da2ab5db9d0d5d1fc19  heldout-gold.jsonl\n"
+}
