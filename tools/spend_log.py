@@ -11,9 +11,13 @@ from machine_paths import path_of
 LOG = os.environ.get("TYPESAFE_SPEND_LOG",
                      os.path.join(path_of("agents.claude_telemetry", ".claude/docs/telemetry"), "jev-spend.jsonl"))
 
-def record(tool, model, questions, usage, latency_ms=None, answers=None, context=None):
+def record(tool, model, questions, usage, latency_ms=None, answers=None, context=None,
+           campaign_reserve_id=None):
     try:
         os.makedirs(os.path.dirname(LOG), exist_ok=True)
+        # A campaign-ledger reservation id marks rows that the shared campaign
+        # ledger already counts, so later imports can exclude them.
+        tag = {"campaignReserveId": campaign_reserve_id} if campaign_reserve_id else {}
         with open(LOG, "a") as fh:
             fh.write(json.dumps({
                 "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -33,6 +37,7 @@ def record(tool, model, questions, usage, latency_ms=None, answers=None, context
                 "output_tokens": (usage or {}).get("output_tokens"),
                 "answers": answers,
                 "context": context,
+                **tag,
             }) + "\n")
     except Exception:
         pass

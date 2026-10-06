@@ -61,7 +61,8 @@
     "reachable": {
       "gate": 0.5,
       "above": "keep",
-      "below": "downgrade to a note; an unreachable defect is not a bug yet"
+      "below": "downgrade to a note; an unreachable defect is not a bug yet",
+      "measured_limit": "MEASURED 2026-10-04 on 62 study-guide (prose, table, picture) findings: median 0.45, 3 at or above 0.8, no separation between content errors (a wrong citation 0.19) and label collisions (0.86). The question is about callers and inputs; on findings with no caller it selects nothing. Use route and severity there; do not gate on reachable."
     },
     "severity": {
       "gate": 2.0,
